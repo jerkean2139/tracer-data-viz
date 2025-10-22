@@ -112,6 +112,16 @@ async function convertXLSXToCSV(file: File): Promise<string> {
         const worksheet = workbook.Sheets[firstSheetName];
         
         const csvString = XLSX.utils.sheet_to_csv(worksheet);
+        
+        // Debug: Log conversion results
+        console.log('XLSX Conversion:', {
+          fileName: file.name,
+          sheetName: firstSheetName,
+          csvLength: csvString.length,
+          firstRow: csvString.split('\n')[0],
+          rowCount: csvString.split('\n').length
+        });
+        
         resolve(csvString);
       } catch (error) {
         reject(new Error(`Failed to convert XLSX to CSV: ${error}`));
@@ -172,6 +182,14 @@ function parseCSVData(
 
           const headers = results.meta.fields || [];
           const columnMapping = findColumnMapping(headers);
+
+          // Debug: Log parsing details
+          console.log('CSV Parsing:', {
+            fileName: file.name,
+            headers,
+            mapping: Object.fromEntries(columnMapping),
+            rowCount: results.data.length
+          });
 
           const requiredFields = ['merchantId', 'merchantName', 'salesAmount'];
           const missingFields = requiredFields.filter(f => !columnMapping.has(f));
