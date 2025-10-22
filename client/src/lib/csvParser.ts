@@ -17,9 +17,9 @@ export interface CSVColumn {
 
 const COLUMN_MAPPINGS: Record<string, string[]> = {
   merchantId: ['merchant id', 'merchantid', 'mid', 'merchant_id', 'id'],
-  merchantName: ['merchant name', 'merchantname', 'name', 'merchant_name', 'business name', 'businessname'],
-  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'volume', 'net', 'sales_amount'],
-  branchId: ['branch id', 'branchid', 'branch', 'branch_id', 'agent', 'agent id'],
+  merchantName: ['merchant name', 'merchantname', 'merchant', 'name', 'merchant_name', 'business name', 'businessname', 'dba'],
+  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'volume', 'net', 'sales_amount', 'payout amount'],
+  branchId: ['branch id', 'branchid', 'branch', 'branch_id', 'agent', 'agent id', 'branch number'],
   month: ['month', 'date', 'period', 'month/year'],
 };
 
