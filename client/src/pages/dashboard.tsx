@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [records, setRecords] = useState(storageService.getAllRecords());
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
     setRecords(storageService.getAllRecords());
@@ -24,6 +25,7 @@ export default function Dashboard() {
   const handleUploadComplete = () => {
     setRecords(storageService.getAllRecords());
     setUploadDialogOpen(false);
+    setShowDashboard(true);
   };
 
   const hasData = records.length > 0;
@@ -48,7 +50,7 @@ export default function Dashboard() {
   const paybrightTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'PayBright'), latestMonth) : [];
   const trxTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'TRX'), latestMonth) : [];
 
-  if (!hasData) {
+  if (!hasData && !showDashboard) {
     return (
       <div className="min-h-screen bg-background">
         <header className="border-b sticky top-0 bg-background z-50">
@@ -58,7 +60,16 @@ export default function Dashboard() {
                 <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
                 <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
               </div>
-              <ThemeToggle />
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowDashboard(true)}
+                  data-testid="button-view-dashboard"
+                >
+                  View Dashboard
+                </Button>
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </header>

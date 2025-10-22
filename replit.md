@@ -115,7 +115,13 @@ Calculated for each month/processor combination:
 
 ## Recent Changes (Oct 22, 2025)
 
-### Multi-Processor Support (Latest)
+### UI Enhancement: View Dashboard Button (Latest)
+- ✅ Added "View Dashboard" button to empty state screen
+- ✅ Users can now explore all tabs before uploading data
+- ✅ All tabs show "No data available" messages when empty
+- ✅ Upload button remains accessible from dashboard view
+
+### Multi-Processor Support
 - ✅ Added 4 new processors: TSYS (Global Payments), Micamp, PayBright, TRX
 - ✅ TRX-specific column mapping (Client→merchantId, Dba→merchantName, ProcessingDate→month)
 - ✅ Multi-sheet XLSX support (processes all sheets in a workbook)
