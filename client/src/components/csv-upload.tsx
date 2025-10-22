@@ -43,11 +43,13 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
     e.preventDefault();
     setIsDragging(false);
 
-    const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.csv'));
+    const files = Array.from(e.dataTransfer.files).filter(f => 
+      f.name.endsWith('.csv') || f.name.endsWith('.xlsx')
+    );
     if (files.length === 0) {
       toast({
         title: 'Invalid files',
-        description: 'Please upload CSV files only',
+        description: 'Please upload CSV or Excel (.xlsx) files only',
         variant: 'destructive',
       });
       return;
@@ -63,7 +65,9 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
   }, [toast]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []).filter(f => f.name.endsWith('.csv'));
+    const files = Array.from(e.target.files || []).filter(f => 
+      f.name.endsWith('.csv') || f.name.endsWith('.xlsx')
+    );
     if (files.length === 0) return;
 
     const newUploads: FileUpload[] = files.map(file => ({
