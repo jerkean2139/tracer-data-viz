@@ -221,7 +221,6 @@ function parseCSVData(
     Papa.parse(fileToProcess, {
       header: true,
       skipEmptyLines: true,
-      preview: skipLines > 0 ? undefined : 2, // Preview first 2 rows to check for title row
       transformHeader: (header: string) => header.trim(),
       complete: async (results) => {
         try {
@@ -237,9 +236,11 @@ function parseCSVData(
           let headers = results.meta.fields || [];
           
           // Check if first row looks like a title row (e.g., "Residuals - ...")
+          // Only check on first parse attempt (skipLines === 0)
           if (skipLines === 0 && headers.length > 0) {
             const firstHeader = headers[0].toLowerCase();
-            if (firstHeader.includes('residuals') || firstHeader.includes('report') || headers.length === 1) {
+            if (firstHeader.includes('residuals') || firstHeader.includes('report') || 
+                (headers.length === 1 && !firstHeader.includes('merchant') && !firstHeader.includes('client'))) {
               // This looks like a title row, reparse skipping first line
               console.log('Detected title row, reparsing...');
               const result = await parseCSVData(file, processor, xlsxSheetName, 1);

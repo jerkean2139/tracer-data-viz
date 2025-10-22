@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Professional merchant account analytics dashboard for tracking retention, revenue, and growth metrics across three payment processors: Clearent, ML, and Shift4.
+Professional merchant account analytics dashboard for tracking retention, revenue, and growth metrics across seven payment processors: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, and TRX.
 
 **Purpose**: Provide business intelligence for merchant services operations with visual analytics suitable for bank partners and executive presentations.
 
@@ -28,10 +28,12 @@ Professional merchant account analytics dashboard for tracking retention, revenu
 ### Data Processing
 1. **File Upload**: Drag-and-drop multi-file upload (supports .csv and .xlsx)
 2. **Format Support**: CSV and Excel (XLSX) files - automatically converts Excel to CSV internally
-3. **Auto-Detection**: Processor and month detection from filenames
-4. **Validation**: Column mapping with flexible field names
-5. **Deduplication**: Keeps highest revenue entry for duplicate Merchant IDs
-6. **Error Handling**: Comprehensive validation and user-friendly error messages
+3. **Multi-Sheet XLSX**: Automatically processes all sheets in Excel workbooks
+4. **Title Row Detection**: Automatically detects and skips CSV title rows (e.g., "Residuals - Global Payments")
+5. **Auto-Detection**: Processor and month detection from filenames and sheet names
+6. **Validation**: Column mapping with flexible field names (including TRX format: Client, Dba, ProcessingDate)
+7. **Deduplication**: Keeps highest revenue entry for duplicate Merchant IDs
+8. **Error Handling**: Comprehensive validation and user-friendly error messages
 
 ### Analytics Calculations
 - Retention rate (retained accounts / previous month total)
@@ -99,8 +101,10 @@ Calculated for each month/processor combination:
 
 ### CSV Upload Preferences
 - Supports flexible column names (case-insensitive, handles extra spaces)
-- Auto-detects processor from filename keywords
-- Handles common date formats (MM/YYYY, YYYY-MM, Month YYYY)
+- Auto-detects processor from filename keywords (clearent, ml, shift4, global, tsys, micamp, paybright, trx)
+- Handles common date formats (MM/YYYY, YYYY-MM, Month YYYY, MMM-YY like "Jun-25")
+- Automatically skips title rows in CSV files
+- Processes all sheets in XLSX workbooks automatically
 - Keeps highest revenue entry when duplicates found
 
 ### UI Preferences
@@ -110,6 +114,14 @@ Calculated for each month/processor combination:
 - Desktop-first design, responsive for tablets/mobile
 
 ## Recent Changes (Oct 22, 2025)
+
+### Multi-Processor Support (Latest)
+- ✅ Added 4 new processors: TSYS (Global Payments), Micamp, PayBright, TRX
+- ✅ TRX-specific column mapping (Client→merchantId, Dba→merchantName, ProcessingDate→month)
+- ✅ Multi-sheet XLSX support (processes all sheets in a workbook)
+- ✅ Title row detection and skipping for CSV files with headers like "Residuals - ..."
+- ✅ Enhanced month parsing for "Jun-25" format and sheet names
+- ✅ Updated schema to support all 7 processors
 
 ### Initial Implementation
 - ✅ Complete schema and data model
