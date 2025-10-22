@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { MerchantRecord, Processor } from '@shared/schema';
 import { format, parse } from 'date-fns';
 
@@ -98,7 +99,55 @@ export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' 
   return null;
 }
 
+async function convertXLSXToCSV(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        const csvString = XLSX.utils.sheet_to_csv(worksheet);
+        resolve(csvString);
+      } catch (error) {
+        reject(new Error(`Failed to convert XLSX to CSV: ${error}`));
+      }
+    };
+    
+    reader.onerror = () => reject(new Error('Failed to read XLSX file'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 export async function parseCSVFile(
+  file: File,
+  processor?: 'Clearent' | 'ML' | 'Shift4'
+): Promise<CSVParseResult> {
+  const isXLSX = file.name.toLowerCase().endsWith('.xlsx');
+  
+  if (isXLSX) {
+    try {
+      const csvString = await convertXLSXToCSV(file);
+      const csvBlob = new Blob([csvString], { type: 'text/csv' });
+      const csvFile = new File([csvBlob], file.name.replace('.xlsx', '.csv'), { type: 'text/csv' });
+      return parseCSVData(csvFile, processor);
+    } catch (error) {
+      return {
+        success: false,
+        errors: [`Failed to process XLSX file: ${error}`],
+        warnings: [],
+      };
+    }
+  }
+  
+  return parseCSVData(file, processor);
+}
+
+function parseCSVData(
   file: File,
   processor?: 'Clearent' | 'ML' | 'Shift4'
 ): Promise<CSVParseResult> {

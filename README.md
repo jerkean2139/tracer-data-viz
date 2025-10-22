@@ -21,10 +21,15 @@ A professional web application for tracking merchant account retention, revenue 
 2. Open the application in your browser
 3. Upload your first CSV files using the upload dialog
 
-### CSV File Format
+### File Format
 
-Your CSV files should include these columns (column names are flexible):
+Your files (CSV or Excel) should include these columns (column names are flexible):
 
+**Supported Formats:**
+- `.csv` - Comma-separated values
+- `.xlsx` - Microsoft Excel spreadsheet
+
+**Example:**
 ```csv
 Merchant Id,Merchant Name,Sales Amount,Branch ID,Month
 MID001,Joe's Pizza,15000,BR001,2024-07
@@ -82,13 +87,13 @@ Side-by-side comparison of all three processors with revenue and account distrib
 
 ## Sample Data
 
-Sample CSV files are included in the `public/` folder:
-- `sample_clearent_july2024.csv`
-- `sample_clearent_august2024.csv`
-- `sample_ml_july2024.csv`
-- `sample_shift4_july2024.csv`
+Sample files are included in the `public/` folder:
+- `sample-clearent.csv` - CSV format sample
+- `sample-clearent.xlsx` - Excel format sample (same data)
+- `sample-ml.csv` - ML processor data
+- `sample-shift4.csv` - Shift4 processor data
 
-Use these to test the dashboard functionality.
+Use these to test the dashboard functionality with both CSV and Excel formats.
 
 ## Data Management
 

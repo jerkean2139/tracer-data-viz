@@ -191,7 +191,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
           <input
             type="file"
             multiple
-            accept=".csv"
+            accept=".csv,.xlsx"
             onChange={handleFileSelect}
             className="hidden"
             data-testid="input-csv-file"
@@ -201,10 +201,10 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
             {uploads.length === 0 ? 'Upload CSV Files' : 'Add More Files'}
           </h3>
           <p className="text-sm text-muted-foreground text-center max-w-md">
-            Drag and drop your merchant CSV files here, or click to browse
+            Drag and drop your merchant CSV or Excel files here, or click to browse
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Supports Clearent, ML, and Shift4 processors
+            Supports .csv and .xlsx formats • Clearent, ML, and Shift4 processors
           </p>
         </label>
       </div>

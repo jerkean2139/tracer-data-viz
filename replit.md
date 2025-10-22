@@ -26,11 +26,12 @@ Professional merchant account analytics dashboard for tracking retention, revenu
 ## Key Features
 
 ### Data Processing
-1. **CSV Upload**: Drag-and-drop multi-file upload
-2. **Auto-Detection**: Processor and month detection from filenames
-3. **Validation**: Column mapping with flexible field names
-4. **Deduplication**: Keeps highest revenue entry for duplicate Merchant IDs
-5. **Error Handling**: Comprehensive validation and user-friendly error messages
+1. **File Upload**: Drag-and-drop multi-file upload (supports .csv and .xlsx)
+2. **Format Support**: CSV and Excel (XLSX) files - automatically converts Excel to CSV internally
+3. **Auto-Detection**: Processor and month detection from filenames
+4. **Validation**: Column mapping with flexible field names
+5. **Deduplication**: Keeps highest revenue entry for duplicate Merchant IDs
+6. **Error Handling**: Comprehensive validation and user-friendly error messages
 
 ### Analytics Calculations
 - Retention rate (retained accounts / previous month total)
@@ -71,7 +72,8 @@ client/src/
 shared/
   schema.ts                 # TypeScript types and Zod schemas
 public/
-  sample_*.csv             # Sample data for testing
+  sample-*.csv             # Sample CSV files for testing
+  sample-clearent.xlsx     # Sample Excel file for testing
 ```
 
 ## Data Model
@@ -144,9 +146,10 @@ npm run dev
 Access at http://localhost:5000
 
 ### Testing with Sample Data
-Sample CSV files are in `public/`:
-- Upload July 2024 files first to establish baseline
-- Then upload August 2024 to see retention calculations
+Sample files are in `public/`:
+- Test CSV upload with `sample-clearent.csv`, `sample-ml.csv`, `sample-shift4.csv`
+- Test Excel upload with `sample-clearent.xlsx` (same data as CSV, different format)
+- Files contain 3 months of data (Jan-Mar 2024) to show retention calculations
 - Mix processors to test comparison view
 
 ### Data Storage
