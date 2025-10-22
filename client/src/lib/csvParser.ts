@@ -16,11 +16,11 @@ export interface CSVColumn {
 }
 
 const COLUMN_MAPPINGS: Record<string, string[]> = {
-  merchantId: ['merchant id', 'merchantid', 'mid', 'merchant_id', 'id'],
+  merchantId: ['merchant id', 'merchantid', 'mid', 'merchant_id', 'id', 'client'],
   merchantName: ['merchant name', 'merchantname', 'merchant', 'name', 'merchant_name', 'business name', 'businessname', 'dba'],
-  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'volume', 'net', 'sales_amount', 'payout amount'],
+  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'volume', 'net', 'sales_amount', 'payout amount', 'sale amount'],
   branchId: ['branch id', 'branchid', 'branch', 'branch_id', 'agent', 'agent id', 'branch number'],
-  month: ['month', 'date', 'period', 'month/year'],
+  month: ['month', 'date', 'period', 'month/year', 'processingdate', 'processing date'],
 };
 
 function normalizeColumnName(name: string): string {
@@ -50,6 +50,7 @@ function parseMonthString(monthStr: string): string {
     'MMMM yyyy',
     'MMM yyyy',
     'yyyy/MM',
+    'MMM-yy',  // Jun-25
   ];
 
   for (const formatStr of formats) {
@@ -98,11 +99,15 @@ function extractMonthFromFilename(filename: string): string | null {
   return null;
 }
 
-export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' | null {
+export function detectProcessor(filename: string): string | null {
   const lower = filename.toLowerCase();
   if (lower.includes('clearent')) return 'Clearent';
-  if (lower.includes('ml')) return 'ML';
+  if (lower.includes('ml') && !lower.includes('micamp')) return 'ML';
   if (lower.includes('shift4')) return 'Shift4';
+  if (lower.includes('global') || lower.includes('tsys')) return 'TSYS';
+  if (lower.includes('micamp')) return 'Micamp';
+  if (lower.includes('paybright')) return 'PayBright';
+  if (lower.includes('trx')) return 'TRX';
   return null;
 }
 

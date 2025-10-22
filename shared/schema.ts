@@ -6,13 +6,13 @@ export const merchantRecordSchema = z.object({
   salesAmount: z.number(),
   branchId: z.string().optional(),
   month: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'All']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'All']),
 });
 
 export const uploadedFileSchema = z.object({
   id: z.string(),
   fileName: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX']),
   month: z.string(),
   recordCount: z.number(),
   uploadedAt: z.string(),
@@ -22,7 +22,7 @@ export const uploadedFileSchema = z.object({
 
 export const monthlyMetricsSchema = z.object({
   month: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'All']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'All']),
   totalRevenue: z.number(),
   totalAccounts: z.number(),
   retainedAccounts: z.number(),
@@ -41,7 +41,7 @@ export const topMerchantSchema = z.object({
   merchantName: z.string(),
   revenue: z.number(),
   percentOfTotal: z.number(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX']),
   trend: z.enum(['up', 'down', 'stable']).optional(),
 });
 
@@ -65,4 +65,4 @@ export type MonthlyMetrics = z.infer<typeof monthlyMetricsSchema>;
 export type TopMerchant = z.infer<typeof topMerchantSchema>;
 export type BranchPerformance = z.infer<typeof branchPerformanceSchema>;
 export type DateRange = z.infer<typeof dateRangeSchema>;
-export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'All';
+export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'All';
