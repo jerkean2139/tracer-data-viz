@@ -114,13 +114,13 @@ async function convertXLSXToCSV(file: File): Promise<string> {
         const csvString = XLSX.utils.sheet_to_csv(worksheet);
         
         // Debug: Log conversion results
-        console.log('XLSX Conversion:', {
-          fileName: file.name,
-          sheetName: firstSheetName,
-          csvLength: csvString.length,
-          firstRow: csvString.split('\n')[0],
-          rowCount: csvString.split('\n').length
-        });
+        const firstRow = csvString.split('\n')[0];
+        console.log('=== XLSX CONVERSION ===');
+        console.log('File:', file.name);
+        console.log('Sheet:', firstSheetName);
+        console.log('First Row (Headers):', firstRow);
+        console.log('Total Rows:', csvString.split('\n').length);
+        console.log('=======================');
         
         resolve(csvString);
       } catch (error) {
@@ -184,12 +184,12 @@ function parseCSVData(
           const columnMapping = findColumnMapping(headers);
 
           // Debug: Log parsing details
-          console.log('CSV Parsing:', {
-            fileName: file.name,
-            headers,
-            mapping: Object.fromEntries(columnMapping),
-            rowCount: results.data.length
-          });
+          console.log('=== CSV PARSING ===');
+          console.log('File:', file.name);
+          console.log('Headers found:', headers.join(', '));
+          console.log('Column Mapping:', Object.fromEntries(columnMapping));
+          console.log('Data rows:', results.data.length);
+          console.log('===================');
 
           const requiredFields = ['merchantId', 'merchantName', 'salesAmount'];
           const missingFields = requiredFields.filter(f => !columnMapping.has(f));
