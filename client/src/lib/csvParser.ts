@@ -66,6 +66,13 @@ function parseMonthString(monthStr: string): string {
 }
 
 function extractMonthFromFilename(filename: string): string | null {
+  // Try to parse common month-year formats first (like "January 2025", "Jan 2024")
+  const result = parseMonthString(filename);
+  if (result && result.match(/^\d{4}-\d{2}$/)) {
+    return result;
+  }
+
+  // Fall back to regex patterns for filename-style formats
   const patterns = [
     /(\w+)_(\w+)(\d{4})/i,
     /(\d{4})-(\d{2})/,
