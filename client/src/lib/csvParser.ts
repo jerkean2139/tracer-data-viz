@@ -99,7 +99,7 @@ export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' 
   return null;
 }
 
-async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetName: string}> {
+async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetName: string}[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -108,21 +108,30 @@ async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetNa
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
         
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
+        const allSheets: {csvString: string, sheetName: string}[] = [];
         
-        const csvString = XLSX.utils.sheet_to_csv(worksheet);
-        
-        // Debug: Log conversion results
-        const firstRow = csvString.split('\n')[0];
         console.log('=== XLSX CONVERSION ===');
         console.log('File:', file.name);
-        console.log('Sheet:', firstSheetName);
-        console.log('First Row (Headers):', firstRow);
-        console.log('Total Rows:', csvString.split('\n').length);
+        console.log('Total Sheets:', workbook.SheetNames.length);
+        console.log('Sheet Names:', workbook.SheetNames.join(', '));
+        
+        // Process ALL sheets in the workbook
+        for (const sheetName of workbook.SheetNames) {
+          const worksheet = workbook.Sheets[sheetName];
+          const csvString = XLSX.utils.sheet_to_csv(worksheet);
+          
+          // Debug: Log each sheet
+          const firstRow = csvString.split('\n')[0];
+          console.log(`\n  Sheet: ${sheetName}`);
+          console.log(`  Headers: ${firstRow}`);
+          console.log(`  Data Rows: ${csvString.split('\n').length - 1}`);
+          
+          allSheets.push({ csvString, sheetName });
+        }
+        
         console.log('=======================');
         
-        resolve({ csvString, sheetName: firstSheetName });
+        resolve(allSheets);
       } catch (error) {
         reject(new Error(`Failed to convert XLSX to CSV: ${error}`));
       }
@@ -141,10 +150,31 @@ export async function parseCSVFile(
   
   if (isXLSX) {
     try {
-      const { csvString, sheetName } = await convertXLSXToCSV(file);
-      const csvBlob = new Blob([csvString], { type: 'text/csv' });
-      const csvFile = new File([csvBlob], file.name.replace('.xlsx', '.csv'), { type: 'text/csv' });
-      return parseCSVData(csvFile, processor, sheetName);
+      const allSheets = await convertXLSXToCSV(file);
+      
+      // Process each sheet separately and combine results
+      const allRecords: MerchantRecord[] = [];
+      const allErrors: string[] = [];
+      const allWarnings: string[] = [];
+      
+      for (const { csvString, sheetName } of allSheets) {
+        const csvBlob = new Blob([csvString], { type: 'text/csv' });
+        const csvFile = new File([csvBlob], `${file.name}_${sheetName}.csv`, { type: 'text/csv' });
+        const result = await parseCSVData(csvFile, processor, sheetName);
+        
+        if (result.success && result.data) {
+          allRecords.push(...result.data);
+        }
+        allErrors.push(...result.errors);
+        allWarnings.push(...result.warnings);
+      }
+      
+      return {
+        success: allRecords.length > 0,
+        data: allRecords.length > 0 ? allRecords : undefined,
+        errors: allErrors,
+        warnings: allWarnings,
+      };
     } catch (error) {
       return {
         success: false,
