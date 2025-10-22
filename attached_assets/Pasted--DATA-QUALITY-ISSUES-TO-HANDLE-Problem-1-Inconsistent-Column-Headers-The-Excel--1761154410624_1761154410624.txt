@@ -1,0 +1,132 @@
+---
+
+## ⚠️ DATA QUALITY ISSUES TO HANDLE
+
+### Problem 1: Inconsistent Column Headers
+The Excel files have different column names month-to-month:
+- "Merchant ID" vs "Merchant Id" (capitalization varies)
+- "Merchant Name" vs "Merchant" (some months shortened)
+- "Branch ID" vs "Branch Number" vs "Branch" (all 3 variations exist)
+- "Transaction" vs "Transactions" (singular vs plural)
+
+**SOLUTION REQUIRED:**
+- Implement case-insensitive, fuzzy column matching
+- Try multiple possible names for each required field
+- Normalize all column names by: lowercasing, trimming spaces, removing special chars
+- If column still not found, show user a mapping interface
+
+### Problem 2: XLSX Multi-Sheet Parsing
+Each XLSX file contains 19+ sheets (one per month). The parser must:
+1. Extract ALL sheets from the XLSX file
+2. Identify which sheet corresponds to which month
+3. Handle sheet names like: "January 2025", "Jan 2025", "Jan2025", "Jan 25"
+4. Parse each sheet separately into CSV format
+5. Combine all months into one dataset with month identifier
+
+**CODE REQUIREMENT:**
+```typescript
+// Use SheetJS (xlsx package) to parse XLSX files
+import * as XLSX from 'xlsx';
+
+function parseXLSXFile(file: File): Promise<ParsedData[]> {
+  const workbook = XLSX.read(await file.arrayBuffer());
+  const allData = [];
+  
+  for (const sheetName of workbook.SheetNames) {
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    
+    // Extract month from sheet name
+    const month = extractMonthFromSheetName(sheetName);
+    
+    // Normalize columns with fuzzy matching
+    const normalized = normalizeDataWithFlexibleColumns(jsonData);
+    
+    allData.push({
+      month,
+      data: normalized,
+      sheetName
+    });
+  }
+  
+  return allData;
+}
+```
+
+### Problem 3: Missing or Null Values
+Some rows may have:
+- Empty Merchant IDs (skip these rows)
+- Zero or negative Sales Amounts (flag as data quality issue)
+- Missing Branch IDs (use "Unassigned" as default)
+
+**VALIDATION RULES:**
+```typescript
+function validateRow(row: any): { valid: boolean; errors: string[] } {
+  const errors = [];
+  
+  if (!row.merchantId || row.merchantId.trim() === '') {
+    errors.push('Missing Merchant ID');
+  }
+  
+  if (row.salesAmount === null || row.salesAmount === undefined) {
+    errors.push('Missing Sales Amount');
+  }
+  
+  if (row.salesAmount < 0) {
+    errors.push('Negative Sales Amount - possible data error');
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+```
+
+### Problem 4: Duplicate Merchant IDs in Same Month
+Sometimes the same MID appears twice in one month (possibly due to data export errors).
+
+**RESOLUTION STRATEGY:**
+- Keep the row with the HIGHEST sales amount
+- Log a warning: "Duplicate MID detected: [MID] in [Month]. Kept higher revenue record."
+- Show count of duplicates removed in upload summary
+
+---
+```
+
+---
+
+## **🎯 SPECIFIC INSTRUCTIONS TO UNSTICK THE AGENT**
+
+Tell your Replit Agent this **EXACTLY**:
+```
+The CSV parser is currently failing because it's looking for exact column name matches, 
+but our Excel files have inconsistent headers. Here's what you need to fix RIGHT NOW:
+
+STEP 1: Replace the column detection logic in csvParser.ts
+- Current code is too strict (exact string matching)
+- New code must be fuzzy (case-insensitive, handles variations)
+- Use the normalizeColumnName() and findColumn() functions I provided above
+
+STEP 2: Update the XLSX to CSV conversion
+- Currently converting sheets but not handling header variations
+- Add the COLUMN_MAPPINGS constant with all possible variations
+- Apply fuzzy matching BEFORE trying to extract data
+
+STEP 3: Add user-friendly error messages
+- Instead of silent failures, show: "Found these headers: X, Y, Z. Could not match to: Merchant ID"
+- Give user option to manually map columns if auto-detection fails
+
+STEP 4: Test with the actual data
+- The logs show the exact header variations that exist
+- Make sure your code handles ALL of these:
+  ✓ "Merchant ID" and "Merchant Id"
+  ✓ "Merchant Name" and "Merchant"
+  ✓ "Branch ID", "Branch Number", and "Branch"
+
+STEP 5: Show parsing progress
+- Log each sheet as it's processed: "✓ Parsed January 2025: 74 rows, 0 errors"
+- Show summary: "Successfully parsed 19 sheets, 1,245 total rows"
+- Flag any issues: "⚠️ 3 rows skipped due to missing Merchant ID"
+
+DO THIS NOW. The user needs this working to upload their files.
