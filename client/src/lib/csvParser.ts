@@ -99,7 +99,7 @@ export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' 
   return null;
 }
 
-async function convertXLSXToCSV(file: File): Promise<string> {
+async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetName: string}> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -122,7 +122,7 @@ async function convertXLSXToCSV(file: File): Promise<string> {
         console.log('Total Rows:', csvString.split('\n').length);
         console.log('=======================');
         
-        resolve(csvString);
+        resolve({ csvString, sheetName: firstSheetName });
       } catch (error) {
         reject(new Error(`Failed to convert XLSX to CSV: ${error}`));
       }
@@ -141,10 +141,10 @@ export async function parseCSVFile(
   
   if (isXLSX) {
     try {
-      const csvString = await convertXLSXToCSV(file);
+      const { csvString, sheetName } = await convertXLSXToCSV(file);
       const csvBlob = new Blob([csvString], { type: 'text/csv' });
       const csvFile = new File([csvBlob], file.name.replace('.xlsx', '.csv'), { type: 'text/csv' });
-      return parseCSVData(csvFile, processor);
+      return parseCSVData(csvFile, processor, sheetName);
     } catch (error) {
       return {
         success: false,
@@ -159,7 +159,8 @@ export async function parseCSVFile(
 
 function parseCSVData(
   file: File,
-  processor?: 'Clearent' | 'ML' | 'Shift4'
+  processor?: 'Clearent' | 'ML' | 'Shift4',
+  xlsxSheetName?: string
 ): Promise<CSVParseResult> {
   return new Promise((resolve) => {
     const errors: string[] = [];
@@ -212,7 +213,12 @@ function parseCSVData(
             errors.push('Could not detect processor from filename. Please specify manually.');
           }
 
-          const monthFromFilename = extractMonthFromFilename(file.name);
+          // Try to extract month from filename, then from XLSX sheet name
+          let monthFromFilename = extractMonthFromFilename(file.name);
+          if (!monthFromFilename && xlsxSheetName) {
+            monthFromFilename = extractMonthFromFilename(xlsxSheetName);
+          }
+          
           const records: MerchantRecord[] = [];
           const seenMerchantIds = new Map<string, number>();
 
