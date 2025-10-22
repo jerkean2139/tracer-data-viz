@@ -1,4 +1,4 @@
-# TRACER G2 Merchant Account Analytics Dashboard
+# TRACER C2 Merchant Account Analytics Dashboard
 
 ## Project Overview
 
@@ -18,7 +18,7 @@ Professional merchant account analytics dashboard for tracking retention, revenu
 - **Backend**: Minimal Express.js server (serves frontend only)
 
 ### Design System
-- **Brand Colors**: TRACER G2 navy blue (#1A3A52) and green (#7FA848)
+- **Brand Colors**: TRACER C2 navy blue (#1A3A52) and green (#7FA848)
 - **Typography**: Inter (sans-serif), JetBrains Mono (monospace for data)
 - **Theme**: Supports both light and dark modes
 - **Responsive**: Mobile, tablet, and desktop layouts
@@ -104,7 +104,7 @@ Calculated for each month/processor combination:
 ### UI Preferences
 - Theme: Auto-detects system preference, persists user selection
 - Professional financial dashboard aesthetic
-- TRACER G2 branding throughout
+- TRACER C2 branding throughout
 - Desktop-first design, responsive for tablets/mobile
 
 ## Recent Changes (Oct 22, 2025)
@@ -118,7 +118,7 @@ Calculated for each month/processor combination:
 - ✅ Dark mode support
 - ✅ Empty state for first-time users
 - ✅ Sample CSV data for testing (3 processors, 3 months each)
-- ✅ TRACER G2 brand colors integrated
+- ✅ TRACER C2 brand colors integrated
 
 ### Features Implemented
 - Drag-and-drop CSV upload with preview

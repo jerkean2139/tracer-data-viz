@@ -1,4 +1,4 @@
-# TRACER G2 Merchant Account Analytics Dashboard
+# TRACER C2 Merchant Account Analytics Dashboard
 
 A professional web application for tracking merchant account retention, revenue trends, and growth metrics across Clearent, ML, and Shift4 payment processors.
 
@@ -147,7 +147,7 @@ Edit `client/src/lib/analytics.ts` to customize:
 
 ### Changing Colors
 Update `client/src/index.css` to modify:
-- Brand colors (currently TRACER G2 navy and green)
+- Brand colors (currently TRACER C2 navy and green)
 - Chart colors
 - Theme variables
 
@@ -177,7 +177,7 @@ For questions or issues:
 
 ## License
 
-Proprietary - TRACER G2 Internal Use
+Proprietary - TRACER C2 Internal Use
 
 ---
 

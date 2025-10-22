@@ -16,7 +16,7 @@ export function EmptyState({ onUploadClick }: EmptyStateProps) {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-3">Welcome to TRACER G2 Analytics</h2>
+        <h2 className="text-2xl font-bold mb-3">Welcome to TRACER C2 Analytics</h2>
         <p className="text-muted-foreground mb-8 max-w-md mx-auto">
           Upload your merchant CSV files from Clearent, ML, and Shift4 to start tracking
           retention rates, revenue trends, and account growth.

@@ -18,11 +18,11 @@
 
 ### A. Color Palette
 
-**Brand Colors:** Extracted from TRACER G2 logo - Navy Blue (#1A3A52) and Green (#7FA848)
+**Brand Colors:** Extracted from TRACER C2 logo - Navy Blue (#1A3A52) and Green (#7FA848)
 
 **Light Mode:**
 - Primary: 201 50% 22% (navy blue from TRACER branding)
-- Accent: 86 35% 52% (green from G2 logo - for success states, positive metrics)
+- Accent: 86 35% 52% (green from C2 logo - for success states, positive metrics)
 - Foreground: 201 50% 22% (navy blue for primary text)
 - Background: 0 0% 98% (off-white for main background)
 - Card: 0 0% 100% (white for cards, panels)

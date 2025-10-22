@@ -47,7 +47,7 @@ export default function Dashboard() {
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-primary">TRACER G2</h1>
+                <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
                 <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
               </div>
               <ThemeToggle />
@@ -77,7 +77,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-primary">TRACER G2</h1>
+              <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
               <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
             </div>
             <div className="flex items-center gap-2">
