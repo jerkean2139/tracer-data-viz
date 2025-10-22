@@ -113,17 +113,18 @@ Calculated for each month/processor combination:
 
 ### Initial Implementation
 - ✅ Complete schema and data model
-- ✅ CSV parsing with validation and error handling
+- ✅ CSV and XLSX parsing with validation and error handling
 - ✅ Analytics engine for all metrics
 - ✅ Full component library (upload, charts, tables, cards)
 - ✅ Multi-tab dashboard with Overview, 3 processors, and Compare
 - ✅ Dark mode support
 - ✅ Empty state for first-time users
-- ✅ Sample CSV data for testing (3 processors, 3 months each)
+- ✅ Sample CSV and XLSX data for testing (3 processors)
 - ✅ TRACER C2 brand colors integrated
 
 ### Features Implemented
-- Drag-and-drop CSV upload with preview
+- Drag-and-drop CSV and Excel upload with preview
+- Automatic XLSX to CSV conversion using xlsx library
 - Automatic retention/attrition/growth calculations
 - Interactive Recharts visualizations
 - Sortable top merchants table
@@ -136,6 +137,7 @@ Calculated for each month/processor combination:
 1. **Upload Success Handling**: Fixed closure issue in `processUploads` by tracking success count during loop execution instead of from stale state snapshot
 2. **Duplicate Record Prevention**: Implemented deduplication in `storageService.addRecords` that keys by processor-month-merchantId and keeps highest revenue entry
 3. **Type Safety**: Corrected all TypeScript types to use specific processor literals ('Clearent' | 'ML' | 'Shift4') instead of broader Processor type that includes 'All'
+4. **XLSX Support**: Added full Excel file support with automatic conversion to CSV, updated file filters and validation
 
 ## Development Notes
 
