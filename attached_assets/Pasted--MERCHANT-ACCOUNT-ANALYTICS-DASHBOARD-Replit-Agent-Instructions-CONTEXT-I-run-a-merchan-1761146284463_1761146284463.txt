@@ -1,0 +1,285 @@
+# 🎯 MERCHANT ACCOUNT ANALYTICS DASHBOARD - Replit Agent Instructions
+
+## CONTEXT
+I run a merchant services business that processes payments through 3 different processors: 
+Clearent, ML, and Shift4. Each month, I export data from each processor showing all 
+my active merchant accounts. I need a professional web dashboard to:
+
+1. Upload monthly CSV files (one per processor)
+2. Automatically calculate business metrics
+3. Show visual charts and reports
+4. Compare performance across all 3 processors
+
+This dashboard needs to look professional enough to show potential bank partners.
+
+---
+
+## DATA STRUCTURE
+
+### What I'm Uploading:
+- **3 separate CSV files per month** (one for each processor)
+- Files are named like: `Clearent_July2025.csv`, `ML_July2025.csv`, `Shift4_July2025.csv`
+- OR a single combined CSV with a "Processor" column
+
+### Required Columns (at minimum):
+```
+Merchant Id    → Unique tracking number for each merchant account
+Merchant Name  → Business name
+Sales Amount   → Monthly revenue from this merchant (or "Volume" or "Net")
+Branch ID      → Our internal sales branch/agent code
+Month          → Date or month identifier (can be extracted from filename)
+```
+
+**IMPORTANT DATA RULES:**
+1. Merchant Id is the PRIMARY KEY for tracking accounts over time
+2. Same Merchant Id appearing in multiple months = RETAINED account
+3. Merchant Id in Month 2 but NOT Month 3 = LOST account (attrition)
+4. Merchant Id in Month 3 but NOT in Month 2 = NEW account
+5. Merchant Id can return after leaving (Month 2, gone in Month 3, back in Month 4)
+
+---
+
+## REQUIRED FEATURES
+
+### 1. CSV UPLOAD INTERFACE
+```
+- Drag-and-drop zone to upload CSV files
+- Support for uploading multiple months at once
+- Auto-detect which processor from filename or dropdown selector
+- Show preview of uploaded data before processing
+- Validate that required columns exist
+- Handle common issues:
+  ✓ Extra spaces in column names
+  ✓ Duplicate Merchant IDs in same month (keep the one with highest revenue)
+  ✓ Missing or null values
+  ✓ Date format variations (07/2025, July 2025, 2025-07, etc.)
+```
+
+### 2. AUTOMATIC CALCULATIONS
+For each processor AND for all processors combined, calculate:
+
+**A. Retention Analysis**
+- Total active accounts this month
+- Accounts retained from last month (same MID appears in both)
+- Retention rate % = (retained / last month's total) × 100
+- Accounts lost from last month (attrition)
+- Attrition rate % = (lost / last month's total) × 100
+
+**B. Growth Metrics**
+- New accounts this month (MIDs that weren't in last month)
+- Net account growth = new accounts - lost accounts
+- Month-over-month growth rate %
+
+**C. Revenue Analysis**
+- Total revenue this month (sum of all Sales Amounts)
+- Month-over-month revenue change ($$ and %)
+- Revenue per account (average)
+- Revenue growth vs account growth (are we getting bigger accounts?)
+
+**D. Top Performers**
+- Top 10 accounts by revenue (this month)
+- Top 10 accounts by revenue (year-to-date)
+- Show: Merchant Name, MID, Monthly Revenue, % of total revenue
+
+**E. Branch Performance** (if Branch ID exists)
+- Which branches have best retention?
+- Which branches bring in highest revenue accounts?
+
+---
+
+### 3. VISUAL DASHBOARD
+
+**Layout:** Tabbed interface with:
+- Overview (all processors combined)
+- Clearent tab
+- ML tab  
+- Shift4 tab
+
+**Charts Needed on Each Tab:**
+
+1. **Revenue Trend Line Chart**
+   - X-axis: Months (Jan 2024 → current)
+   - Y-axis: Total revenue
+   - Show: Actual revenue + trend line
+
+2. **Account Activity Bar Chart**
+   - X-axis: Months
+   - Y-axis: Number of accounts
+   - Stacked bars showing:
+     * Green = Retained accounts
+     * Red = Lost accounts
+     * Blue = New accounts
+
+3. **Retention Rate Line Chart**
+   - X-axis: Months
+   - Y-axis: Retention % (0-100%)
+   - Add horizontal line at 95% (good retention benchmark)
+
+4. **Top 10 Accounts Table**
+   - Sortable columns
+   - Highlight accounts that are at risk (declining revenue)
+
+5. **Key Metrics Cards** (at top of page)
+   - Current month revenue (big number)
+   - MoM growth % (with ↑ or ↓ indicator)
+   - Total active accounts
+   - Retention rate %
+   - Net new accounts this month
+
+---
+
+### 4. COMPARISON VIEW
+A special "Compare Processors" tab showing:
+- Side-by-side metrics for Clearent vs ML vs Shift4
+- Which processor has best retention?
+- Which processor is growing fastest?
+- Revenue distribution pie chart
+
+---
+
+### 5. EXPORT CAPABILITIES
+Users should be able to:
+- Download executive summary PDF report
+- Export raw data to CSV
+- Copy charts as images
+- Print-friendly view
+
+---
+
+## TECHNICAL REQUIREMENTS
+
+**Frontend:**
+- React + TypeScript
+- Tailwind CSS for styling
+- shadcn/ui components for professional look
+- recharts for all visualizations
+- Date handling with date-fns
+
+**Data Processing:**
+- Use PapaParse for CSV parsing
+- Store processed data in browser localStorage (or simple SQLite if needed)
+- All calculations happen client-side
+- No backend required initially (can add later)
+
+**Error Handling:**
+- Show helpful messages if CSV format is wrong
+- Handle missing months gracefully
+- Warn if data looks suspicious (e.g., 50% of accounts disappeared - likely data error)
+
+**Performance:**
+- Should handle up to 5,000 merchant records per processor
+- Smooth scrolling and interactions
+- Loading states for file uploads
+
+---
+
+## USER EXPERIENCE FLOW
+
+1. **First-time User:**
+   → Lands on empty dashboard with "Upload Your First Month" prompt
+   → Uploads 3 CSV files (or 1 combined)
+   → Sees loading animation while data processes
+   → Dashboard populates with current month metrics
+   → Message: "Upload more months to see trends"
+
+2. **Regular User:**
+   → Dashboard shows latest data on load
+   → "Upload New Month" button at top-right
+   → Can select date range to view (Last 3 months, Last 6 months, All time, Custom)
+   → Can filter by processor
+   → Can click on any chart to drill deeper
+
+3. **Power User:**
+   → Can edit/delete uploaded months if wrong data
+   → Can export reports
+   → Can see data quality warnings
+
+---
+
+## DELIVERABLES
+
+Build me a fully functional web app with:
+
+1. **Landing page** with:
+   - Clean, professional design
+   - Upload interface
+   - Sample data demo (optional)
+
+2. **Dashboard** with:
+   - All charts and metrics described above
+   - Responsive design (works on tablet/phone)
+   - Fast performance
+
+3. **Code** that:
+   - Is well-commented
+   - Uses TypeScript for type safety
+   - Handles errors gracefully
+   - Is easy for me to modify later
+
+4. **README file** explaining:
+   - How to add new months
+   - How to customize metrics
+   - How to deploy to a real website
+
+---
+
+## EXAMPLE DATA (for testing)
+
+Create sample CSV files that look like this:
+```csv
+Merchant Id,Merchant Name,Sales Amount,Branch ID,Month
+MID001,Joe's Pizza,15000,BR001,2024-07
+MID002,ABC Retail,8500,BR002,2024-07
+MID003,Tech Solutions,22000,BR001,2024-07
+```
+
+Then in the next month, MID002 is gone (lost), MID004 is new:
+```csv
+Merchant Id,Merchant Name,Sales Amount,Branch ID,Month
+MID001,Joe's Pizza,16000,BR001,2024-08
+MID003,Tech Solutions,23500,BR001,2024-08
+MID004,New Bakery,5000,BR003,2024-08
+```
+
+This should show:
+- 2 retained (MID001, MID003)
+- 1 lost (MID002)
+- 1 new (MID004)
+- 66.67% retention rate (2 out of 3 from July)
+
+---
+
+## WHAT NOT TO DO
+
+❌ Don't make me write code to add new months
+❌ Don't assume my CSVs are perfect (they have errors!)
+❌ Don't use complex setup - this needs to work in Replit easily
+❌ Don't make the UI look like a code project
+❌ Don't require a database setup (keep it simple to start)
+
+---
+
+## PRIORITY ORDER
+
+Build in this order:
+1. CSV upload and parsing (with validation)
+2. Basic calculations (retention, revenue, new/lost)
+3. Overview dashboard with key metrics
+4. Charts and visualizations
+5. Processor tabs
+6. Top 10 tables
+7. Export features
+8. Polish and error handling
+
+---
+
+## SUCCESS CRITERIA
+
+I'll know this is working when:
+✅ I can upload my 3 CSV files in under 30 seconds
+✅ The dashboard immediately shows me retention rate and revenue trends
+✅ Charts update automatically
+✅ I can show this to a bank executive without being embarrassed
+✅ I can add next month's data without asking for help
+
+START BUILDING NOW. Ask me questions if the CSV structure is unclear.
