@@ -201,18 +201,29 @@ export async function parseCSVFile(
 
 function parseCSVData(
   file: File,
-  processor?: 'Clearent' | 'ML' | 'Shift4',
-  xlsxSheetName?: string
+  processor?: string,
+  xlsxSheetName?: string,
+  skipLines: number = 0
 ): Promise<CSVParseResult> {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    Papa.parse(file, {
+    // If we need to skip lines, read file as text and manually skip
+    let fileToProcess = file;
+    if (skipLines > 0) {
+      const text = await file.text();
+      const lines = text.split('\n');
+      const skippedText = lines.slice(skipLines).join('\n');
+      fileToProcess = new File([skippedText], file.name, { type: 'text/csv' });
+    }
+
+    Papa.parse(fileToProcess, {
       header: true,
       skipEmptyLines: true,
+      preview: skipLines > 0 ? undefined : 2, // Preview first 2 rows to check for title row
       transformHeader: (header: string) => header.trim(),
-      complete: (results) => {
+      complete: async (results) => {
         try {
           if (!results.data || results.data.length === 0) {
             resolve({
@@ -223,7 +234,19 @@ function parseCSVData(
             return;
           }
 
-          const headers = results.meta.fields || [];
+          let headers = results.meta.fields || [];
+          
+          // Check if first row looks like a title row (e.g., "Residuals - ...")
+          if (skipLines === 0 && headers.length > 0) {
+            const firstHeader = headers[0].toLowerCase();
+            if (firstHeader.includes('residuals') || firstHeader.includes('report') || headers.length === 1) {
+              // This looks like a title row, reparse skipping first line
+              console.log('Detected title row, reparsing...');
+              const result = await parseCSVData(file, processor, xlsxSheetName, 1);
+              resolve(result);
+              return;
+            }
+          }
           const columnMapping = findColumnMapping(headers);
 
           // Debug: Log parsing details
