@@ -1,291 +1,75 @@
 # TRACER C2 Merchant Account Analytics Dashboard
 
-## Project Overview
+## Overview
 
-Professional merchant account analytics dashboard for tracking retention, revenue, and growth metrics across seven payment processors: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, and TRX.
-
-**Purpose**: Provide business intelligence for merchant services operations with visual analytics suitable for bank partners and executive presentations.
-
-## Architecture
-
-### Tech Stack
-- **Frontend**: React 18 + TypeScript
-- **UI Framework**: shadcn/ui components + Tailwind CSS
-- **Charts**: Recharts for data visualization
-- **CSV Processing**: PapaParse library
-- **Storage**: Browser localStorage (client-side persistence)
-- **Date Handling**: date-fns
-- **Backend**: Minimal Express.js server (serves frontend only)
-
-### Design System
-- **Brand Colors**: TRACER C2 navy blue (#1A3A52) and green (#7FA848)
-- **Typography**: Inter (sans-serif), JetBrains Mono (monospace for data)
-- **Theme**: Supports both light and dark modes
-- **Responsive**: Mobile, tablet, and desktop layouts
-
-## Key Features
-
-### Data Processing
-1. **File Upload**: Drag-and-drop multi-file upload (supports .csv and .xlsx)
-2. **Format Support**: CSV and Excel (XLSX) files - automatically converts Excel to CSV internally
-3. **Multi-Sheet XLSX**: Automatically processes all sheets in Excel workbooks
-4. **Title Row Detection**: Automatically detects and skips CSV title rows (e.g., "Residuals - Global Payments")
-5. **Auto-Detection**: Processor and month detection from filenames and sheet names
-6. **Validation**: Column mapping with flexible field names (including TRX format: Client, Dba, ProcessingDate)
-7. **Deduplication**: Keeps highest revenue entry for duplicate Merchant IDs
-8. **Error Handling**: Comprehensive validation and user-friendly error messages
-
-### Analytics Calculations
-- Retention rate (retained accounts / previous month total)
-- Attrition rate (lost accounts / previous month total)
-- Month-over-month revenue growth
-- Revenue per account averages
-- Net account growth (new - lost)
-- Top 10 merchants by revenue
-
-### Dashboard Views
-1. **Overview Tab**: Combined metrics across all processors
-2. **Processor Tabs**: Individual analytics for Clearent, ML, Shift4
-3. **Compare Tab**: Side-by-side processor comparison with pie charts
-4. **Charts**: Revenue trends, account activity (stacked bars), retention rates
-5. **Tables**: Sortable top merchants with revenue percentage
-
-## File Structure
-
-```
-client/src/
-  components/
-    csv-upload.tsx           # File upload interface
-    metric-card.tsx          # KPI display cards
-    revenue-chart.tsx        # Line chart for revenue trends
-    account-activity-chart.tsx  # Stacked bar chart
-    retention-chart.tsx      # Retention rate line chart
-    top-merchants-table.tsx  # Sortable merchant table
-    processor-comparison.tsx # Comparison view
-    dashboard-content.tsx    # Main dashboard layout
-    empty-state.tsx          # First-time user UI
-    theme-toggle.tsx         # Dark/light mode switcher
-    branch-performance-table.tsx  # Branch leaderboard with retention
-    trending-merchants.tsx   # Top gainers and decliners
-    at-risk-merchants.tsx    # Declining revenue alerts
-    revenue-forecast.tsx     # 3-month revenue projection
-  lib/
-    csvParser.ts            # CSV parsing and validation
-    analytics.ts            # Metric calculations (includes getRevenue helper)
-    storage.ts              # localStorage wrapper
-  pages/
-    dashboard.tsx           # Main dashboard page
-shared/
-  schema.ts                 # TypeScript types and Zod schemas
-public/
-  sample-*.csv             # Sample CSV files for testing
-  sample-clearent.xlsx     # Sample Excel file for testing
-```
-
-## Data Model
-
-### MerchantRecord
-- merchantId: string (unique identifier)
-- merchantName: string
-- salesAmount: number (monthly revenue)
-- branchId: string (optional, sales branch)
-- month: string (YYYY-MM format)
-- processor: 'Clearent' | 'ML' | 'Shift4'
-
-### MonthlyMetrics
-Calculated for each month/processor combination:
-- totalRevenue, totalAccounts
-- retainedAccounts, lostAccounts, newAccounts
-- retentionRate, attritionRate
-- revenuePerAccount
-- momRevenueChange, momRevenueChangePercent
-- netAccountGrowth
+The TRACER C2 Merchant Account Analytics Dashboard is a professional business intelligence tool designed to track retention, revenue, and growth metrics across seven payment processors: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, and TRX. Its primary purpose is to provide visual analytics suitable for bank partners and executive presentations, offering insights into merchant services operations. The project aims to deliver a comprehensive, user-friendly platform for analyzing merchant performance.
 
 ## User Preferences
 
-### CSV Upload Preferences
-- Supports flexible column names (case-insensitive, handles extra spaces)
-- Auto-detects processor from filename keywords (clearent, ml, shift4, global, tsys, micamp, paybright, trx)
-- Handles common date formats (MM/YYYY, YYYY-MM, Month YYYY, MMM-YY like "Jun-25")
-- Automatically skips title rows in CSV files
-- Processes all sheets in XLSX workbooks automatically
-- Keeps highest revenue entry when duplicates found
+- **Communication Style**: I prefer clear, concise explanations for complex metrics.
+- **Coding Style**: The system should prioritize maintainability and readability, with a focus on modern React and TypeScript practices.
+- **Workflow Preferences**:
+    - Supports flexible column names (case-insensitive, handles extra spaces).
+    - Auto-detects processor from filename keywords (clearent, ml, shift4, global, tsys, micamp, paybright, trx).
+    - Handles common date formats (MM/YYYY, YYYY-MM, Month YYYY, MMM-YY like "Jun-25").
+    - Automatically skips title rows in CSV files.
+    - Processes all sheets in XLSX workbooks automatically.
+    - Keeps highest revenue entry when duplicates found.
+- **Interaction Preferences**:
+    - Theme: Auto-detects system preference, persists user selection.
+    - Professional financial dashboard aesthetic.
+    - TRACER C2 branding throughout.
+    - Desktop-first design, responsive for tablets/mobile.
+- **Agent Working Preferences**:
+    - The agent should focus on implementing features that enhance executive-level reporting and user experience without compromising data accuracy.
+    - Prioritize robust data validation and error handling in all data processing tasks.
+    - Ensure new features integrate seamlessly with existing architecture and design principles.
+    - Avoid making changes that would break the anchor month retention calculation logic.
 
-### UI Preferences
-- Theme: Auto-detects system preference, persists user selection
-- Professional financial dashboard aesthetic
-- TRACER C2 branding throughout
-- Desktop-first design, responsive for tablets/mobile
+## System Architecture
 
-## Recent Changes (Oct 24, 2025)
+The dashboard is built on a modern web stack designed for performance and a rich user experience.
 
-### CEO-Level Analytics Features (Latest)
-- ✅ **Revenue Concentration Card**: Shows top 10 merchant concentration % with color-coded risk levels (high >40%, medium 25-40%, low <25%)
-- ✅ **At-Risk Merchant Report**: Identifies merchants with declining revenue (>5% drop), flags consecutive declines, categorizes by risk level (critical/high/medium), catches 100% churn cases
-- ✅ **Revenue Forecast**: 3-month projection using linear regression, confidence levels based on R² correlation, methodology explanation for executives
-- ✅ **Branch Performance Leaderboard**: Ranked table by revenue with retention rates, medals for top 3 branches, avg revenue per account
-- ✅ **Trending Merchants**: Side-by-side cards showing top gainers and decliners with before/after revenue and change percentages
-- ✅ **All features use real uploaded CSV data**: No mock data, calculations respect processor-specific revenue fields (net, payoutAmount, salesAmount)
+### Tech Stack
+-   **Frontend**: React 18 with TypeScript
+-   **UI Framework**: shadcn/ui components and Tailwind CSS for styling
+-   **Charts**: Recharts for data visualization
+-   **CSV Processing**: PapaParse library for client-side CSV parsing
+-   **Storage**: Browser localStorage for client-side persistence
+-   **Date Handling**: date-fns for robust date operations
+-   **Backend**: A minimal Express.js server primarily for serving the frontend.
 
-### Branch ID Filter
-- ✅ Added branch ID dropdown filter in dashboard header
-- ✅ Filter by specific branch or view "All Branches"
-- ✅ Works seamlessly with date range filters
-- ✅ Branch filter applied before date filter (maintains anchor month accuracy)
-- ✅ Dropdown only appears when branch IDs exist in uploaded data
-- ✅ All metrics, charts, and tables respect branch filter
-- ✅ **No Mock Data**: Filter only works with user's actual uploaded CSV data
+### Design System
+-   **Branding**: Incorporates TRACER C2 brand colors: navy blue (#1A3A52) and green (#7FA848).
+-   **Typography**: Uses Inter (sans-serif) for general text and JetBrains Mono for data displays.
+-   **Theming**: Supports both light and dark modes.
+-   **Responsiveness**: Designed to adapt across mobile, tablet, and desktop viewports.
 
-### Anchor Month Strategy for Accurate Retention
-- ✅ **Critical Fix**: Implemented anchor month logic for accurate retention calculations across filtered date ranges
-- ✅ **How it Works**: When filtering to a date range (e.g., Feb-Mar 2024), system includes the previous month (Jan 2024) as an "anchor" for retention baseline calculations, then filters it out from displayed results
-- ✅ **Impact**: Ensures February 2024 retention is calculated from January 2024 baseline, even when January is not displayed
-- ✅ **Edge Cases Handled**:
-  - First month ever (Jan 2024): Shows 100% retention (no previous month, all accounts are "new")
-  - All Time filter: No anchor needed, displays all months
-  - Current Month: Uses previous month as anchor
-  - Custom ranges: Automatically includes month before range as anchor
-- ✅ **Applied to All 7 Processors**: Clearent, ML, Shift4, TSYS, Micamp, PayBright, TRX
-- ✅ **Files Modified**: `client/src/pages/dashboard.tsx`
+### Core Features and Implementations
+-   **Data Processing**:
+    -   Multi-file drag-and-drop upload for `.csv` and `.xlsx` files.
+    -   Automatic conversion of Excel files to CSV.
+    -   Multi-sheet XLSX processing and automatic title row detection in CSVs.
+    -   Automatic processor and month detection from filenames/sheet names.
+    -   Flexible column mapping (e.g., TRX format: Client, Dba, ProcessingDate).
+    -   Deduplication: Keeps the highest revenue entry for duplicate merchant IDs.
+    -   Comprehensive validation and user-friendly error messages.
+-   **Analytics Calculations**:
+    -   Calculates retention rate, attrition rate, month-over-month revenue growth, revenue per account, net account growth, and top 10 merchants by revenue.
+    -   **Anchor Month Strategy**: Implements logic for accurate retention calculations across filtered date ranges by including the preceding month as an anchor.
+-   **Dashboard Views**:
+    -   **Overview Tab**: Aggregated metrics across all processors.
+    -   **Processor Tabs**: Individual analytics for each processor.
+    -   **Compare Tab**: Side-by-side processor comparison with pie charts.
+    -   Visualizations include revenue trends, account activity (stacked bars), and retention rates.
+    -   Sortable tables for top merchants.
+    -   **CEO-Level Analytics**: Includes revenue concentration card, at-risk merchant reports, 3-month revenue forecast using linear regression, branch performance leaderboard, and trending merchants (top gainers/decliners).
+    -   **Branch ID Filter**: Allows filtering data by specific branches or "All Branches."
+    -   **Date Range Filtering**: Smart date range selector with presets (Current Month, Last 3/6/12 Months, All Time, Custom Range).
+-   **Data Model**: Uses `MerchantRecord` (merchantId, merchantName, salesAmount, branchId, month, processor) and `MonthlyMetrics` (totalRevenue, totalAccounts, retentionRate, etc.) schemas.
 
-### "Next Month to Upload" Indicator
-- ✅ Added blue alert box in upload dialog showing next expected month (e.g., "Next Month to Upload: August 2025")
-- ✅ Shows latest uploaded month for context (e.g., "Latest uploaded: July 2025")
-- ✅ Badge in dashboard header displaying next month reminder ("Next: August 2025")
-- ✅ Automatic validation warning if user uploads wrong month (e.g., uploading June when August expected)
-- ✅ Updates automatically as new months are uploaded
-- ✅ First-time users see current month as expected upload
+## External Dependencies
 
-### Date Range Filtering
-- ✅ Added smart date range selector in header (similar to Go High Level)
-- ✅ Quick presets: Current Month, Last 3/6/12 Months, All Time, Custom Range
-- ✅ Custom range shows From/To month dropdowns when selected
-- ✅ Metric cards display latest month in selected range
-- ✅ Charts show full trend data for the filtered range
-- ✅ Top merchants table shows data from latest month in range
-- ✅ All processor tabs respect the date range filter
-
-### UI Enhancement: View Dashboard Button
-- ✅ Added "View Dashboard" button to empty state screen
-- ✅ Users can now explore all tabs before uploading data
-- ✅ All tabs show "No data available" messages when empty
-- ✅ Upload button remains accessible from dashboard view
-
-### Multi-Processor Support
-- ✅ Added 4 new processors: TSYS (Global Payments), Micamp, PayBright, TRX
-- ✅ TRX-specific column mapping (Client→merchantId, Dba→merchantName, ProcessingDate→month)
-- ✅ Multi-sheet XLSX support (processes all sheets in a workbook)
-- ✅ Title row detection and skipping for CSV files with headers like "Residuals - ..."
-- ✅ Enhanced month parsing for "Jun-25" format and sheet names
-- ✅ Updated schema to support all 7 processors
-
-### Initial Implementation
-- ✅ Complete schema and data model
-- ✅ CSV and XLSX parsing with validation and error handling
-- ✅ Analytics engine for all metrics
-- ✅ Full component library (upload, charts, tables, cards)
-- ✅ Multi-tab dashboard with Overview, 3 processors, and Compare
-- ✅ Dark mode support
-- ✅ Empty state for first-time users
-- ✅ Sample CSV and XLSX data for testing (3 processors)
-- ✅ TRACER C2 brand colors integrated
-
-### Features Implemented
-- Drag-and-drop CSV and Excel upload with preview
-- Automatic XLSX to CSV conversion using xlsx library
-- Automatic retention/attrition/growth calculations
-- Interactive Recharts visualizations
-- Sortable top merchants table
-- Processor comparison with pie charts
-- localStorage persistence with deduplication
-- Responsive design
-- Professional error handling and validation
-
-### Critical Fixes Applied
-1. **Upload Success Handling**: Fixed closure issue in `processUploads` by tracking success count during loop execution instead of from stale state snapshot
-2. **Duplicate Record Prevention**: Implemented deduplication in `storageService.addRecords` that keys by processor-month-merchantId and keeps highest revenue entry
-3. **Type Safety**: Corrected all TypeScript types to use specific processor literals ('Clearent' | 'ML' | 'Shift4') instead of broader Processor type that includes 'All'
-4. **XLSX Support**: Added full Excel file support with automatic conversion to CSV, updated file filters and validation
-
-## Development Notes
-
-### Running the Project
-```bash
-npm run dev
-```
-Access at http://localhost:5000
-
-### Testing with Sample Data
-Sample files are in `public/`:
-- Test CSV upload with `sample-clearent.csv`, `sample-ml.csv`, `sample-shift4.csv`
-- Test Excel upload with `sample-clearent.xlsx` (same data as CSV, different format)
-- Files contain 3 months of data (Jan-Mar 2024) to show retention calculations
-- Mix processors to test comparison view
-
-### Data Storage
-- All data stored in browser localStorage
-- Keys: 'merchant_records', 'uploaded_files'
-- No backend database required
-- Data persists across sessions in same browser
-
-### Customization Points
-1. **Colors**: Edit `client/src/index.css` CSS variables
-2. **Metrics**: Modify `client/src/lib/analytics.ts`
-3. **Validation**: Adjust `client/src/lib/csvParser.ts` column mappings
-4. **Charts**: Configure Recharts in component files
-
-## Known Limitations
-
-- Data limited to browser localStorage capacity (~10MB)
-- No server-side persistence (can add PostgreSQL later)
-- No PDF export yet (planned for future)
-- No branch performance analytics yet (planned for future)
-- No data editing UI (must delete and re-upload)
-
-## Future Enhancements
-
-Phase 2 (Not Yet Implemented):
-- PDF export for executive reports
-- CSV data export
-- Branch performance analytics
-- Data editing capabilities
-- Account risk indicators (declining revenue trends)
-- Multi-month comparison views
-- Custom date range filtering (currently shows all data)
-
-## Production Readiness
-
-Current Status: ✅ MVP Complete
-- Core analytics: ✅ Working
-- CSV upload: ✅ Working
-- Multi-processor support: ✅ Working
-- Charts and visualizations: ✅ Working
-- Error handling: ✅ Implemented
-- Responsive design: ✅ Implemented
-- Dark mode: ✅ Working
-
-Ready for:
-- ✅ Demo to stakeholders
-- ✅ Testing with real merchant data
-- ✅ Bank partner presentations
-
-Not Yet Ready for:
-- ❌ Multi-user environments (localStorage is per-browser)
-- ❌ Data backup/restore (no export feature yet)
-- ❌ Production deployment with database persistence
-
-## Deployment
-
-To publish this dashboard:
-1. Test thoroughly with sample data
-2. Verify all charts render correctly
-3. Test CSV upload with various file formats
-4. Check dark mode appearance
-5. Use Replit's Publish button
-6. Dashboard will be available at public .replit.app URL
-
-For enterprise deployment:
-- Add PostgreSQL database for persistence
-- Implement user authentication
-- Add data backup/export features
-- Consider custom domain for professional appearance
+-   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data integrated from these platforms via CSV/XLSX uploads).
+-   **Frontend Libraries**: React, TypeScript, Tailwind CSS, shadcn/ui, Recharts, PapaParse, date-fns, xlsx (for Excel processing).
+-   **Backend Libraries**: Express.js (minimal server).

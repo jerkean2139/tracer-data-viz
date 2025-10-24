@@ -2,8 +2,9 @@ import { MerchantRecord } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency, formatPercent, getRevenue } from '@/lib/analytics';
-import { TrendingUp, TrendingDown, Medal } from 'lucide-react';
+import { TrendingUp, TrendingDown, Medal, HelpCircle } from 'lucide-react';
 
 interface BranchMetrics {
   branchId: string;
@@ -90,7 +91,24 @@ export function BranchPerformanceTable({ records, currentMonth }: BranchPerforma
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold">Branch Performance Leaderboard</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold">Branch Performance Leaderboard</h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid="help-branch-performance"
+                  aria-label="Help: Branch Performance Leaderboard"
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Sales branch ranking by total revenue. Shows merchant account counts, average revenue per account, and retention rates. Top 3 branches receive medals. High retention ({'>'}90%) is excellent; medium (75-90%) needs attention; low ({' <'}75%) requires intervention.</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">
             Ranked by total revenue • {month}
           </p>

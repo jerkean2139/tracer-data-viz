@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { TrendingUp, TrendingDown, Minus, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MetricCardProps {
@@ -11,9 +12,10 @@ interface MetricCardProps {
   className?: string;
   subtitle?: string;
   subtitleValue?: string;
+  tooltip?: string;
 }
 
-export function MetricCard({ title, value, change, changeLabel, icon, className, subtitle, subtitleValue }: MetricCardProps) {
+export function MetricCard({ title, value, change, changeLabel, icon, className, subtitle, subtitleValue, tooltip }: MetricCardProps) {
   const getTrendIcon = () => {
     if (change === undefined || change === null) return null;
     if (change > 0) return <TrendingUp className="w-4 h-4" />;
@@ -31,7 +33,26 @@ export function MetricCard({ title, value, change, changeLabel, icon, className,
   return (
     <Card className={cn('p-6', className)}>
       <div className="flex items-start justify-between mb-4">
-        <p className="text-sm font-medium text-muted-foreground">{title}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          {tooltip && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid={`help-${title.toLowerCase().replace(/\s+/g, '-')}`}
+                  aria-label={`Help: ${title}`}
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>{tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
         {icon && <div className="text-muted-foreground">{icon}</div>}
       </div>
 

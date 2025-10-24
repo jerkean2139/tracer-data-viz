@@ -1,8 +1,9 @@
 import { MonthlyMetrics } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency } from '@/lib/analytics';
-import { TrendingUp, Calendar, BarChart3 } from 'lucide-react';
+import { TrendingUp, Calendar, BarChart3, HelpCircle } from 'lucide-react';
 import { format, parse, addMonths } from 'date-fns';
 
 interface ForecastMonth {
@@ -84,6 +85,21 @@ export function RevenueForecast({ metrics }: RevenueForecastProps) {
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold">Revenue Forecast</h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid="help-revenue-forecast"
+                  aria-label="Help: Revenue Forecast"
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Statistical 3-month revenue projection using linear regression analysis of recent trends. Confidence levels indicate projection reliability based on historical data correlation (R²). Use as strategic planning guidance, not absolute predictions.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             3-month projection based on recent trends

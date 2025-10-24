@@ -1,8 +1,9 @@
 import { MerchantRecord } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency, formatPercent, getRevenue } from '@/lib/analytics';
-import { TrendingUp, TrendingDown, Flame, Snowflake } from 'lucide-react';
+import { TrendingUp, TrendingDown, Flame, Snowflake, HelpCircle } from 'lucide-react';
 
 interface TrendingMerchant {
   merchantId: string;
@@ -91,6 +92,21 @@ export function TrendingMerchants({ records, currentMonth, limit = 5 }: Trending
           <div className="flex items-center gap-2 mb-4">
             <Flame className="w-5 h-5 text-orange-500" />
             <h3 className="text-lg font-semibold">Top Gainers</h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid="help-top-gainers"
+                  aria-label="Help: Top Gainers"
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Merchants with the highest revenue growth this month compared to last month. Identify successful accounts for case studies and best practices to replicate across your merchant base.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="space-y-3">
             {topGainers.map((merchant) => (
@@ -122,6 +138,21 @@ export function TrendingMerchants({ records, currentMonth, limit = 5 }: Trending
           <div className="flex items-center gap-2 mb-4">
             <Snowflake className="w-5 h-5 text-blue-500" />
             <h3 className="text-lg font-semibold">Top Decliners</h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid="help-top-decliners"
+                  aria-label="Help: Top Decliners"
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Merchants with the largest revenue decline this month. These accounts may need intervention but haven't reached at-risk thresholds yet. Proactive outreach can prevent further deterioration.</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="space-y-3">
             {topLosers.map((merchant) => (

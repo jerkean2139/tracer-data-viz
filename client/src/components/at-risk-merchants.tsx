@@ -2,8 +2,9 @@ import { MerchantRecord } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency, formatPercent, getRevenue } from '@/lib/analytics';
-import { AlertTriangle, TrendingDown } from 'lucide-react';
+import { AlertTriangle, TrendingDown, HelpCircle } from 'lucide-react';
 
 interface AtRiskMerchant {
   merchantId: string;
@@ -131,6 +132,21 @@ export function AtRiskMerchants({ records, currentMonth, limit = 10 }: AtRiskMer
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-500" />
             <h3 className="text-lg font-semibold">At-Risk Merchants</h3>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex"
+                  data-testid="help-at-risk-merchants"
+                  aria-label="Help: At-Risk Merchants"
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground/50 hover:text-muted-foreground cursor-help" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Merchants with declining revenue month-over-month. CRITICAL: {'>'}50% drop or 2+ consecutive months with {'>'}20% drop. HIGH: {'>'}25% drop or 2+ consecutive declines. MEDIUM: {'>'}5% drop. Includes merchants who churned completely (100% revenue loss).</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             {atRisk.length} merchant{atRisk.length !== 1 ? 's' : ''} with declining revenue
