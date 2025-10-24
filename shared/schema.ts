@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { pgTable, text, real, varchar, timestamp, serial, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, real, varchar, timestamp, serial, boolean, jsonb, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 // Database Tables
@@ -40,7 +40,15 @@ export const merchantRecords = pgTable("merchant_records", {
   expectedProcessor: varchar("expected_processor", { length: 50 }),
   
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  // Unique constraint to prevent duplicate records
+  merchantMonthProcessorIdx: uniqueIndex("merchant_month_processor_idx").on(table.merchantId, table.month, table.processor),
+  // Index for faster queries
+  merchantIdIdx: index("merchant_id_idx").on(table.merchantId),
+  monthIdx: index("month_idx").on(table.month),
+  processorIdx: index("processor_idx").on(table.processor),
+  branchIdIdx: index("branch_id_idx").on(table.branchId),
+}));
 
 export const uploadedFiles = pgTable("uploaded_files", {
   id: varchar("id", { length: 255 }).primaryKey(),
@@ -51,7 +59,10 @@ export const uploadedFiles = pgTable("uploaded_files", {
   uploadedAt: text("uploaded_at").notNull(),
   isValid: boolean("is_valid").notNull(),
   errors: jsonb("errors").$type<string[]>(),
-});
+}, (table) => ({
+  // Index for faster file queries
+  processorMonthIdx: index("file_processor_month_idx").on(table.processor, table.month),
+}));
 
 export const merchantMetadata = pgTable("merchant_metadata", {
   id: serial("id").primaryKey(),

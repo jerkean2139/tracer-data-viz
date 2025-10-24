@@ -33,46 +33,39 @@ export class DatabaseStorage implements IStorage {
   async addRecords(records: InsertMerchantRecord[]): Promise<void> {
     if (records.length === 0) return;
 
-    // Insert records in batches
-    for (const record of records) {
-      // Check if record already exists
-      const existing = await db
-        .select()
-        .from(merchantRecords)
-        .where(
-          and(
-            eq(merchantRecords.merchantId, record.merchantId),
-            eq(merchantRecords.month, record.month),
-            eq(merchantRecords.processor, record.processor)
-          )
-        )
-        .limit(1);
-
-      const getRevenue = (rec: any): number => {
-        if (rec.processor === 'Clearent' || rec.processor === 'ML') {
-          return rec.net ?? rec.salesAmount ?? 0;
-        }
-        if (rec.processor === 'Shift4') {
-          return rec.payoutAmount ?? rec.salesAmount ?? 0;
-        }
+    // Helper to get revenue from a record
+    const getRevenue = (rec: any): number => {
+      if (rec.processor === 'Clearent' || rec.processor === 'ML') {
         return rec.net ?? rec.salesAmount ?? 0;
-      };
-
-      if (existing.length > 0) {
-        // Update if new record has higher revenue
-        const existingRevenue = getRevenue(existing[0]);
-        const newRevenue = getRevenue(record);
-        
-        if (newRevenue > existingRevenue) {
-          await db
-            .update(merchantRecords)
-            .set(record)
-            .where(eq(merchantRecords.id, existing[0].id));
-        }
-      } else {
-        // Insert new record
-        await db.insert(merchantRecords).values(record);
       }
+      if (rec.processor === 'Shift4') {
+        return rec.payoutAmount ?? rec.salesAmount ?? 0;
+      }
+      return rec.net ?? rec.salesAmount ?? 0;
+    };
+
+    // Use ON CONFLICT upsert for better performance
+    // Only update if new record has higher revenue
+    for (const record of records) {
+      const newRevenue = getRevenue(record);
+      
+      await db
+        .insert(merchantRecords)
+        .values(record)
+        .onConflictDoUpdate({
+          target: [merchantRecords.merchantId, merchantRecords.month, merchantRecords.processor],
+          set: record,
+          where: sql`
+            CASE 
+              WHEN ${merchantRecords.processor} IN ('Clearent', 'ML') THEN
+                COALESCE(${merchantRecords.net}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
+              WHEN ${merchantRecords.processor} = 'Shift4' THEN
+                COALESCE(${merchantRecords.payoutAmount}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
+              ELSE
+                COALESCE(${merchantRecords.net}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
+            END
+          `
+        });
     }
   }
 
