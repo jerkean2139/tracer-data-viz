@@ -11,14 +11,13 @@ interface DashboardContentProps {
   metrics: MonthlyMetrics[];
   topMerchants: TopMerchant[];
   processor: Processor;
-  selectedMonth?: string;
+  currentMonth?: string | null;
 }
 
-export function DashboardContent({ metrics, topMerchants, processor, selectedMonth }: DashboardContentProps) {
-  // If a specific month is selected, show that month's metrics in cards
-  // Otherwise show the latest month
-  const displayMetrics = selectedMonth && selectedMonth !== 'all'
-    ? metrics.find(m => m.month === selectedMonth)
+export function DashboardContent({ metrics, topMerchants, processor, currentMonth }: DashboardContentProps) {
+  // Show the latest month's metrics in cards (which is the end of the filtered range)
+  const displayMetrics = currentMonth
+    ? metrics.find(m => m.month === currentMonth)
     : metrics.length > 0 ? metrics[metrics.length - 1] : null;
 
   if (!displayMetrics) {

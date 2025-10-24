@@ -20,7 +20,9 @@ export default function Dashboard() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [showDashboard, setShowDashboard] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [dateRange, setDateRange] = useState<'current' | '3months' | '6months' | '12months' | 'all' | 'custom'>('current');
+  const [customStartMonth, setCustomStartMonth] = useState<string>('');
+  const [customEndMonth, setCustomEndMonth] = useState<string>('');
 
   useEffect(() => {
     setRecords(storageService.getAllRecords());
@@ -38,34 +40,55 @@ export default function Dashboard() {
   const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
   const latestMonth = getLatestMonth(records);
   
-  // Auto-select latest month on first load
+  // Auto-select custom range on first load
   useEffect(() => {
-    if (latestMonth && selectedMonth === 'all') {
-      setSelectedMonth(latestMonth);
+    if (latestMonth && !customStartMonth && !customEndMonth) {
+      setCustomStartMonth(latestMonth);
+      setCustomEndMonth(latestMonth);
     }
-  }, [latestMonth, selectedMonth]);
+  }, [latestMonth, customStartMonth, customEndMonth]);
 
-  // Calculate metrics for ALL months (for charts)
-  const allMetrics = hasData ? calculateMonthlyMetrics(records, 'All') : [];
-  const clearentMetrics = hasData ? calculateMonthlyMetrics(records, 'Clearent') : [];
-  const mlMetrics = hasData ? calculateMonthlyMetrics(records, 'ML') : [];
-  const shift4Metrics = hasData ? calculateMonthlyMetrics(records, 'Shift4') : [];
-  const tsysMetrics = hasData ? calculateMonthlyMetrics(records, 'TSYS') : [];
-  const micampMetrics = hasData ? calculateMonthlyMetrics(records, 'Micamp') : [];
-  const paybrightMetrics = hasData ? calculateMonthlyMetrics(records, 'PayBright') : [];
-  const trxMetrics = hasData ? calculateMonthlyMetrics(records, 'TRX') : [];
+  // Calculate the filtered month range based on selection
+  const getFilteredMonths = (): string[] => {
+    if (dateRange === 'all') return allMonths;
+    if (dateRange === 'current') return latestMonth ? [latestMonth] : [];
+    
+    if (dateRange === 'custom') {
+      if (!customStartMonth || !customEndMonth) return allMonths;
+      const startIdx = allMonths.indexOf(customStartMonth);
+      const endIdx = allMonths.indexOf(customEndMonth);
+      if (startIdx === -1 || endIdx === -1) return allMonths;
+      return allMonths.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+    }
+    
+    // For preset ranges (3, 6, 12 months)
+    const monthCount = dateRange === '3months' ? 3 : dateRange === '6months' ? 6 : 12;
+    return allMonths.slice(-monthCount);
+  };
 
-  const currentMonth = selectedMonth === 'all' ? latestMonth : selectedMonth;
+  const filteredMonths = getFilteredMonths();
+  const filteredRecords = records.filter(r => filteredMonths.includes(r.month));
+  const currentMonth = filteredMonths.length > 0 ? filteredMonths[filteredMonths.length - 1] : latestMonth;
 
-  // Top merchants for selected month only
-  const allTopMerchants = currentMonth ? getTopMerchants(records, currentMonth) : [];
-  const clearentTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Clearent'), currentMonth) : [];
-  const mlTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'ML'), currentMonth) : [];
-  const shift4TopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Shift4'), currentMonth) : [];
-  const tsysTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'TSYS'), currentMonth) : [];
-  const micampTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Micamp'), currentMonth) : [];
-  const paybrightTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'PayBright'), currentMonth) : [];
-  const trxTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'TRX'), currentMonth) : [];
+  // Calculate metrics for filtered date range (for charts)
+  const allMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'All') : [];
+  const clearentMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Clearent') : [];
+  const mlMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'ML') : [];
+  const shift4Metrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Shift4') : [];
+  const tsysMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TSYS') : [];
+  const micampMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Micamp') : [];
+  const paybrightMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'PayBright') : [];
+  const trxMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TRX') : [];
+
+  // Top merchants for latest month in the filtered range
+  const allTopMerchants = currentMonth ? getTopMerchants(filteredRecords, currentMonth) : [];
+  const clearentTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Clearent'), currentMonth) : [];
+  const mlTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'ML'), currentMonth) : [];
+  const shift4TopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Shift4'), currentMonth) : [];
+  const tsysTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TSYS'), currentMonth) : [];
+  const micampTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Micamp'), currentMonth) : [];
+  const paybrightTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'PayBright'), currentMonth) : [];
+  const trxTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TRX'), currentMonth) : [];
 
   if (!hasData && !showDashboard) {
     return (
@@ -120,19 +143,49 @@ export default function Dashboard() {
               {records.length > 0 && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                    <SelectTrigger className="w-[180px]" data-testid="select-month">
-                      <SelectValue placeholder="Select month" />
+                  <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+                    <SelectTrigger className="w-[160px]" data-testid="select-date-range">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Months</SelectItem>
-                      {allMonths.map(month => (
-                        <SelectItem key={month} value={month}>
-                          {formatMonthLabel(month)}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="current">Current Month</SelectItem>
+                      <SelectItem value="3months">Last 3 Months</SelectItem>
+                      <SelectItem value="6months">Last 6 Months</SelectItem>
+                      <SelectItem value="12months">Last 12 Months</SelectItem>
+                      <SelectItem value="all">All Time</SelectItem>
+                      <SelectItem value="custom">Custom Range</SelectItem>
                     </SelectContent>
                   </Select>
+                  
+                  {dateRange === 'custom' && (
+                    <>
+                      <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
+                        <SelectTrigger className="w-[140px]" data-testid="select-start-month">
+                          <SelectValue placeholder="From" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {allMonths.map(month => (
+                            <SelectItem key={month} value={month}>
+                              {formatMonthLabel(month)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <span className="text-sm text-muted-foreground">to</span>
+                      <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
+                        <SelectTrigger className="w-[140px]" data-testid="select-end-month">
+                          <SelectValue placeholder="To" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {allMonths.map(month => (
+                            <SelectItem key={month} value={month}>
+                              {formatMonthLabel(month)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </>
+                  )}
                 </div>
               )}
               <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
@@ -175,7 +228,7 @@ export default function Dashboard() {
               metrics={allMetrics}
               topMerchants={allTopMerchants}
               processor="All"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -184,7 +237,7 @@ export default function Dashboard() {
               metrics={clearentMetrics}
               topMerchants={clearentTopMerchants}
               processor="Clearent"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -193,7 +246,7 @@ export default function Dashboard() {
               metrics={mlMetrics}
               topMerchants={mlTopMerchants}
               processor="ML"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -202,7 +255,7 @@ export default function Dashboard() {
               metrics={shift4Metrics}
               topMerchants={shift4TopMerchants}
               processor="Shift4"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -211,7 +264,7 @@ export default function Dashboard() {
               metrics={tsysMetrics}
               topMerchants={tsysTopMerchants}
               processor="TSYS"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -220,7 +273,7 @@ export default function Dashboard() {
               metrics={micampMetrics}
               topMerchants={micampTopMerchants}
               processor="Micamp"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -229,7 +282,7 @@ export default function Dashboard() {
               metrics={paybrightMetrics}
               topMerchants={paybrightTopMerchants}
               processor="PayBright"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 
@@ -238,7 +291,7 @@ export default function Dashboard() {
               metrics={trxMetrics}
               topMerchants={trxTopMerchants}
               processor="TRX"
-              selectedMonth={selectedMonth}
+              currentMonth={currentMonth}
             />
           </TabsContent>
 

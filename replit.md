@@ -113,9 +113,18 @@ Calculated for each month/processor combination:
 - TRACER C2 branding throughout
 - Desktop-first design, responsive for tablets/mobile
 
-## Recent Changes (Oct 22, 2025)
+## Recent Changes (Oct 24, 2025)
 
-### UI Enhancement: View Dashboard Button (Latest)
+### Date Range Filtering (Latest)
+- ✅ Added smart date range selector in header (similar to Go High Level)
+- ✅ Quick presets: Current Month, Last 3/6/12 Months, All Time, Custom Range
+- ✅ Custom range shows From/To month dropdowns when selected
+- ✅ Metric cards display latest month in selected range
+- ✅ Charts show full trend data for the filtered range
+- ✅ Top merchants table shows data from latest month in range
+- ✅ All processor tabs respect the date range filter
+
+### UI Enhancement: View Dashboard Button
 - ✅ Added "View Dashboard" button to empty state screen
 - ✅ Users can now explore all tabs before uploading data
 - ✅ All tabs show "No data available" messages when empty
