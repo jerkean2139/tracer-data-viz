@@ -137,7 +137,19 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
-              <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
+              <p className="text-sm text-muted-foreground">
+                Merchant Account Analytics
+                {filteredMonths.length > 0 && (
+                  <span className="ml-2 font-medium text-primary">
+                    • {filteredMonths.length === allMonths.length 
+                      ? 'All Time' 
+                      : filteredMonths.length === 1
+                        ? formatMonthLabel(filteredMonths[0])
+                        : `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}`
+                    }
+                  </span>
+                )}
+              </p>
             </div>
             <div className="flex items-center gap-3">
               {records.length > 0 && (
