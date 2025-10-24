@@ -9,27 +9,47 @@ interface UploadTrackingProps {
   uploadedFiles: UploadedFile[];
 }
 
-const PROCESSORS: Processor[] = ['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX'];
-
 export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) {
-  // Get all unique months sorted
-  const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
+  // Get all unique months from both records and uploaded files
+  const monthsFromRecords = Array.from(new Set(records.map(r => r.month)));
+  const monthsFromFiles = Array.from(new Set(uploadedFiles.map(f => f.month)));
+  const allMonths = Array.from(new Set([...monthsFromRecords, ...monthsFromFiles])).sort();
   const recentMonths = allMonths.slice(-12); // Last 12 months
+
+  // Derive processors from actual data (records + uploaded files)
+  const processorsFromRecords = Array.from(new Set(records.map(r => r.processor as Processor)));
+  const processorsFromFiles = Array.from(new Set(uploadedFiles.map(f => f.processor as Processor)));
+  const PROCESSORS = Array.from(new Set([...processorsFromRecords, ...processorsFromFiles])).sort();
 
   // Check if a processor has data for a given month
   const hasData = (processor: Processor, month: string): 'uploaded' | 'missing' | 'partial' => {
     const file = uploadedFiles.find(f => f.processor === processor && f.month === month);
     const recordsExist = records.some(r => r.processor === processor && r.month === month);
     
-    if (file && recordsExist) return 'uploaded';
-    if (!file && !recordsExist) return 'missing';
-    return 'partial'; // Has records but no upload tracking, or vice versa
+    // If there's an uploaded file, consider it uploaded (even without records yet)
+    if (file) return 'uploaded';
+    // If there are records but no upload tracking, it's partial
+    if (recordsExist && !file) return 'partial';
+    // If neither exists, it's missing
+    return 'missing';
   };
 
-  // Calculate statistics
+  // Calculate expected uploads from actual processor-month pairs in the data
+  // (not cartesian product which includes non-existent combinations)
+  const actualPairs = new Set<string>();
+  recentMonths.forEach(month => {
+    PROCESSORS.forEach(processor => {
+      const hasFile = uploadedFiles.some(f => f.processor === processor && f.month === month);
+      const hasRecords = records.some(r => r.processor === processor && r.month === month);
+      if (hasFile || hasRecords) {
+        actualPairs.add(`${processor}-${month}`);
+      }
+    });
+  });
+
   const stats = {
     totalUploads: uploadedFiles.length,
-    expectedUploads: recentMonths.length * PROCESSORS.length,
+    expectedUploads: actualPairs.size,
     completionRate: 0,
   };
   
