@@ -3,7 +3,7 @@ import { storageService } from '@/lib/storage';
 import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import { getNextExpectedMonth } from '@/lib/csvParser';
 import { Processor, MerchantRecord } from '@shared/schema';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -207,6 +207,24 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               {records.length > 0 && (
                 <>
+                  <Select value={activeTab} onValueChange={setActiveTab}>
+                    <SelectTrigger className="w-[180px]" data-testid="select-processor">
+                      <SelectValue placeholder="Select View" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="overview">Overview</SelectItem>
+                      <SelectItem value="clearent">Clearent</SelectItem>
+                      <SelectItem value="ml">ML</SelectItem>
+                      <SelectItem value="shift4">Shift4</SelectItem>
+                      <SelectItem value="tsys">TSYS</SelectItem>
+                      <SelectItem value="micamp">Micamp</SelectItem>
+                      <SelectItem value="paybright">PayBright</SelectItem>
+                      <SelectItem value="trx">TRX</SelectItem>
+                      <SelectItem value="compare">Compare</SelectItem>
+                      <SelectItem value="validation">Data Validation</SelectItem>
+                    </SelectContent>
+                  </Select>
+
                   {allBranches.length > 0 && (
                     <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                       <SelectTrigger className="w-[140px]" data-testid="select-branch">
@@ -312,19 +330,6 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-8">
-            <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-            <TabsTrigger value="clearent" data-testid="tab-clearent">Clearent</TabsTrigger>
-            <TabsTrigger value="ml" data-testid="tab-ml">ML</TabsTrigger>
-            <TabsTrigger value="shift4" data-testid="tab-shift4">Shift4</TabsTrigger>
-            <TabsTrigger value="tsys" data-testid="tab-tsys">TSYS</TabsTrigger>
-            <TabsTrigger value="micamp" data-testid="tab-micamp">Micamp</TabsTrigger>
-            <TabsTrigger value="paybright" data-testid="tab-paybright">PayBright</TabsTrigger>
-            <TabsTrigger value="trx" data-testid="tab-trx">TRX</TabsTrigger>
-            <TabsTrigger value="compare" data-testid="tab-compare">Compare</TabsTrigger>
-            <TabsTrigger value="validation" data-testid="tab-validation">Data Validation</TabsTrigger>
-          </TabsList>
-
           <TabsContent value="overview">
             <DashboardContent
               metrics={allMetrics}
