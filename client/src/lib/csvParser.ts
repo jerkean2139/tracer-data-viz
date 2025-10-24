@@ -382,6 +382,12 @@ function parseCSVData(
                 ? row[columnMapping.get('branchId')!]?.toString().trim()
                 : undefined;
 
+              // Validation: Clearent & ML MUST have 'net' field populated
+              if ((detectedProcessor === 'Clearent' || detectedProcessor === 'ML') && (net === undefined || net === null)) {
+                errors.push(`Row ${index + 2} (${merchantName}): Missing required 'Net' field for ${detectedProcessor} processor. Please add the Net value and re-upload.`);
+                return;
+              }
+
               // For revenue comparison in deduplication, prioritize: net > salesAmount > payoutAmount > income
               const revenueForComparison = net ?? salesAmount ?? payoutAmount ?? income ?? 0;
 

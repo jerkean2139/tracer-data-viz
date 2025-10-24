@@ -3,11 +3,10 @@ import { format, parse, compareAsc } from 'date-fns';
 
 // Helper function to get revenue for a record based on processor
 export function getRevenue(record: MerchantRecord): number {
-  // Clearent & ML: use 'net' (Tracer's revenue)
-  // Shift4: use 'payoutAmount'
-  // Others: fallback to salesAmount
+  // Clearent & ML: use 'net' (Tracer's revenue) - DO NOT fall back to salesAmount
+  // If net is missing, it should have been flagged as an error during upload
   if (record.processor === 'Clearent' || record.processor === 'ML') {
-    return record.net ?? record.salesAmount ?? 0;
+    return record.net ?? 0;
   }
   if (record.processor === 'Shift4') {
     return record.payoutAmount ?? record.salesAmount ?? 0;
