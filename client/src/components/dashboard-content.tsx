@@ -121,8 +121,6 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
         />
       </div>
 
-      <AtRiskMerchants records={filteredRecords} currentMonth={currentMonth} />
-
       <div className="grid gap-6 lg:grid-cols-2">
         <RevenueChart metrics={metrics} />
         <AccountActivityChart metrics={metrics} />
@@ -139,6 +137,8 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       <MerchantChangesPanel changes={merchantChanges} />
 
       <TopMerchantsTable merchants={topMerchants} />
+
+      <AtRiskMerchants records={filteredRecords} currentMonth={currentMonth} />
     </div>
   );
 }
