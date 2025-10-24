@@ -15,6 +15,10 @@ interface DashboardContentProps {
 }
 
 export function DashboardContent({ metrics, topMerchants, processor, currentMonth }: DashboardContentProps) {
+  // Debug: Log what months are in the metrics array
+  console.log(`[${processor}] Received metrics for months:`, metrics.map(m => `${m.month}: $${m.totalRevenue}`));
+  console.log(`[${processor}] Current month:`, currentMonth);
+  
   // Calculate aggregated metrics across the entire filtered range
   const displayMetrics = metrics.length > 0 ? {
     month: currentMonth || metrics[metrics.length - 1]?.month || '',

@@ -47,6 +47,18 @@ export function calculateMonthlyMetrics(
 
     const totalRevenue = monthRecords.reduce((sum, r) => sum + getRevenue(r), 0);
     const totalAccounts = currentMerchantIds.size;
+    
+    // Debug logging for Feb 2024
+    if (month === '2024-02') {
+      console.log(`[Analytics] Feb 2024 has ${monthRecords.length} records, ${totalAccounts} unique merchants`);
+      console.log(`[Analytics] Feb 2024 total revenue: $${totalRevenue}`);
+      console.log(`[Analytics] First 3 Feb records:`, monthRecords.slice(0, 3).map(r => ({
+        merchantId: r.merchantId,
+        merchantName: r.merchantName,
+        revenue: getRevenue(r),
+        processor: r.processor
+      })));
+    }
 
     let retainedAccounts = 0;
     let lostAccounts = 0;
