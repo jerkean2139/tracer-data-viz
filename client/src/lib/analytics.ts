@@ -1,4 +1,4 @@
-import { MerchantRecord, MonthlyMetrics, TopMerchant, Processor } from '@shared/schema';
+import { MerchantRecord, MonthlyMetrics, TopMerchant, Processor, MerchantChange, MerchantChanges } from '@shared/schema';
 import { format, parse, compareAsc } from 'date-fns';
 
 // Helper function to get revenue for a record based on processor
@@ -201,4 +201,79 @@ export function formatMonthLabel(month: string): string {
   } catch {
     return month;
   }
+}
+
+export function getMerchantChanges(
+  records: MerchantRecord[],
+  processor: Processor = 'All'
+): MerchantChanges {
+  const filteredRecords = processor === 'All'
+    ? records
+    : records.filter(r => r.processor === processor);
+
+  const recordsByMonth = new Map<string, MerchantRecord[]>();
+  filteredRecords.forEach(record => {
+    if (!recordsByMonth.has(record.month)) {
+      recordsByMonth.set(record.month, []);
+    }
+    recordsByMonth.get(record.month)!.push(record);
+  });
+
+  const sortedMonths = Array.from(recordsByMonth.keys()).sort((a, b) => {
+    const dateA = parse(a, 'yyyy-MM', new Date());
+    const dateB = parse(b, 'yyyy-MM', new Date());
+    return compareAsc(dateA, dateB);
+  });
+
+  if (sortedMonths.length < 2) {
+    return { newMerchants: [], lostMerchants: [], retainedCount: 0 };
+  }
+
+  // Compare last two months in the range
+  const previousMonth = sortedMonths[sortedMonths.length - 2];
+  const currentMonth = sortedMonths[sortedMonths.length - 1];
+
+  const previousRecords = recordsByMonth.get(previousMonth)!;
+  const currentRecords = recordsByMonth.get(currentMonth)!;
+
+  const previousMerchants = new Map(previousRecords.map(r => [r.merchantId, r]));
+  const currentMerchants = new Map(currentRecords.map(r => [r.merchantId, r]));
+
+  const newMerchants: MerchantChange[] = [];
+  const lostMerchants: MerchantChange[] = [];
+  let retainedCount = 0;
+
+  // Find new merchants (in current but not in previous)
+  currentMerchants.forEach((record, merchantId) => {
+    if (!previousMerchants.has(merchantId)) {
+      newMerchants.push({
+        merchantId: record.merchantId,
+        merchantName: record.merchantName,
+        revenue: getRevenue(record),
+        month: currentMonth,
+        processor: record.processor
+      });
+    } else {
+      retainedCount++;
+    }
+  });
+
+  // Find lost merchants (in previous but not in current)
+  previousMerchants.forEach((record, merchantId) => {
+    if (!currentMerchants.has(merchantId)) {
+      lostMerchants.push({
+        merchantId: record.merchantId,
+        merchantName: record.merchantName,
+        revenue: getRevenue(record),
+        month: previousMonth,
+        processor: record.processor
+      });
+    }
+  });
+
+  // Sort by revenue (highest first)
+  newMerchants.sort((a, b) => b.revenue - a.revenue);
+  lostMerchants.sort((a, b) => b.revenue - a.revenue);
+
+  return { newMerchants, lostMerchants, retainedCount };
 }

@@ -241,6 +241,7 @@ export default function Dashboard() {
               topMerchants={allTopMerchants}
               processor="All"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -250,6 +251,7 @@ export default function Dashboard() {
               topMerchants={clearentTopMerchants}
               processor="Clearent"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -259,6 +261,7 @@ export default function Dashboard() {
               topMerchants={mlTopMerchants}
               processor="ML"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -268,6 +271,7 @@ export default function Dashboard() {
               topMerchants={shift4TopMerchants}
               processor="Shift4"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -277,6 +281,7 @@ export default function Dashboard() {
               topMerchants={tsysTopMerchants}
               processor="TSYS"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -286,6 +291,7 @@ export default function Dashboard() {
               topMerchants={micampTopMerchants}
               processor="Micamp"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -295,6 +301,7 @@ export default function Dashboard() {
               topMerchants={paybrightTopMerchants}
               processor="PayBright"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 
@@ -304,6 +311,7 @@ export default function Dashboard() {
               topMerchants={trxTopMerchants}
               processor="TRX"
               currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
             />
           </TabsContent>
 

@@ -80,10 +80,26 @@ export const dateRangeSchema = z.object({
   preset: z.enum(['3months', '6months', 'all', 'custom']).optional(),
 });
 
+export const merchantChangeSchema = z.object({
+  merchantId: z.string(),
+  merchantName: z.string(),
+  revenue: z.number(),
+  month: z.string(),
+  processor: z.string(),
+});
+
+export const merchantChangesSchema = z.object({
+  newMerchants: z.array(merchantChangeSchema),
+  lostMerchants: z.array(merchantChangeSchema),
+  retainedCount: z.number(),
+});
+
 export type MerchantRecord = z.infer<typeof merchantRecordSchema>;
 export type UploadedFile = z.infer<typeof uploadedFileSchema>;
 export type MonthlyMetrics = z.infer<typeof monthlyMetricsSchema>;
 export type TopMerchant = z.infer<typeof topMerchantSchema>;
 export type BranchPerformance = z.infer<typeof branchPerformanceSchema>;
 export type DateRange = z.infer<typeof dateRangeSchema>;
+export type MerchantChange = z.infer<typeof merchantChangeSchema>;
+export type MerchantChanges = z.infer<typeof merchantChangesSchema>;
 export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'All';

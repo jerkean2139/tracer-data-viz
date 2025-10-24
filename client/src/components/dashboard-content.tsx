@@ -1,10 +1,11 @@
-import { MonthlyMetrics, TopMerchant, Processor } from '@shared/schema';
-import { formatCurrency, formatPercent } from '@/lib/analytics';
+import { MonthlyMetrics, TopMerchant, Processor, MerchantRecord } from '@shared/schema';
+import { formatCurrency, formatPercent, getMerchantChanges } from '@/lib/analytics';
 import { MetricCard } from '@/components/metric-card';
 import { RevenueChart } from '@/components/revenue-chart';
 import { AccountActivityChart } from '@/components/account-activity-chart';
 import { RetentionChart } from '@/components/retention-chart';
 import { TopMerchantsTable } from '@/components/top-merchants-table';
+import { MerchantChangesPanel } from '@/components/merchant-changes-panel';
 import { DollarSign, Users, TrendingUp, Target } from 'lucide-react';
 
 interface DashboardContentProps {
@@ -12,12 +13,16 @@ interface DashboardContentProps {
   topMerchants: TopMerchant[];
   processor: Processor;
   currentMonth?: string | null;
+  filteredRecords: MerchantRecord[];
 }
 
-export function DashboardContent({ metrics, topMerchants, processor, currentMonth }: DashboardContentProps) {
+export function DashboardContent({ metrics, topMerchants, processor, currentMonth, filteredRecords }: DashboardContentProps) {
   // Debug: Log what months are in the metrics array
   console.log(`[${processor}] Received metrics for months:`, metrics.map(m => `${m.month}: $${m.totalRevenue}`));
   console.log(`[${processor}] Current month:`, currentMonth);
+  
+  // Calculate merchant changes
+  const merchantChanges = getMerchantChanges(filteredRecords, processor);
   
   // Calculate aggregated metrics across the entire filtered range
   const displayMetrics = metrics.length > 0 ? {
@@ -92,6 +97,8 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       </div>
 
       <RetentionChart metrics={metrics} />
+
+      <MerchantChangesPanel changes={merchantChanges} />
 
       <TopMerchantsTable merchants={topMerchants} />
     </div>
