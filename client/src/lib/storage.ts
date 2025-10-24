@@ -34,13 +34,16 @@ export const storageService = {
 
   async addRecords(newRecords: MerchantRecord[]): Promise<void> {
     try {
+      console.log('Sending records to API:', newRecords.length, 'records');
+      console.log('First record sample:', newRecords[0]);
       await apiCall('/api/records', {
         method: 'POST',
         body: JSON.stringify(newRecords),
       });
     } catch (error) {
       console.error('Error adding records:', error);
-      throw new Error('Failed to save records to storage');
+      console.error('Full error details:', error);
+      throw error; // Re-throw the original error instead of wrapping it
     }
   },
 

@@ -61,7 +61,7 @@ export default function Dashboard() {
 
   // Get all unique branch IDs sorted
   const allBranches = Array.from(new Set(
-    records
+    (records || [])
       .map(r => r.branchId)
       .filter((b): b is string => !!b && b.trim() !== '')
   )).sort();
@@ -154,6 +154,17 @@ export default function Dashboard() {
   const micampTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Micamp'), currentMonth) : [];
   const paybrightTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'PayBright'), currentMonth) : [];
   const trxTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TRX'), currentMonth) : [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-primary mb-4">TRACER C2</h1>
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasData && !showDashboard) {
     return (

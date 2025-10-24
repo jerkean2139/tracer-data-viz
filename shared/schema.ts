@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { pgTable, text, real, varchar, timestamp, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, real, varchar, timestamp, serial, boolean, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 // Database Tables
@@ -7,7 +7,7 @@ export const merchantRecords = pgTable("merchant_records", {
   id: serial("id").primaryKey(),
   merchantId: varchar("merchant_id", { length: 255 }).notNull(),
   merchantName: text("merchant_name").notNull(),
-  month: varchar("month", { length: 7 }).notNull(),
+  month: varchar("month", { length: 20 }).notNull(),
   processor: varchar("processor", { length: 50 }).notNull(),
   branchId: varchar("branch_id", { length: 50 }),
   
@@ -46,11 +46,11 @@ export const uploadedFiles = pgTable("uploaded_files", {
   id: varchar("id", { length: 255 }).primaryKey(),
   fileName: text("file_name").notNull(),
   processor: varchar("processor", { length: 50 }).notNull(),
-  month: varchar("month", { length: 7 }).notNull(),
+  month: varchar("month", { length: 20 }).notNull(),
   recordCount: real("record_count").notNull(),
   uploadedAt: text("uploaded_at").notNull(),
-  isValid: text("is_valid").notNull(),
-  errors: text("errors"),
+  isValid: boolean("is_valid").notNull(),
+  errors: jsonb("errors").$type<string[]>(),
 });
 
 export const merchantMetadata = pgTable("merchant_metadata", {
@@ -65,8 +65,7 @@ export const merchantMetadata = pgTable("merchant_metadata", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Insert schemas for API validation
-export const insertMerchantRecordSchema = createInsertSchema(merchantRecords).omit({ id: true, createdAt: true });
+// Insert schemas for API validation - will be defined after merchantRecordSchema
 export const insertUploadedFileSchema = createInsertSchema(uploadedFiles);
 export const insertMerchantMetadataSchema = createInsertSchema(merchantMetadata).omit({ id: true, createdAt: true, updatedAt: true });
 
@@ -114,6 +113,9 @@ export const merchantRecordSchema = z.object({
   statusCategory: z.string().optional(),
   expectedProcessor: z.string().optional(), // Current Processor from leads file
 });
+
+// Insert schema for merchant records - use the same schema for API validation
+export const insertMerchantRecordSchema = merchantRecordSchema;
 
 export const uploadedFileSchema = z.object({
   id: z.string(),

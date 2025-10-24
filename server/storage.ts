@@ -107,17 +107,16 @@ export class DatabaseStorage implements IStorage {
       month: f.month,
       recordCount: f.recordCount,
       uploadedAt: f.uploadedAt,
-      isValid: f.isValid === 'true',
-      errors: f.errors ? JSON.parse(f.errors) : undefined,
+      isValid: f.isValid,
+      errors: f.errors as string[] | undefined,
     }));
   }
 
   async addUploadedFile(file: InsertUploadedFile): Promise<void> {
     await db.insert(uploadedFiles).values({
       ...file,
-      isValid: String(file.isValid),
-      errors: file.errors ? JSON.stringify(file.errors) : undefined,
-    });
+      errors: file.errors || null,
+    } as any);
   }
 
   async deleteUploadedFile(fileId: string): Promise<void> {
