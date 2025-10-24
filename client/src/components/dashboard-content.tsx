@@ -11,12 +11,17 @@ interface DashboardContentProps {
   metrics: MonthlyMetrics[];
   topMerchants: TopMerchant[];
   processor: Processor;
+  selectedMonth?: string;
 }
 
-export function DashboardContent({ metrics, topMerchants, processor }: DashboardContentProps) {
-  const latestMetrics = metrics.length > 0 ? metrics[metrics.length - 1] : null;
+export function DashboardContent({ metrics, topMerchants, processor, selectedMonth }: DashboardContentProps) {
+  // If a specific month is selected, show that month's metrics in cards
+  // Otherwise show the latest month
+  const displayMetrics = selectedMonth && selectedMonth !== 'all'
+    ? metrics.find(m => m.month === selectedMonth)
+    : metrics.length > 0 ? metrics[metrics.length - 1] : null;
 
-  if (!latestMetrics) {
+  if (!displayMetrics) {
     return (
       <div className="flex items-center justify-center h-[400px] text-muted-foreground">
         <div className="text-center">
@@ -32,26 +37,26 @@ export function DashboardContent({ metrics, topMerchants, processor }: Dashboard
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Total Revenue"
-          value={formatCurrency(latestMetrics.totalRevenue)}
-          change={latestMetrics.momRevenueChangePercent}
+          value={formatCurrency(displayMetrics.totalRevenue)}
+          change={displayMetrics.momRevenueChangePercent}
           changeLabel="vs last month"
           icon={<DollarSign className="w-5 h-5" />}
         />
         <MetricCard
           title="Active Accounts"
-          value={latestMetrics.totalAccounts.toString()}
-          change={latestMetrics.netAccountGrowth > 0 ? (latestMetrics.netAccountGrowth / latestMetrics.totalAccounts) * 100 : undefined}
-          changeLabel={`${latestMetrics.netAccountGrowth > 0 ? '+' : ''}${latestMetrics.netAccountGrowth} net`}
+          value={displayMetrics.totalAccounts.toString()}
+          change={displayMetrics.netAccountGrowth > 0 ? (displayMetrics.netAccountGrowth / displayMetrics.totalAccounts) * 100 : undefined}
+          changeLabel={`${displayMetrics.netAccountGrowth > 0 ? '+' : ''}${displayMetrics.netAccountGrowth} net`}
           icon={<Users className="w-5 h-5" />}
         />
         <MetricCard
           title="Retention Rate"
-          value={formatPercent(latestMetrics.retentionRate)}
+          value={formatPercent(displayMetrics.retentionRate)}
           icon={<Target className="w-5 h-5" />}
         />
         <MetricCard
           title="Revenue/Account"
-          value={formatCurrency(latestMetrics.revenuePerAccount)}
+          value={formatCurrency(displayMetrics.revenuePerAccount)}
           icon={<TrendingUp className="w-5 h-5" />}
         />
       </div>

@@ -45,30 +45,27 @@ export default function Dashboard() {
     }
   }, [latestMonth, selectedMonth]);
 
-  // Filter records by selected month
-  const filteredRecords = selectedMonth === 'all' 
-    ? records 
-    : records.filter(r => r.month === selectedMonth);
-
-  const allMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'All') : [];
-  const clearentMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Clearent') : [];
-  const mlMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'ML') : [];
-  const shift4Metrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Shift4') : [];
-  const tsysMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TSYS') : [];
-  const micampMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Micamp') : [];
-  const paybrightMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'PayBright') : [];
-  const trxMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TRX') : [];
+  // Calculate metrics for ALL months (for charts)
+  const allMetrics = hasData ? calculateMonthlyMetrics(records, 'All') : [];
+  const clearentMetrics = hasData ? calculateMonthlyMetrics(records, 'Clearent') : [];
+  const mlMetrics = hasData ? calculateMonthlyMetrics(records, 'ML') : [];
+  const shift4Metrics = hasData ? calculateMonthlyMetrics(records, 'Shift4') : [];
+  const tsysMetrics = hasData ? calculateMonthlyMetrics(records, 'TSYS') : [];
+  const micampMetrics = hasData ? calculateMonthlyMetrics(records, 'Micamp') : [];
+  const paybrightMetrics = hasData ? calculateMonthlyMetrics(records, 'PayBright') : [];
+  const trxMetrics = hasData ? calculateMonthlyMetrics(records, 'TRX') : [];
 
   const currentMonth = selectedMonth === 'all' ? latestMonth : selectedMonth;
 
-  const allTopMerchants = currentMonth ? getTopMerchants(filteredRecords, currentMonth) : [];
-  const clearentTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Clearent'), currentMonth) : [];
-  const mlTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'ML'), currentMonth) : [];
-  const shift4TopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Shift4'), currentMonth) : [];
-  const tsysTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TSYS'), currentMonth) : [];
-  const micampTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Micamp'), currentMonth) : [];
-  const paybrightTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'PayBright'), currentMonth) : [];
-  const trxTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TRX'), currentMonth) : [];
+  // Top merchants for selected month only
+  const allTopMerchants = currentMonth ? getTopMerchants(records, currentMonth) : [];
+  const clearentTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Clearent'), currentMonth) : [];
+  const mlTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'ML'), currentMonth) : [];
+  const shift4TopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Shift4'), currentMonth) : [];
+  const tsysTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'TSYS'), currentMonth) : [];
+  const micampTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'Micamp'), currentMonth) : [];
+  const paybrightTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'PayBright'), currentMonth) : [];
+  const trxTopMerchants = currentMonth ? getTopMerchants(records.filter(r => r.processor === 'TRX'), currentMonth) : [];
 
   if (!hasData && !showDashboard) {
     return (
@@ -178,6 +175,7 @@ export default function Dashboard() {
               metrics={allMetrics}
               topMerchants={allTopMerchants}
               processor="All"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -186,6 +184,7 @@ export default function Dashboard() {
               metrics={clearentMetrics}
               topMerchants={clearentTopMerchants}
               processor="Clearent"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -194,6 +193,7 @@ export default function Dashboard() {
               metrics={mlMetrics}
               topMerchants={mlTopMerchants}
               processor="ML"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -202,6 +202,7 @@ export default function Dashboard() {
               metrics={shift4Metrics}
               topMerchants={shift4TopMerchants}
               processor="Shift4"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -210,6 +211,7 @@ export default function Dashboard() {
               metrics={tsysMetrics}
               topMerchants={tsysTopMerchants}
               processor="TSYS"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -218,6 +220,7 @@ export default function Dashboard() {
               metrics={micampMetrics}
               topMerchants={micampTopMerchants}
               processor="Micamp"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -226,6 +229,7 @@ export default function Dashboard() {
               metrics={paybrightMetrics}
               topMerchants={paybrightTopMerchants}
               processor="PayBright"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
@@ -234,6 +238,7 @@ export default function Dashboard() {
               metrics={trxMetrics}
               topMerchants={trxTopMerchants}
               processor="TRX"
+              selectedMonth={selectedMonth}
             />
           </TabsContent>
 
