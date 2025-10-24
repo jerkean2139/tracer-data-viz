@@ -2,7 +2,7 @@ import { MerchantRecord, MonthlyMetrics, TopMerchant, Processor, MerchantChange,
 import { format, parse, compareAsc } from 'date-fns';
 
 // Helper function to get revenue for a record based on processor
-function getRevenue(record: MerchantRecord): number {
+export function getRevenue(record: MerchantRecord): number {
   // Clearent & ML: use 'net' (Tracer's revenue)
   // Shift4: use 'payoutAmount'
   // Others: fallback to salesAmount

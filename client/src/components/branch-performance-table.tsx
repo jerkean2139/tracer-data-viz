@@ -2,7 +2,7 @@ import { MerchantRecord } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { formatCurrency, formatPercent } from '@/lib/analytics';
+import { formatCurrency, formatPercent, getRevenue } from '@/lib/analytics';
 import { TrendingUp, TrendingDown, Medal } from 'lucide-react';
 
 interface BranchMetrics {
@@ -38,7 +38,7 @@ export function BranchPerformanceTable({ records, currentMonth }: BranchPerforma
       branchData.set(branch, { revenue: 0, merchants: new Set() });
     }
     const data = branchData.get(branch)!;
-    data.revenue += record.net ?? record.salesAmount ?? 0;
+    data.revenue += getRevenue(record);
     data.merchants.add(record.merchantId);
   });
   

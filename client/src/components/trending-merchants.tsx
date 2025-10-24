@@ -1,7 +1,7 @@
 import { MerchantRecord } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatCurrency, formatPercent } from '@/lib/analytics';
+import { formatCurrency, formatPercent, getRevenue } from '@/lib/analytics';
 import { TrendingUp, TrendingDown, Flame, Snowflake } from 'lucide-react';
 
 interface TrendingMerchant {
@@ -32,7 +32,7 @@ export function TrendingMerchants({ records, currentMonth, limit = 5 }: Trending
   const prevMonthData = new Map<string, number>();
   
   records.filter(r => r.month === month).forEach(record => {
-    const revenue = record.net ?? record.salesAmount ?? 0;
+    const revenue = getRevenue(record);
     const existing = currentMonthData.get(record.merchantId);
     if (existing) {
       existing.revenue += revenue;
@@ -45,7 +45,7 @@ export function TrendingMerchants({ records, currentMonth, limit = 5 }: Trending
   });
   
   records.filter(r => r.month === prevMonth).forEach(record => {
-    const revenue = record.net ?? record.salesAmount ?? 0;
+    const revenue = getRevenue(record);
     const existing = prevMonthData.get(record.merchantId) || 0;
     prevMonthData.set(record.merchantId, existing + revenue);
   });
