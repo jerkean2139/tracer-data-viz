@@ -115,7 +115,16 @@ Calculated for each month/processor combination:
 
 ## Recent Changes (Oct 24, 2025)
 
-### Anchor Month Strategy for Accurate Retention (Latest)
+### Branch ID Filter (Latest)
+- ✅ Added branch ID dropdown filter in dashboard header
+- ✅ Filter by specific branch or view "All Branches"
+- ✅ Works seamlessly with date range filters
+- ✅ Branch filter applied before date filter (maintains anchor month accuracy)
+- ✅ Dropdown only appears when branch IDs exist in uploaded data
+- ✅ All metrics, charts, and tables respect branch filter
+- ✅ **No Mock Data**: Filter only works with user's actual uploaded CSV data
+
+### Anchor Month Strategy for Accurate Retention
 - ✅ **Critical Fix**: Implemented anchor month logic for accurate retention calculations across filtered date ranges
 - ✅ **How it Works**: When filtering to a date range (e.g., Feb-Mar 2024), system includes the previous month (Jan 2024) as an "anchor" for retention baseline calculations, then filters it out from displayed results
 - ✅ **Impact**: Ensures February 2024 retention is calculated from January 2024 baseline, even when January is not displayed
