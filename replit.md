@@ -106,10 +106,40 @@ The dashboard is built on a modern web stack designed for performance and a rich
 
 **Test Results**: ✅ E2E tested successfully - uploaded 102 Clearent merchants ($31,834 revenue), verified data persists across browser sessions.
 
-**Architect Recommendations**:
-- Consider adding ON CONFLICT upsert for better performance
-- Add database indexes on (merchant_id, month, processor) for faster queries
-- Enhance API error responses for better user feedback
+### Performance Optimizations & New Features (October 24, 2025)
+
+**Database Performance**:
+1. Added unique index on `(merchant_id, month, processor)` for faster queries and constraint enforcement
+2. Implemented ON CONFLICT upsert with revenue comparison to keep highest-revenue duplicates
+3. Added individual indexes on merchant_id, month, processor, and branch_id columns
+
+**Enhanced API Error Handling**:
+- API routes now return detailed Zod validation errors with field paths and specific messages
+- Improved user feedback for data validation failures
+- Better debugging capability for data import issues
+
+**Upload Tracking Feature** (New Tab):
+- Visual dashboard showing upload status for each processor by month
+- Statistics cards: Total Files Uploaded, Completion Rate, Missing Uploads
+- Status grid with color-coded indicators:
+  - Green checkmark: Data uploaded successfully
+  - Red X: No data for processor/month
+  - Yellow alert: Partial data (records without upload tracking)
+- Data-driven processor and month lists (not hardcoded)
+- Completion metrics calculated from actual processor-month pairs in data
+- Upload status treats uploaded files as complete even before full record processing
+
+**Mobile-Responsive Design**:
+- Collapsible filter panel using Sheet component on mobile devices
+- Filter button shows on screens < 1024px (lg breakpoint)
+- All filter controls accessible in mobile Sheet: View selector, Branch selector, Date Range controls
+- Desktop filters hidden on mobile, shown on larger screens
+- Responsive grid layouts for upload tracking and data tables
+
+**Test Results**: ✅ All features E2E tested and verified:
+- Upload tracking shows accurate 100% completion rate for Clearent data
+- Mobile filters work seamlessly across breakpoints
+- Database performance optimizations confirmed via architect review
 
 ## External Dependencies
 
