@@ -100,8 +100,15 @@ export default function Dashboard() {
       if (!customStartMonth || !customEndMonth) return allMonths;
       const startIdx = allMonths.indexOf(customStartMonth);
       const endIdx = allMonths.indexOf(customEndMonth);
-      if (startIdx === -1 || endIdx === -1) return allMonths;
-      return allMonths.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+      console.log(`[DEBUG] Custom range: ${customStartMonth} to ${customEndMonth}`);
+      console.log(`[DEBUG] startIdx: ${startIdx}, endIdx: ${endIdx}, allMonths:`, allMonths);
+      if (startIdx === -1 || endIdx === -1) {
+        console.log(`[DEBUG] Month not found in allMonths, returning all months`);
+        return allMonths;
+      }
+      const result = allMonths.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
+      console.log(`[DEBUG] Filtered months result:`, result);
+      return result;
     }
     
     // For preset ranges (3, 6, 12 months)
