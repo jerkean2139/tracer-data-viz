@@ -65,9 +65,13 @@ client/src/
     dashboard-content.tsx    # Main dashboard layout
     empty-state.tsx          # First-time user UI
     theme-toggle.tsx         # Dark/light mode switcher
+    branch-performance-table.tsx  # Branch leaderboard with retention
+    trending-merchants.tsx   # Top gainers and decliners
+    at-risk-merchants.tsx    # Declining revenue alerts
+    revenue-forecast.tsx     # 3-month revenue projection
   lib/
     csvParser.ts            # CSV parsing and validation
-    analytics.ts            # Metric calculations
+    analytics.ts            # Metric calculations (includes getRevenue helper)
     storage.ts              # localStorage wrapper
   pages/
     dashboard.tsx           # Main dashboard page
@@ -115,7 +119,15 @@ Calculated for each month/processor combination:
 
 ## Recent Changes (Oct 24, 2025)
 
-### Branch ID Filter (Latest)
+### CEO-Level Analytics Features (Latest)
+- ✅ **Revenue Concentration Card**: Shows top 10 merchant concentration % with color-coded risk levels (high >40%, medium 25-40%, low <25%)
+- ✅ **At-Risk Merchant Report**: Identifies merchants with declining revenue (>5% drop), flags consecutive declines, categorizes by risk level (critical/high/medium), catches 100% churn cases
+- ✅ **Revenue Forecast**: 3-month projection using linear regression, confidence levels based on R² correlation, methodology explanation for executives
+- ✅ **Branch Performance Leaderboard**: Ranked table by revenue with retention rates, medals for top 3 branches, avg revenue per account
+- ✅ **Trending Merchants**: Side-by-side cards showing top gainers and decliners with before/after revenue and change percentages
+- ✅ **All features use real uploaded CSV data**: No mock data, calculations respect processor-specific revenue fields (net, payoutAmount, salesAmount)
+
+### Branch ID Filter
 - ✅ Added branch ID dropdown filter in dashboard header
 - ✅ Filter by specific branch or view "All Branches"
 - ✅ Works seamlessly with date range filters
