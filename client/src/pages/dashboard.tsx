@@ -320,7 +320,7 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="validation">
-            <DataValidationPanel records={records} />
+            <DataValidationPanel records={filteredRecords} />
           </TabsContent>
         </Tabs>
       </main>
