@@ -15,10 +15,32 @@ interface DashboardContentProps {
 }
 
 export function DashboardContent({ metrics, topMerchants, processor, currentMonth }: DashboardContentProps) {
-  // Show the latest month's metrics in cards (which is the end of the filtered range)
-  const displayMetrics = currentMonth
-    ? metrics.find(m => m.month === currentMonth)
-    : metrics.length > 0 ? metrics[metrics.length - 1] : null;
+  // Calculate aggregated metrics across the entire filtered range
+  const displayMetrics = metrics.length > 0 ? {
+    month: currentMonth || metrics[metrics.length - 1]?.month || '',
+    processor: metrics[0].processor,
+    totalRevenue: metrics.reduce((sum, m) => sum + m.totalRevenue, 0),
+    totalAccounts: metrics[metrics.length - 1]?.totalAccounts || 0, // Latest month's account count
+    retainedAccounts: metrics.reduce((sum, m) => sum + m.retainedAccounts, 0),
+    lostAccounts: metrics.reduce((sum, m) => sum + m.lostAccounts, 0),
+    newAccounts: metrics.reduce((sum, m) => sum + m.newAccounts, 0),
+    retentionRate: metrics.length > 0 
+      ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length 
+      : 0,
+    attritionRate: metrics.length > 0
+      ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length
+      : 0,
+    revenuePerAccount: metrics.length > 0
+      ? metrics.reduce((sum, m) => sum + m.totalRevenue, 0) / (metrics[metrics.length - 1]?.totalAccounts || 1)
+      : 0,
+    momRevenueChange: metrics.length >= 2
+      ? metrics[metrics.length - 1].totalRevenue - metrics[metrics.length - 2].totalRevenue
+      : 0,
+    momRevenueChangePercent: metrics.length >= 2 && metrics[metrics.length - 2].totalRevenue > 0
+      ? ((metrics[metrics.length - 1].totalRevenue - metrics[metrics.length - 2].totalRevenue) / metrics[metrics.length - 2].totalRevenue) * 100
+      : 0,
+    netAccountGrowth: metrics.reduce((sum, m) => sum + m.netAccountGrowth, 0),
+  } : null;
 
   if (!displayMetrics) {
     return (
