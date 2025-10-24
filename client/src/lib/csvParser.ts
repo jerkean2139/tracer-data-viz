@@ -199,7 +199,7 @@ async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetNa
 
 export async function parseCSVFile(
   file: File,
-  processor?: 'Clearent' | 'ML' | 'Shift4'
+  processor?: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX'
 ): Promise<CSVParseResult> {
   const isXLSX = file.name.toLowerCase().endsWith('.xlsx');
   

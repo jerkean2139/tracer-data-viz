@@ -115,7 +115,15 @@ Calculated for each month/processor combination:
 
 ## Recent Changes (Oct 24, 2025)
 
-### Date Range Filtering (Latest)
+### "Next Month to Upload" Indicator (Latest)
+- ✅ Added blue alert box in upload dialog showing next expected month (e.g., "Next Month to Upload: August 2025")
+- ✅ Shows latest uploaded month for context (e.g., "Latest uploaded: July 2025")
+- ✅ Badge in dashboard header displaying next month reminder ("Next: August 2025")
+- ✅ Automatic validation warning if user uploads wrong month (e.g., uploading June when August expected)
+- ✅ Updates automatically as new months are uploaded
+- ✅ First-time users see current month as expected upload
+
+### Date Range Filtering
 - ✅ Added smart date range selector in header (similar to Go High Level)
 - ✅ Quick presets: Current Month, Last 3/6/12 Months, All Time, Custom Range
 - ✅ Custom range shows From/To month dropdowns when selected

@@ -32,7 +32,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
   const { toast } = useToast();
 
   // Get next expected month from existing data
-  const existingRecords = storageService.getRecords();
+  const existingRecords = storageService.getAllRecords();
   const latestMonth = getLatestMonth(existingRecords);
   const nextExpectedMonth = getNextExpectedMonth(latestMonth);
   const nextExpectedLabel = formatMonthLabel(nextExpectedMonth);
@@ -130,6 +130,18 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
         const result = await parseCSVFile(upload.file, upload.processor!);
 
         if (result.success && result.data) {
+          // Validate uploaded month against expected month
+          const uploadedMonth = result.data[0]?.month;
+          if (uploadedMonth && uploadedMonth !== nextExpectedMonth && latestMonth) {
+            // Warn if uploading a different month than expected
+            const uploadedLabel = formatMonthLabel(uploadedMonth);
+            toast({
+              title: 'Unexpected Month Detected',
+              description: `You're uploading ${uploadedLabel}, but the next expected month is ${nextExpectedLabel}. Please verify this is correct.`,
+              variant: 'default',
+            });
+          }
+
           storageService.addRecords(result.data);
 
           const uploadedFile: UploadedFile = {
@@ -185,7 +197,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
       onUploadComplete();
       setTimeout(() => setUploads([]), 2000);
     }
-  }, [uploads, toast, onUploadComplete]);
+  }, [uploads, toast, onUploadComplete, nextExpectedMonth, nextExpectedLabel, latestMonth]);
 
   return (
     <div className="space-y-6">
