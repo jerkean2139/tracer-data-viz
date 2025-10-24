@@ -29,6 +29,17 @@ export const storageService = {
     const existing = this.getAllRecords();
     const recordMap = new Map<string, MerchantRecord>();
 
+    // Helper to get revenue for comparison
+    const getRevenue = (record: MerchantRecord): number => {
+      if (record.processor === 'Clearent' || record.processor === 'ML') {
+        return record.net ?? record.salesAmount ?? 0;
+      }
+      if (record.processor === 'Shift4') {
+        return record.payoutAmount ?? record.salesAmount ?? 0;
+      }
+      return record.net ?? record.salesAmount ?? 0;
+    };
+
     existing.forEach(record => {
       const key = `${record.processor}-${record.month}-${record.merchantId}`;
       recordMap.set(key, record);
@@ -38,7 +49,7 @@ export const storageService = {
       const key = `${record.processor}-${record.month}-${record.merchantId}`;
       const existingRecord = recordMap.get(key);
       
-      if (!existingRecord || record.salesAmount > existingRecord.salesAmount) {
+      if (!existingRecord || getRevenue(record) > getRevenue(existingRecord)) {
         recordMap.set(key, record);
       }
     });

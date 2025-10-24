@@ -11,6 +11,7 @@ import { DashboardContent } from '@/components/dashboard-content';
 import { ProcessorComparison } from '@/components/processor-comparison';
 import { EmptyState } from '@/components/empty-state';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { DataValidationPanel } from '@/components/data-validation-panel';
 
 export default function Dashboard() {
   const [records, setRecords] = useState(storageService.getAllRecords());
@@ -97,7 +98,14 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
-              <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
+              <p className="text-sm text-muted-foreground">
+                Merchant Account Analytics
+                {records.length > 0 && latestMonth && (
+                  <span className="ml-2 text-primary font-medium">
+                    • Latest: {latestMonth}
+                  </span>
+                )}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
@@ -132,6 +140,7 @@ export default function Dashboard() {
             <TabsTrigger value="paybright" data-testid="tab-paybright">PayBright</TabsTrigger>
             <TabsTrigger value="trx" data-testid="tab-trx">TRX</TabsTrigger>
             <TabsTrigger value="compare" data-testid="tab-compare">Compare</TabsTrigger>
+            <TabsTrigger value="validation" data-testid="tab-validation">Data Validation</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -208,6 +217,10 @@ export default function Dashboard() {
               paybrightMetrics={paybrightMetrics}
               trxMetrics={trxMetrics}
             />
+          </TabsContent>
+
+          <TabsContent value="validation">
+            <DataValidationPanel records={records} />
           </TabsContent>
         </Tabs>
       </main>
