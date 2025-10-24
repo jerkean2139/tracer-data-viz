@@ -382,6 +382,7 @@ export default function Dashboard() {
                       <SelectItem value="paybright">PayBright</SelectItem>
                       <SelectItem value="trx">TRX</SelectItem>
                       <SelectItem value="compare">Compare</SelectItem>
+                      <SelectItem value="reports">Reports</SelectItem>
                       <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                       <SelectItem value="validation">Data Validation</SelectItem>
                     </SelectContent>

@@ -1,4 +1,4 @@
-import { merchantRecords, merchantMetadata, uploadedFiles, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata } from "@shared/schema";
+import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
@@ -19,6 +19,12 @@ export interface IStorage {
   addMetadata(metadata: InsertMerchantMetadata[]): Promise<void>;
   getMetadataByMID(merchantId: string): Promise<MerchantMetadata | undefined>;
   clearAllMetadata(): Promise<void>;
+  
+  // Partner Logos
+  getAllPartnerLogos(): Promise<PartnerLogo[]>;
+  addPartnerLogo(logo: InsertPartnerLogo): Promise<PartnerLogo>;
+  updatePartnerLogo(id: number, logoUrl: string): Promise<void>;
+  deletePartnerLogo(id: number): Promise<void>;
   
   // Validation
   getValidationWarnings(): Promise<ValidationWarning[]>;
@@ -215,6 +221,45 @@ export class DatabaseStorage implements IStorage {
     });
 
     return warnings;
+  }
+
+  async getAllPartnerLogos(): Promise<PartnerLogo[]> {
+    const logos = await db.select().from(partnerLogos);
+    return logos.map(l => ({
+      id: l.id,
+      partnerName: l.partnerName,
+      logoUrl: l.logoUrl,
+      createdAt: l.createdAt?.toISOString(),
+      updatedAt: l.updatedAt?.toISOString(),
+    }));
+  }
+
+  async addPartnerLogo(logo: InsertPartnerLogo): Promise<PartnerLogo> {
+    const [newLogo] = await db
+      .insert(partnerLogos)
+      .values(logo)
+      .returning();
+    
+    return {
+      id: newLogo.id,
+      partnerName: newLogo.partnerName,
+      logoUrl: newLogo.logoUrl,
+      createdAt: newLogo.createdAt?.toISOString(),
+      updatedAt: newLogo.updatedAt?.toISOString(),
+    };
+  }
+
+  async updatePartnerLogo(id: number, logoUrl: string): Promise<void> {
+    await db
+      .update(partnerLogos)
+      .set({ logoUrl, updatedAt: new Date() })
+      .where(eq(partnerLogos.id, id));
+  }
+
+  async deletePartnerLogo(id: number): Promise<void> {
+    await db
+      .delete(partnerLogos)
+      .where(eq(partnerLogos.id, id));
   }
 
   private dbRecordToMerchantRecord(dbRecord: DbMerchantRecord): MerchantRecord {

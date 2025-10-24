@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema } from "@shared/schema";
+import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
@@ -179,6 +179,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error clearing metadata:", error);
       res.status(500).json({ error: "Failed to clear metadata" });
+    }
+  });
+
+  // Partner Logos Routes
+  app.get("/api/partner-logos", async (req, res) => {
+    try {
+      const logos = await storage.getAllPartnerLogos();
+      res.json(logos);
+    } catch (error) {
+      console.error("Error fetching partner logos:", error);
+      res.status(500).json({ error: "Failed to fetch partner logos" });
+    }
+  });
+
+  app.post("/api/partner-logos", async (req, res) => {
+    try {
+      const validatedLogo = insertPartnerLogoSchema.parse(req.body);
+      const newLogo = await storage.addPartnerLogo(validatedLogo);
+      res.json(newLogo);
+    } catch (error) {
+      console.error("Error adding partner logo:", error);
+      const { statusCode, ...errorResponse } = formatErrorResponse(error);
+      res.status(statusCode).json(errorResponse);
+    }
+  });
+
+  app.put("/api/partner-logos/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { logoUrl } = req.body;
+      await storage.updatePartnerLogo(parseInt(id), logoUrl);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating partner logo:", error);
+      res.status(500).json({ error: "Failed to update partner logo" });
+    }
+  });
+
+  app.delete("/api/partner-logos/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deletePartnerLogo(parseInt(id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting partner logo:", error);
+      res.status(500).json({ error: "Failed to delete partner logo" });
     }
   });
 

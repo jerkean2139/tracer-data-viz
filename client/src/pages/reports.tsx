@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,18 +9,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from '@/components/ui/badge';
 import { FileText, Download, Upload, Building2 } from 'lucide-react';
 import { storageService } from '@/lib/storage';
-import { MerchantRecord, Processor } from '@shared/schema';
+import { MerchantRecord, Processor, PartnerLogo } from '@shared/schema';
 import { calculateMonthlyMetrics, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ReportTemplate } from '@/components/report-template';
 import { useToast } from '@/hooks/use-toast';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 
 export default function Reports() {
   const { toast } = useToast();
   const [selectedProcessor, setSelectedProcessor] = useState<Processor>('All');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [partnerName, setPartnerName] = useState('');
+  const [selectedLogoId, setSelectedLogoId] = useState<number | null>(null);
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('');
   const [uploadLogoDialogOpen, setUploadLogoDialogOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -29,12 +31,37 @@ export default function Reports() {
     queryKey: ['/api/records'],
   });
 
+  const { data: partnerLogos = [] } = useQuery<PartnerLogo[]>({
+    queryKey: ['/api/partner-logos'],
+  });
+
+  const addLogoMutation = useMutation({
+    mutationFn: async (logo: { partnerName: string; logoUrl: string }) => {
+      return await apiRequest('/api/partner-logos', {
+        method: 'POST',
+        body: JSON.stringify(logo),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/partner-logos'] });
+      toast({
+        title: 'Logo saved',
+        description: 'Partner logo has been saved successfully.',
+      });
+    },
+  });
+
   const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
   const latestMonth = getLatestMonth(records);
 
-  if (!selectedMonth && latestMonth) {
-    setSelectedMonth(latestMonth);
-  }
+  useEffect(() => {
+    if (!selectedMonth && latestMonth) {
+      setSelectedMonth(latestMonth);
+    }
+  }, [selectedMonth, latestMonth]);
 
   const processedRecords = selectedProcessor === 'All' 
     ? records 
@@ -109,8 +136,36 @@ export default function Reports() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPartnerLogoUrl(reader.result as string);
+        setSelectedLogoId(null);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveLogo = async () => {
+    if (!partnerName || !partnerLogoUrl) {
+      toast({
+        title: 'Missing information',
+        description: 'Please provide both partner name and logo.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    await addLogoMutation.mutateAsync({
+      partnerName,
+      logoUrl: partnerLogoUrl,
+    });
+    setUploadLogoDialogOpen(false);
+  };
+
+  const handleSelectLogo = (logoId: string) => {
+    const id = parseInt(logoId);
+    const logo = partnerLogos.find(l => l.id === id);
+    if (logo) {
+      setSelectedLogoId(id);
+      setPartnerName(logo.partnerName);
+      setPartnerLogoUrl(logo.logoUrl);
     }
   };
 
@@ -182,11 +237,25 @@ export default function Reports() {
 
               <div className="space-y-2">
                 <Label>Partner Logo</Label>
+                {partnerLogos.length > 0 && (
+                  <Select value={selectedLogoId?.toString() || ''} onValueChange={handleSelectLogo} data-testid="select-existing-logo">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select existing partner" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {partnerLogos.map(logo => (
+                        <SelectItem key={logo.id} value={logo.id.toString()}>
+                          {logo.partnerName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <Dialog open={uploadLogoDialogOpen} onOpenChange={setUploadLogoDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full" data-testid="button-upload-logo">
                       <Upload className="w-4 h-4 mr-2" />
-                      {partnerLogoUrl ? 'Change Logo' : 'Upload Logo'}
+                      {partnerLogoUrl ? 'Change Logo' : 'Upload New Logo'}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -197,12 +266,25 @@ export default function Reports() {
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        data-testid="input-logo-file"
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="dialog-partner-name">Partner Name</Label>
+                        <Input
+                          id="dialog-partner-name"
+                          placeholder="e.g., First National Bank"
+                          value={partnerName}
+                          onChange={(e) => setPartnerName(e.target.value)}
+                          data-testid="input-dialog-partner-name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Logo Image</Label>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          data-testid="input-logo-file"
+                        />
+                      </div>
                       {partnerLogoUrl && (
                         <div className="flex justify-center p-4 border rounded-md bg-muted/20">
                           <img 
@@ -213,18 +295,29 @@ export default function Reports() {
                           />
                         </div>
                       )}
-                      <Button 
-                        className="w-full" 
-                        onClick={() => setUploadLogoDialogOpen(false)}
-                        data-testid="button-confirm-logo"
-                      >
-                        Confirm
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          className="flex-1" 
+                          onClick={handleSaveLogo}
+                          disabled={addLogoMutation.isPending || !partnerName || !partnerLogoUrl}
+                          data-testid="button-save-logo"
+                        >
+                          {addLogoMutation.isPending ? 'Saving...' : 'Save Logo'}
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          className="flex-1" 
+                          onClick={() => setUploadLogoDialogOpen(false)}
+                          data-testid="button-cancel-logo"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
                 {partnerLogoUrl && (
-                  <p className="text-xs text-muted-foreground">Logo uploaded successfully</p>
+                  <p className="text-xs text-muted-foreground">Logo ready for report generation</p>
                 )}
               </div>
 

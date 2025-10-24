@@ -141,6 +141,57 @@ The dashboard is built on a modern web stack designed for performance and a rich
 - Mobile filters work seamlessly across breakpoints
 - Database performance optimizations confirmed via architect review
 
+### Reports Feature with Partner Logo Management (October 24, 2025)
+
+**Feature**: Co-branded PDF report generation with persistent partner logo management.
+
+**Implementation**:
+1. **Database Schema**: Added `partner_logos` table with Drizzle ORM:
+   - `id`: Serial primary key
+   - `partnerName`: Partner/bank name (varchar 255)
+   - `logoUrl`: Base64-encoded logo data (text)
+   - `createdAt`, `updatedAt`: Timestamps for tracking
+
+2. **API Layer**: Implemented partner logo CRUD endpoints:
+   - `GET /api/partner-logos`: Fetch all saved partner logos
+   - `POST /api/partner-logos`: Save new partner logo with name and base64 data
+   - `PUT /api/partner-logos/:id`: Update logo URL
+   - `DELETE /api/partner-logos/:id`: Delete logo
+   - All routes integrated with React Query for caching and invalidation
+
+3. **Reports Page Features**:
+   - Co-branded PDF generation using jsPDF and html2canvas
+   - TRACER C2FS logo (built-in branding)
+   - Partner/bank logo (user-uploaded, persisted to database)
+   - "Powered by" logo at bottom of reports
+   - Processor-specific or All Processors reporting options
+   - Month-based reporting period selection
+   - Real-time metrics preview before PDF generation
+   - Partner logo selector: choose from saved logos or upload new ones
+   - Upload dialog with partner name input, file upload, preview, and save functionality
+
+4. **UI/UX Enhancements**:
+   - Reports option added to main view selector dropdown (desktop and mobile)
+   - Existing partner logo selector dropdown (appears when logos exist)
+   - Upload new logo dialog with real-time preview
+   - Save logo button persists to database with toast feedback
+   - Loading states during PDF generation
+   - Metrics preview updates dynamically based on selections
+
+5. **Bug Fixes**:
+   - Fixed render loop issue in Reports component by moving selectedMonth state update to useEffect
+   - Added Reports option to desktop view selector (was only in mobile)
+   - Implemented proper React Query cache invalidation for partner logos
+
+**Test Results**: ✅ E2E tested successfully:
+- Reports view accessible via view selector
+- Partner name input and logo management functional
+- Processor and month selectors populate from real data
+- Metrics preview displays accurate data (Clearent: $11,566 revenue, 68 accounts, 98.6% retention)
+- All Processors view shows combined metrics ($37,999 revenue, 207 accounts, 98.0% retention)
+- Partner logos persist across browser sessions
+- PDF generation triggers successfully with download
+
 ## External Dependencies
 
 -   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data integrated from these platforms via CSV/XLSX uploads).
