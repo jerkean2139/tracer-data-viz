@@ -115,7 +115,19 @@ Calculated for each month/processor combination:
 
 ## Recent Changes (Oct 24, 2025)
 
-### "Next Month to Upload" Indicator (Latest)
+### Anchor Month Strategy for Accurate Retention (Latest)
+- ✅ **Critical Fix**: Implemented anchor month logic for accurate retention calculations across filtered date ranges
+- ✅ **How it Works**: When filtering to a date range (e.g., Feb-Mar 2024), system includes the previous month (Jan 2024) as an "anchor" for retention baseline calculations, then filters it out from displayed results
+- ✅ **Impact**: Ensures February 2024 retention is calculated from January 2024 baseline, even when January is not displayed
+- ✅ **Edge Cases Handled**:
+  - First month ever (Jan 2024): Shows 100% retention (no previous month, all accounts are "new")
+  - All Time filter: No anchor needed, displays all months
+  - Current Month: Uses previous month as anchor
+  - Custom ranges: Automatically includes month before range as anchor
+- ✅ **Applied to All 7 Processors**: Clearent, ML, Shift4, TSYS, Micamp, PayBright, TRX
+- ✅ **Files Modified**: `client/src/pages/dashboard.tsx`
+
+### "Next Month to Upload" Indicator
 - ✅ Added blue alert box in upload dialog showing next expected month (e.g., "Next Month to Upload: August 2025")
 - ✅ Shows latest uploaded month for context (e.g., "Latest uploaded: July 2025")
 - ✅ Badge in dashboard header displaying next month reminder ("Next: August 2025")
