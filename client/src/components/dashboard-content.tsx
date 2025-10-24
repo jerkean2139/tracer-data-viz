@@ -8,6 +8,8 @@ import { TopMerchantsTable } from '@/components/top-merchants-table';
 import { MerchantChangesPanel } from '@/components/merchant-changes-panel';
 import { BranchPerformanceTable } from '@/components/branch-performance-table';
 import { TrendingMerchants } from '@/components/trending-merchants';
+import { AtRiskMerchants } from '@/components/at-risk-merchants';
+import { RevenueForecast } from '@/components/revenue-forecast';
 import { DollarSign, Users, TrendingUp, Target, AlertTriangle } from 'lucide-react';
 
 interface DashboardContentProps {
@@ -114,12 +116,16 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
         />
       </div>
 
+      <AtRiskMerchants records={filteredRecords} currentMonth={currentMonth} />
+
       <div className="grid gap-6 lg:grid-cols-2">
         <RevenueChart metrics={metrics} />
         <AccountActivityChart metrics={metrics} />
       </div>
 
       <RetentionChart metrics={metrics} />
+
+      <RevenueForecast metrics={metrics} />
 
       <TrendingMerchants records={filteredRecords} currentMonth={currentMonth} />
 
