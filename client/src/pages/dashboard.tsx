@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { storageService } from '@/lib/storage';
 import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import { getNextExpectedMonth } from '@/lib/csvParser';
-import { Processor } from '@shared/schema';
+import { Processor, MerchantRecord } from '@shared/schema';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -80,15 +80,45 @@ export default function Dashboard() {
   const filteredRecords = records.filter(r => filteredMonths.includes(r.month));
   const currentMonth = filteredMonths.length > 0 ? filteredMonths[filteredMonths.length - 1] : latestMonth;
 
-  // Calculate metrics for filtered date range (for charts)
-  const allMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'All') : [];
-  const clearentMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Clearent') : [];
-  const mlMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'ML') : [];
-  const shift4Metrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Shift4') : [];
-  const tsysMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TSYS') : [];
-  const micampMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Micamp') : [];
-  const paybrightMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'PayBright') : [];
-  const trxMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TRX') : [];
+  // Get records for calculation including anchor month (month before filtered range)
+  // This ensures accurate retention calculations for the first month in any filtered range
+  const getRecordsForCalculation = (): MerchantRecord[] => {
+    if (filteredMonths.length === 0 || dateRange === 'all') {
+      return records; // No filtering needed for 'all'
+    }
+    
+    const firstFilteredMonth = filteredMonths[0];
+    const firstMonthIndex = allMonths.indexOf(firstFilteredMonth);
+    
+    // If there's a month before the filtered range, include it as anchor for retention baseline
+    const anchorMonth = firstMonthIndex > 0 ? allMonths[firstMonthIndex - 1] : null;
+    
+    const monthsForCalculation = anchorMonth 
+      ? [anchorMonth, ...filteredMonths]  // Include anchor month
+      : filteredMonths;
+      
+    return records.filter(r => monthsForCalculation.includes(r.month));
+  };
+
+  const recordsForCalculation = getRecordsForCalculation();
+
+  // Helper function to calculate metrics with anchor month and filter it out from display
+  const calculateMetricsWithAnchor = (processor: Processor) => {
+    if (!hasData) return [];
+    const metricsWithAnchor = calculateMonthlyMetrics(recordsForCalculation, processor);
+    // Remove anchor month from displayed metrics (only show filtered months)
+    return metricsWithAnchor.filter(m => filteredMonths.includes(m.month));
+  };
+
+  // Calculate metrics for filtered date range (with anchor month for accurate retention)
+  const allMetrics = calculateMetricsWithAnchor('All');
+  const clearentMetrics = calculateMetricsWithAnchor('Clearent');
+  const mlMetrics = calculateMetricsWithAnchor('ML');
+  const shift4Metrics = calculateMetricsWithAnchor('Shift4');
+  const tsysMetrics = calculateMetricsWithAnchor('TSYS');
+  const micampMetrics = calculateMetricsWithAnchor('Micamp');
+  const paybrightMetrics = calculateMetricsWithAnchor('PayBright');
+  const trxMetrics = calculateMetricsWithAnchor('TRX');
 
   // Top merchants for latest month in the filtered range
   const allTopMerchants = currentMonth ? getTopMerchants(filteredRecords, currentMonth) : [];
