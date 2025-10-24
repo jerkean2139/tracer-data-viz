@@ -228,7 +228,7 @@ export function formatPercent(value: number, decimals: number = 1): string {
 export function formatMonthLabel(month: string): string {
   try {
     const date = parse(month, 'yyyy-MM', new Date());
-    return format(date, 'MMM yyyy');
+    return format(date, 'M/yy');
   } catch {
     return month;
   }
