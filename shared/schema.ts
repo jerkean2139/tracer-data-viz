@@ -76,9 +76,18 @@ export const merchantMetadata = pgTable("merchant_metadata", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const partnerLogos = pgTable("partner_logos", {
+  id: serial("id").primaryKey(),
+  partnerName: varchar("partner_name", { length: 255 }).notNull().unique(),
+  logoUrl: text("logo_url").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert schemas for API validation - will be defined after merchantRecordSchema
 export const insertUploadedFileSchema = createInsertSchema(uploadedFiles);
 export const insertMerchantMetadataSchema = createInsertSchema(merchantMetadata).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPartnerLogoSchema = createInsertSchema(partnerLogos).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Type exports for database
 export type DbMerchantRecord = typeof merchantRecords.$inferSelect;
@@ -87,6 +96,8 @@ export type DbUploadedFile = typeof uploadedFiles.$inferSelect;
 export type InsertUploadedFile = z.infer<typeof insertUploadedFileSchema>;
 export type DbMerchantMetadata = typeof merchantMetadata.$inferSelect;
 export type InsertMerchantMetadata = z.infer<typeof insertMerchantMetadataSchema>;
+export type DbPartnerLogo = typeof partnerLogos.$inferSelect;
+export type InsertPartnerLogo = z.infer<typeof insertPartnerLogoSchema>;
 
 // Legacy Zod schemas for frontend compatibility
 export const merchantRecordSchema = z.object({
@@ -212,6 +223,14 @@ export const merchantChangesSchema = z.object({
   retainedCount: z.number(),
 });
 
+export const partnerLogoSchema = z.object({
+  id: z.number(),
+  partnerName: z.string(),
+  logoUrl: z.string(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
+
 export type MerchantRecord = z.infer<typeof merchantRecordSchema>;
 export type UploadedFile = z.infer<typeof uploadedFileSchema>;
 export type MonthlyMetrics = z.infer<typeof monthlyMetricsSchema>;
@@ -222,4 +241,5 @@ export type MerchantChange = z.infer<typeof merchantChangeSchema>;
 export type MerchantChanges = z.infer<typeof merchantChangesSchema>;
 export type MerchantMetadata = z.infer<typeof merchantMetadataSchema>;
 export type ValidationWarning = z.infer<typeof validationWarningSchema>;
+export type PartnerLogo = z.infer<typeof partnerLogoSchema>;
 export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'All';

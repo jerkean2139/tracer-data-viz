@@ -18,6 +18,7 @@ import { EmptyState } from '@/components/empty-state';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
+import Reports from '@/pages/reports';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<MerchantRecord[]>([]);
@@ -275,6 +276,7 @@ export default function Dashboard() {
                             <SelectItem value="paybright">PayBright</SelectItem>
                             <SelectItem value="trx">TRX</SelectItem>
                             <SelectItem value="compare">Compare</SelectItem>
+                            <SelectItem value="reports">Reports</SelectItem>
                             <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                             <SelectItem value="validation">Data Validation</SelectItem>
                           </SelectContent>
@@ -586,6 +588,10 @@ export default function Dashboard() {
 
           <TabsContent value="validation">
             <DataValidationPanel records={filteredRecords} warnings={validationWarnings} />
+          </TabsContent>
+
+          <TabsContent value="reports" data-testid="tab-reports">
+            <Reports />
           </TabsContent>
 
           <TabsContent value="upload-tracking" data-testid="tab-upload-tracking">
