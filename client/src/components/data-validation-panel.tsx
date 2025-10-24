@@ -139,7 +139,14 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
       )}
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Merchant Counts by Month</h3>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold">Merchant Counts by Month</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Missing data highlighted with <AlertTriangle className="inline w-3 h-3 text-orange-600 dark:text-orange-400" /> icon
+            </p>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -163,9 +170,21 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                     <TableCell className="font-medium">{processor}</TableCell>
                     {allMonths.map(month => {
                       const data = monthMap.get(month);
+                      const isMissing = !data;
                       return (
-                        <TableCell key={month} className="text-right" data-testid={`count-${processor}-${month}`}>
-                          {data ? data.count : '-'}
+                        <TableCell 
+                          key={month} 
+                          className={`text-right ${isMissing ? 'bg-orange-500/10 dark:bg-orange-500/20' : ''}`}
+                          data-testid={`count-${processor}-${month}`}
+                        >
+                          {data ? (
+                            data.count
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400">
+                              <AlertTriangle className="w-3 h-3" />
+                              <span>-</span>
+                            </span>
+                          )}
                         </TableCell>
                       );
                     })}
@@ -179,7 +198,14 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Revenue (Net) Totals by Month</h3>
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold">Revenue (Net) Totals by Month</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Missing data highlighted with <AlertTriangle className="inline w-3 h-3 text-orange-600 dark:text-orange-400" /> icon
+            </p>
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -203,9 +229,21 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                     <TableCell className="font-medium">{processor}</TableCell>
                     {allMonths.map(month => {
                       const data = monthMap.get(month);
+                      const isMissing = !data;
                       return (
-                        <TableCell key={month} className="text-right" data-testid={`revenue-${processor}-${month}`}>
-                          {data ? formatCurrency(data.revenue) : '-'}
+                        <TableCell 
+                          key={month} 
+                          className={`text-right ${isMissing ? 'bg-orange-500/10 dark:bg-orange-500/20' : ''}`}
+                          data-testid={`revenue-${processor}-${month}`}
+                        >
+                          {data ? (
+                            formatCurrency(data.revenue)
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400">
+                              <AlertTriangle className="w-3 h-3" />
+                              <span>-</span>
+                            </span>
+                          )}
                         </TableCell>
                       );
                     })}
