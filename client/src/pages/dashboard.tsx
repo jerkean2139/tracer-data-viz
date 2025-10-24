@@ -5,7 +5,9 @@ import { Processor } from '@shared/schema';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Upload } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, Calendar } from 'lucide-react';
+import { formatMonthLabel } from '@/lib/analytics';
 import { CSVUpload } from '@/components/csv-upload';
 import { DashboardContent } from '@/components/dashboard-content';
 import { ProcessorComparison } from '@/components/processor-comparison';
@@ -18,6 +20,7 @@ export default function Dashboard() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [showDashboard, setShowDashboard] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
 
   useEffect(() => {
     setRecords(storageService.getAllRecords());
@@ -31,25 +34,41 @@ export default function Dashboard() {
 
   const hasData = records.length > 0;
 
-  const allMetrics = hasData ? calculateMonthlyMetrics(records, 'All') : [];
-  const clearentMetrics = hasData ? calculateMonthlyMetrics(records, 'Clearent') : [];
-  const mlMetrics = hasData ? calculateMonthlyMetrics(records, 'ML') : [];
-  const shift4Metrics = hasData ? calculateMonthlyMetrics(records, 'Shift4') : [];
-  const tsysMetrics = hasData ? calculateMonthlyMetrics(records, 'TSYS') : [];
-  const micampMetrics = hasData ? calculateMonthlyMetrics(records, 'Micamp') : [];
-  const paybrightMetrics = hasData ? calculateMonthlyMetrics(records, 'PayBright') : [];
-  const trxMetrics = hasData ? calculateMonthlyMetrics(records, 'TRX') : [];
-
+  // Get all unique months sorted
+  const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
   const latestMonth = getLatestMonth(records);
+  
+  // Auto-select latest month on first load
+  useEffect(() => {
+    if (latestMonth && selectedMonth === 'all') {
+      setSelectedMonth(latestMonth);
+    }
+  }, [latestMonth, selectedMonth]);
 
-  const allTopMerchants = latestMonth ? getTopMerchants(records, latestMonth) : [];
-  const clearentTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'Clearent'), latestMonth) : [];
-  const mlTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'ML'), latestMonth) : [];
-  const shift4TopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'Shift4'), latestMonth) : [];
-  const tsysTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'TSYS'), latestMonth) : [];
-  const micampTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'Micamp'), latestMonth) : [];
-  const paybrightTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'PayBright'), latestMonth) : [];
-  const trxTopMerchants = latestMonth ? getTopMerchants(records.filter(r => r.processor === 'TRX'), latestMonth) : [];
+  // Filter records by selected month
+  const filteredRecords = selectedMonth === 'all' 
+    ? records 
+    : records.filter(r => r.month === selectedMonth);
+
+  const allMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'All') : [];
+  const clearentMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Clearent') : [];
+  const mlMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'ML') : [];
+  const shift4Metrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Shift4') : [];
+  const tsysMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TSYS') : [];
+  const micampMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'Micamp') : [];
+  const paybrightMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'PayBright') : [];
+  const trxMetrics = hasData ? calculateMonthlyMetrics(filteredRecords, 'TRX') : [];
+
+  const currentMonth = selectedMonth === 'all' ? latestMonth : selectedMonth;
+
+  const allTopMerchants = currentMonth ? getTopMerchants(filteredRecords, currentMonth) : [];
+  const clearentTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Clearent'), currentMonth) : [];
+  const mlTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'ML'), currentMonth) : [];
+  const shift4TopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Shift4'), currentMonth) : [];
+  const tsysTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TSYS'), currentMonth) : [];
+  const micampTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Micamp'), currentMonth) : [];
+  const paybrightTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'PayBright'), currentMonth) : [];
+  const trxTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TRX'), currentMonth) : [];
 
   if (!hasData && !showDashboard) {
     return (
@@ -98,16 +117,27 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
-              <p className="text-sm text-muted-foreground">
-                Merchant Account Analytics
-                {records.length > 0 && latestMonth && (
-                  <span className="ml-2 text-primary font-medium">
-                    • Latest: {latestMonth}
-                  </span>
-                )}
-              </p>
+              <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              {records.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                    <SelectTrigger className="w-[180px]" data-testid="select-month">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Months</SelectItem>
+                      {allMonths.map(month => (
+                        <SelectItem key={month} value={month}>
+                          {formatMonthLabel(month)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
                 <DialogTrigger asChild>
                   <Button data-testid="button-upload-new">
