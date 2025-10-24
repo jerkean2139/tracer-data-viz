@@ -20,11 +20,6 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
     ? metrics.find(m => m.month === currentMonth)
     : metrics.length > 0 ? metrics[metrics.length - 1] : null;
 
-  // Debug logging
-  console.log(`[${processor}] Metrics months:`, metrics.map(m => m.month));
-  console.log(`[${processor}] Current month:`, currentMonth);
-  console.log(`[${processor}] Display metrics month:`, displayMetrics?.month);
-
   if (!displayMetrics) {
     return (
       <div className="flex items-center justify-center h-[400px] text-muted-foreground">

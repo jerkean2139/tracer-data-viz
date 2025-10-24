@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [showDashboard, setShowDashboard] = useState(false);
-  const [dateRange, setDateRange] = useState<'current' | '3months' | '6months' | '12months' | 'all' | 'custom'>('current');
+  const [dateRange, setDateRange] = useState<'current' | '3months' | '6months' | '12months' | 'all' | 'custom'>('all');
   const [customStartMonth, setCustomStartMonth] = useState<string>('');
   const [customEndMonth, setCustomEndMonth] = useState<string>('');
 
