@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { storageService } from '@/lib/storage';
 import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import { getNextExpectedMonth } from '@/lib/csvParser';
-import { Processor, MerchantRecord, ValidationWarning } from '@shared/schema';
+import { Processor, MerchantRecord, ValidationWarning, UploadedFile } from '@shared/schema';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Calendar, Info } from 'lucide-react';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Upload, Calendar, Info, Filter, Menu } from 'lucide-react';
 import { CSVUpload } from '@/components/csv-upload';
 import { LeadsUpload } from '@/components/leads-upload';
 import { DashboardContent } from '@/components/dashboard-content';
@@ -16,9 +17,11 @@ import { ProcessorComparison } from '@/components/processor-comparison';
 import { EmptyState } from '@/components/empty-state';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
+import { UploadTracking } from '@/components/upload-tracking';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<MerchantRecord[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [leadsDialogOpen, setLeadsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
@@ -29,13 +32,16 @@ export default function Dashboard() {
   const [selectedBranch, setSelectedBranch] = useState<string>('all');
   const [validationWarnings, setValidationWarnings] = useState<ValidationWarning[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       setIsLoading(true);
       const data = await storageService.getAllRecords();
+      const files = await storageService.getUploadedFiles();
       const warnings = await storageService.getValidationWarnings();
       setRecords(data);
+      setUploadedFiles(files);
       setValidationWarnings(warnings);
       setIsLoading(false);
     }
@@ -44,8 +50,10 @@ export default function Dashboard() {
 
   const handleUploadComplete = async () => {
     const data = await storageService.getAllRecords();
+    const files = await storageService.getUploadedFiles();
     const warnings = await storageService.getValidationWarnings();
     setRecords(data);
+    setUploadedFiles(files);
     setValidationWarnings(warnings);
     setUploadDialogOpen(false);
     setShowDashboard(true);
@@ -227,9 +235,130 @@ export default function Dashboard() {
                 )}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              {/* Mobile filter button */}
               {records.length > 0 && (
-                <>
+                <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" size="icon" className="lg:hidden" data-testid="button-mobile-filters">
+                      <Filter className="h-4 w-4" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle>Filters & View</SheetTitle>
+                      <SheetDescription>
+                        Filter your merchant data and change views
+                      </SheetDescription>
+                    </SheetHeader>
+                    <div className="space-y-6 mt-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">View</label>
+                        <Select value={activeTab} onValueChange={setActiveTab}>
+                          <SelectTrigger className="w-full" data-testid="select-processor-mobile">
+                            <SelectValue placeholder="Select View" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="overview">Overview</SelectItem>
+                            <SelectItem value="clearent">Clearent</SelectItem>
+                            <SelectItem value="ml">ML</SelectItem>
+                            <SelectItem value="shift4">Shift4</SelectItem>
+                            <SelectItem value="tsys">TSYS</SelectItem>
+                            <SelectItem value="micamp">Micamp</SelectItem>
+                            <SelectItem value="paybright">PayBright</SelectItem>
+                            <SelectItem value="trx">TRX</SelectItem>
+                            <SelectItem value="compare">Compare</SelectItem>
+                            <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
+                            <SelectItem value="validation">Data Validation</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {allBranches.length > 0 && (
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Branch</label>
+                          <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                            <SelectTrigger className="w-full" data-testid="select-branch-mobile">
+                              <SelectValue placeholder="All Branches" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Branches</SelectItem>
+                              {allBranches.map(branch => (
+                                <SelectItem key={branch} value={branch}>
+                                  Branch {branch}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Date Range</label>
+                        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+                          <SelectTrigger className="w-full" data-testid="select-date-range-mobile">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="current">Current Month</SelectItem>
+                            <SelectItem value="3months">Last 3 Months</SelectItem>
+                            <SelectItem value="6months">Last 6 Months</SelectItem>
+                            <SelectItem value="12months">Last 12 Months</SelectItem>
+                            <SelectItem value="all">All Time</SelectItem>
+                            <SelectItem value="custom">Custom Range</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {dateRange === 'custom' && (
+                        <>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">From Month</label>
+                            <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
+                              <SelectTrigger className="w-full" data-testid="select-start-month-mobile">
+                                <SelectValue placeholder="From" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {allMonths.map(month => (
+                                  <SelectItem key={month} value={month}>
+                                    {formatMonthLabel(month)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">To Month</label>
+                            <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
+                              <SelectTrigger className="w-full" data-testid="select-end-month-mobile">
+                                <SelectValue placeholder="To" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {allMonths.map(month => (
+                                  <SelectItem key={month} value={month}>
+                                    {formatMonthLabel(month)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="pt-4 border-t">
+                        <Badge variant="outline" className="w-full justify-center bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
+                          <Info className="w-3 h-3 mr-1" />
+                          Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
+                        </Badge>
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              )}
+
+              {/* Desktop filters - hidden on mobile */}
+              {records.length > 0 && (
+                <div className="hidden lg:flex items-center gap-3">
                   <Select value={activeTab} onValueChange={setActiveTab}>
                     <SelectTrigger className="w-[180px]" data-testid="select-processor">
                       <SelectValue placeholder="Select View" />
@@ -244,6 +373,7 @@ export default function Dashboard() {
                       <SelectItem value="paybright">PayBright</SelectItem>
                       <SelectItem value="trx">TRX</SelectItem>
                       <SelectItem value="compare">Compare</SelectItem>
+                      <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                       <SelectItem value="validation">Data Validation</SelectItem>
                     </SelectContent>
                   </Select>
@@ -315,8 +445,10 @@ export default function Dashboard() {
                     <Info className="w-3 h-3 mr-1" />
                     Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
                   </Badge>
-                </>
+                </div>
               )}
+
+              {/* Upload buttons and theme toggle */}
               <Dialog open={leadsDialogOpen} onOpenChange={setLeadsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button variant="outline" data-testid="button-upload-leads">
@@ -447,6 +579,10 @@ export default function Dashboard() {
 
           <TabsContent value="validation">
             <DataValidationPanel records={filteredRecords} warnings={validationWarnings} />
+          </TabsContent>
+
+          <TabsContent value="upload-tracking" data-testid="tab-upload-tracking">
+            <UploadTracking records={records} uploadedFiles={uploadedFiles} />
           </TabsContent>
         </Tabs>
       </main>
