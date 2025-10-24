@@ -17,6 +17,23 @@ export interface LeadsParseResult {
   warnings: string[];
 }
 
+export function getNextExpectedMonth(latestMonth: string | null): string {
+  if (!latestMonth) {
+    const now = new Date();
+    return format(now, 'yyyy-MM');
+  }
+
+  try {
+    const date = parse(latestMonth, 'yyyy-MM', new Date());
+    const nextMonth = new Date(date);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return format(nextMonth, 'yyyy-MM');
+  } catch {
+    const now = new Date();
+    return format(now, 'yyyy-MM');
+  }
+}
+
 export interface CSVColumn {
   original: string;
   normalized: string;
@@ -125,7 +142,7 @@ function extractMonthFromFilename(filename: string): string | null {
   return null;
 }
 
-export function detectProcessor(filename: string): string | null {
+export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | null {
   const lower = filename.toLowerCase();
   if (lower.includes('clearent')) return 'Clearent';
   if (lower.includes('ml') && !lower.includes('micamp')) return 'ML';

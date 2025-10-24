@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { storageService } from '@/lib/storage';
-import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth } from '@/lib/analytics';
+import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
+import { getNextExpectedMonth } from '@/lib/csvParser';
 import { Processor } from '@shared/schema';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Calendar } from 'lucide-react';
-import { formatMonthLabel } from '@/lib/analytics';
+import { Upload, Calendar, Info } from 'lucide-react';
 import { CSVUpload } from '@/components/csv-upload';
 import { LeadsUpload } from '@/components/leads-upload';
 import { DashboardContent } from '@/components/dashboard-content';
@@ -162,52 +163,59 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-3">
               {records.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
-                    <SelectTrigger className="w-[160px]" data-testid="select-date-range">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="current">Current Month</SelectItem>
-                      <SelectItem value="3months">Last 3 Months</SelectItem>
-                      <SelectItem value="6months">Last 6 Months</SelectItem>
-                      <SelectItem value="12months">Last 12 Months</SelectItem>
-                      <SelectItem value="all">All Time</SelectItem>
-                      <SelectItem value="custom">Custom Range</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  {dateRange === 'custom' && (
-                    <>
-                      <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
-                        <SelectTrigger className="w-[140px]" data-testid="select-start-month">
-                          <SelectValue placeholder="From" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {allMonths.map(month => (
-                            <SelectItem key={month} value={month}>
-                              {formatMonthLabel(month)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <span className="text-sm text-muted-foreground">to</span>
-                      <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
-                        <SelectTrigger className="w-[140px]" data-testid="select-end-month">
-                          <SelectValue placeholder="To" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {allMonths.map(month => (
-                            <SelectItem key={month} value={month}>
-                              {formatMonthLabel(month)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </>
-                  )}
-                </div>
+                <>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+                      <SelectTrigger className="w-[160px]" data-testid="select-date-range">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="current">Current Month</SelectItem>
+                        <SelectItem value="3months">Last 3 Months</SelectItem>
+                        <SelectItem value="6months">Last 6 Months</SelectItem>
+                        <SelectItem value="12months">Last 12 Months</SelectItem>
+                        <SelectItem value="all">All Time</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {dateRange === 'custom' && (
+                      <>
+                        <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
+                          <SelectTrigger className="w-[140px]" data-testid="select-start-month">
+                            <SelectValue placeholder="From" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {allMonths.map(month => (
+                              <SelectItem key={month} value={month}>
+                                {formatMonthLabel(month)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <span className="text-sm text-muted-foreground">to</span>
+                        <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
+                          <SelectTrigger className="w-[140px]" data-testid="select-end-month">
+                            <SelectValue placeholder="To" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {allMonths.map(month => (
+                              <SelectItem key={month} value={month}>
+                                {formatMonthLabel(month)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </>
+                    )}
+                  </div>
+
+                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" data-testid="badge-next-month">
+                    <Info className="w-3 h-3 mr-1" />
+                    Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
+                  </Badge>
+                </>
               )}
               <Dialog open={leadsDialogOpen} onOpenChange={setLeadsDialogOpen}>
                 <DialogTrigger asChild>

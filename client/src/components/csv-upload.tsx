@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle2, X } from 'lucide-react';
-import { parseCSVFile, detectProcessor } from '@/lib/csvParser';
+import { Upload, FileText, AlertCircle, CheckCircle2, X, Calendar } from 'lucide-react';
+import { parseCSVFile, detectProcessor, getNextExpectedMonth } from '@/lib/csvParser';
 import { storageService } from '@/lib/storage';
+import { getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import { Processor, UploadedFile } from '@shared/schema';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface FileUpload {
   file: File;
@@ -28,6 +30,12 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
   const [uploads, setUploads] = useState<FileUpload[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
+
+  // Get next expected month from existing data
+  const existingRecords = storageService.getRecords();
+  const latestMonth = getLatestMonth(existingRecords);
+  const nextExpectedMonth = getNextExpectedMonth(latestMonth);
+  const nextExpectedLabel = formatMonthLabel(nextExpectedMonth);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -181,6 +189,19 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
 
   return (
     <div className="space-y-6">
+      {/* Next Month Indicator */}
+      <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800" data-testid="alert-next-month">
+        <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        <AlertDescription className="text-blue-900 dark:text-blue-100">
+          <span className="font-semibold">Next Month to Upload:</span> {nextExpectedLabel}
+          {latestMonth && (
+            <span className="text-blue-700 dark:text-blue-300 ml-2">
+              (Latest uploaded: {formatMonthLabel(latestMonth)})
+            </span>
+          )}
+        </AlertDescription>
+      </Alert>
+
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
