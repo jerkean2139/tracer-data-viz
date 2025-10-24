@@ -181,6 +181,26 @@ export function getTopMerchants(
   return topMerchants;
 }
 
+export function calculateRevenueConcentration(
+  records: MerchantRecord[],
+  month?: string,
+  topN: number = 10
+): { concentrationPercent: number; riskLevel: 'low' | 'medium' | 'high' } {
+  const topMerchants = getTopMerchants(records, month, topN);
+  const concentrationPercent = topMerchants.reduce((sum, m) => sum + m.percentOfTotal, 0);
+  
+  let riskLevel: 'low' | 'medium' | 'high';
+  if (concentrationPercent < 25) {
+    riskLevel = 'low';
+  } else if (concentrationPercent < 40) {
+    riskLevel = 'medium';
+  } else {
+    riskLevel = 'high';
+  }
+  
+  return { concentrationPercent, riskLevel };
+}
+
 export function getLatestMonth(records: MerchantRecord[]): string | null {
   if (records.length === 0) return null;
 

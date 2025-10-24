@@ -1,12 +1,14 @@
 import { MonthlyMetrics, TopMerchant, Processor, MerchantRecord } from '@shared/schema';
-import { formatCurrency, formatPercent, getMerchantChanges } from '@/lib/analytics';
+import { formatCurrency, formatPercent, getMerchantChanges, calculateRevenueConcentration } from '@/lib/analytics';
 import { MetricCard } from '@/components/metric-card';
 import { RevenueChart } from '@/components/revenue-chart';
 import { AccountActivityChart } from '@/components/account-activity-chart';
 import { RetentionChart } from '@/components/retention-chart';
 import { TopMerchantsTable } from '@/components/top-merchants-table';
 import { MerchantChangesPanel } from '@/components/merchant-changes-panel';
-import { DollarSign, Users, TrendingUp, Target } from 'lucide-react';
+import { BranchPerformanceTable } from '@/components/branch-performance-table';
+import { TrendingMerchants } from '@/components/trending-merchants';
+import { DollarSign, Users, TrendingUp, Target, AlertTriangle } from 'lucide-react';
 
 interface DashboardContentProps {
   metrics: MonthlyMetrics[];
@@ -23,6 +25,9 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
   
   // Calculate merchant changes
   const merchantChanges = getMerchantChanges(filteredRecords, processor);
+  
+  // Calculate revenue concentration
+  const concentration = calculateRevenueConcentration(filteredRecords, currentMonth || undefined);
   
   // Calculate aggregated metrics across the entire filtered range
   const displayMetrics = metrics.length > 0 ? {
@@ -68,7 +73,7 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <MetricCard
           title="Total Revenue"
           value={formatCurrency(displayMetrics.totalRevenue)}
@@ -89,6 +94,18 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
           icon={<Target className="w-5 h-5" />}
         />
         <MetricCard
+          title="Top 10 Concentration"
+          value={formatPercent(concentration.concentrationPercent, 0)}
+          subtitle="Risk Level"
+          subtitleValue={concentration.riskLevel.toUpperCase()}
+          icon={<AlertTriangle className="w-5 h-5" />}
+          className={
+            concentration.riskLevel === 'high' ? 'border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30' :
+            concentration.riskLevel === 'medium' ? 'border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950/30' :
+            'border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/30'
+          }
+        />
+        <MetricCard
           title="Agent Net Revenue"
           value={formatCurrency(displayMetrics.totalAgentNet)}
           icon={<TrendingUp className="w-5 h-5" />}
@@ -103,6 +120,10 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       </div>
 
       <RetentionChart metrics={metrics} />
+
+      <TrendingMerchants records={filteredRecords} currentMonth={currentMonth} />
+
+      <BranchPerformanceTable records={filteredRecords} currentMonth={currentMonth} />
 
       <MerchantChangesPanel changes={merchantChanges} />
 
