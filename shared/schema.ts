@@ -55,6 +55,8 @@ export const monthlyMetricsSchema = z.object({
   momRevenueChange: z.number().optional(),
   momRevenueChangePercent: z.number().optional(),
   netAccountGrowth: z.number(),
+  totalAgentNet: z.number(),
+  agentNetPerAccount: z.number(),
 });
 
 export const topMerchantSchema = z.object({

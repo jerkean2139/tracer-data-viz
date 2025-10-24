@@ -49,6 +49,10 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       ? ((metrics[metrics.length - 1].totalRevenue - metrics[metrics.length - 2].totalRevenue) / metrics[metrics.length - 2].totalRevenue) * 100
       : 0,
     netAccountGrowth: metrics.reduce((sum, m) => sum + m.netAccountGrowth, 0),
+    totalAgentNet: metrics.reduce((sum, m) => sum + m.totalAgentNet, 0),
+    agentNetPerAccount: metrics.length > 0
+      ? metrics.reduce((sum, m) => sum + m.totalAgentNet, 0) / (metrics[metrics.length - 1]?.totalAccounts || 1)
+      : 0,
   } : null;
 
   if (!displayMetrics) {
@@ -85,9 +89,11 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
           icon={<Target className="w-5 h-5" />}
         />
         <MetricCard
-          title="Revenue/Account"
-          value={formatCurrency(displayMetrics.revenuePerAccount)}
+          title="Agent Net Revenue"
+          value={formatCurrency(displayMetrics.totalAgentNet)}
           icon={<TrendingUp className="w-5 h-5" />}
+          subtitle="Avg per Account"
+          subtitleValue={formatCurrency(displayMetrics.agentNetPerAccount)}
         />
       </div>
 

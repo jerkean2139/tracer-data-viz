@@ -9,9 +9,11 @@ interface MetricCardProps {
   changeLabel?: string;
   icon?: React.ReactNode;
   className?: string;
+  subtitle?: string;
+  subtitleValue?: string;
 }
 
-export function MetricCard({ title, value, change, changeLabel, icon, className }: MetricCardProps) {
+export function MetricCard({ title, value, change, changeLabel, icon, className, subtitle, subtitleValue }: MetricCardProps) {
   const getTrendIcon = () => {
     if (change === undefined || change === null) return null;
     if (change > 0) return <TrendingUp className="w-4 h-4" />;
@@ -46,6 +48,13 @@ export function MetricCard({ title, value, change, changeLabel, icon, className 
               {change.toFixed(1)}%
             </span>
             {changeLabel && <span className="text-muted-foreground ml-1">{changeLabel}</span>}
+          </div>
+        )}
+
+        {subtitle && subtitleValue && (
+          <div className="text-sm text-muted-foreground pt-1 border-t border-border/50">
+            <span className="font-medium">{subtitle}:</span>{' '}
+            <span className="tabular-nums">{subtitleValue}</span>
           </div>
         )}
       </div>

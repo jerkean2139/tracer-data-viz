@@ -48,6 +48,15 @@ export function calculateMonthlyMetrics(
     const totalRevenue = monthRecords.reduce((sum, r) => sum + getRevenue(r), 0);
     const totalAccounts = currentMerchantIds.size;
     
+    // Calculate agent net revenue (commission)
+    const totalAgentNet = monthRecords.reduce((sum, r) => {
+      // Agent net is only applicable to Clearent records
+      if (r.processor === 'Clearent' && r.agentNet !== undefined) {
+        return sum + r.agentNet;
+      }
+      return sum;
+    }, 0);
+    
     // Debug logging for Feb 2024
     if (month === '2024-02') {
       console.log(`[Analytics] Feb 2024 has ${monthRecords.length} records, ${totalAccounts} unique merchants`);
@@ -91,6 +100,7 @@ export function calculateMonthlyMetrics(
       : 0;
 
     const revenuePerAccount = totalAccounts > 0 ? totalRevenue / totalAccounts : 0;
+    const agentNetPerAccount = totalAccounts > 0 ? totalAgentNet / totalAccounts : 0;
     const netAccountGrowth = newAccounts - lostAccounts;
 
     let momRevenueChange: number | undefined;
@@ -118,6 +128,8 @@ export function calculateMonthlyMetrics(
       momRevenueChange,
       momRevenueChangePercent,
       netAccountGrowth,
+      totalAgentNet,
+      agentNetPerAccount,
     });
 
     previousMonthMerchantIds = currentMerchantIds;
