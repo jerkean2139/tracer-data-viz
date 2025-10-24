@@ -18,9 +18,28 @@ export interface CSVColumn {
 const COLUMN_MAPPINGS: Record<string, string[]> = {
   merchantId: ['merchant id', 'merchantid', 'mid', 'merchant_id', 'id', 'client'],
   merchantName: ['merchant name', 'merchantname', 'merchant', 'name', 'merchant_name', 'business name', 'businessname', 'dba'],
-  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'volume', 'net', 'sales_amount', 'payout amount', 'sale amount'],
   branchId: ['branch id', 'branchid', 'branch', 'branch_id', 'agent', 'agent id', 'branch number'],
   month: ['month', 'date', 'period', 'month/year', 'processingdate', 'processing date'],
+  
+  // Clearent fields
+  transactions: ['transaction', 'transactions', 'swipes', 'trans'],
+  salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'sales_amount', 'sale amount'],
+  net: ['net', 'tracer net', 'net amount'],
+  commissionPercent: ['%', 'commission %', 'commission', 'commission percent', 'comm %'],
+  agentNet: ['agent net', 'agentnet', 'agent amount'],
+  
+  // Shift4 fields
+  payoutAmount: ['payout amount', 'payoutamount', 'payout'],
+  volume: ['volume', 'vol'],
+  sales: ['sales'],
+  refunds: ['refunds', 'refund'],
+  rejectAmount: ['reject amount', 'rejectamount', 'reject'],
+  bankSplit: ['bank split', 'banksplit'],
+  bankPayout: ['bank payout', 'bankpayout'],
+  
+  // ML fields
+  income: ['income', 'inc'],
+  expenses: ['expenses', 'expense', 'exp'],
 };
 
 function normalizeColumnName(name: string): string {
@@ -258,7 +277,7 @@ function parseCSVData(
           console.log('Data rows:', results.data.length);
           console.log('===================');
 
-          const requiredFields = ['merchantId', 'merchantName', 'salesAmount'];
+          const requiredFields = ['merchantId', 'merchantName'];
           const missingFields = requiredFields.filter(f => !columnMapping.has(f));
 
           if (missingFields.length > 0) {
@@ -267,7 +286,7 @@ function parseCSVData(
               errors: [
                 `Missing required columns: ${missingFields.join(', ')}`,
                 `Found headers: ${headers.join(', ')}`,
-                `Looking for: Merchant ID/Name, Sales Amount`
+                `Looking for: Merchant ID/Name`
               ],
               warnings,
             });
@@ -292,18 +311,36 @@ function parseCSVData(
             try {
               const merchantId = row[columnMapping.get('merchantId')!]?.toString().trim();
               const merchantName = row[columnMapping.get('merchantName')!]?.toString().trim();
-              const salesAmountStr = row[columnMapping.get('salesAmount')!]?.toString().trim();
 
-              if (!merchantId || !merchantName || !salesAmountStr) {
+              if (!merchantId || !merchantName) {
                 warnings.push(`Row ${index + 2}: Missing required data, skipped`);
                 return;
               }
 
-              const salesAmount = parseFloat(salesAmountStr.replace(/[$,]/g, ''));
-              if (isNaN(salesAmount)) {
-                warnings.push(`Row ${index + 2}: Invalid sales amount "${salesAmountStr}", skipped`);
-                return;
-              }
+              // Helper function to safely parse numeric values
+              const parseNumeric = (fieldName: string): number | undefined => {
+                if (!columnMapping.has(fieldName)) return undefined;
+                const value = row[columnMapping.get(fieldName)!]?.toString().trim();
+                if (!value) return undefined;
+                const numeric = parseFloat(value.replace(/[$,%]/g, ''));
+                return isNaN(numeric) ? undefined : numeric;
+              };
+
+              // Extract all possible fields
+              const salesAmount = parseNumeric('salesAmount');
+              const transactions = parseNumeric('transactions');
+              const net = parseNumeric('net');
+              const commissionPercent = parseNumeric('commissionPercent');
+              const agentNet = parseNumeric('agentNet');
+              const payoutAmount = parseNumeric('payoutAmount');
+              const volume = parseNumeric('volume');
+              const sales = parseNumeric('sales');
+              const refunds = parseNumeric('refunds');
+              const rejectAmount = parseNumeric('rejectAmount');
+              const bankSplit = parseNumeric('bankSplit');
+              const bankPayout = parseNumeric('bankPayout');
+              const income = parseNumeric('income');
+              const expenses = parseNumeric('expenses');
 
               let month = row[columnMapping.get('month')!]?.toString().trim();
               if (!month && monthFromFilename) {
@@ -321,29 +358,41 @@ function parseCSVData(
                 ? row[columnMapping.get('branchId')!]?.toString().trim()
                 : undefined;
 
+              // For revenue comparison in deduplication, prioritize: net > salesAmount > payoutAmount > income
+              const revenueForComparison = net ?? salesAmount ?? payoutAmount ?? income ?? 0;
+
+              const record: MerchantRecord = {
+                merchantId,
+                merchantName,
+                month,
+                processor: detectedProcessor as Processor,
+                branchId,
+                salesAmount,
+                transactions,
+                net,
+                commissionPercent,
+                agentNet,
+                payoutAmount,
+                volume,
+                sales,
+                refunds,
+                rejectAmount,
+                bankSplit,
+                bankPayout,
+                income,
+                expenses,
+              };
+
               if (seenMerchantIds.has(merchantId)) {
                 const existingIndex = seenMerchantIds.get(merchantId)!;
-                if (records[existingIndex].salesAmount < salesAmount) {
-                  records[existingIndex] = {
-                    merchantId,
-                    merchantName,
-                    salesAmount,
-                    branchId,
-                    month,
-                    processor: detectedProcessor as Processor,
-                  };
+                const existingRevenue = records[existingIndex].net ?? records[existingIndex].salesAmount ?? records[existingIndex].payoutAmount ?? records[existingIndex].income ?? 0;
+                if (existingRevenue < revenueForComparison) {
+                  records[existingIndex] = record;
                   warnings.push(`Duplicate Merchant ID "${merchantId}" found, kept higher revenue entry`);
                 }
               } else {
                 seenMerchantIds.set(merchantId, records.length);
-                records.push({
-                  merchantId,
-                  merchantName,
-                  salesAmount,
-                  branchId,
-                  month,
-                  processor: detectedProcessor as 'Clearent' | 'ML' | 'Shift4',
-                });
+                records.push(record);
               }
             } catch (e) {
               warnings.push(`Row ${index + 2}: Error processing row - ${e}`);

@@ -1,6 +1,21 @@
 import { MerchantRecord, MonthlyMetrics, TopMerchant, Processor } from '@shared/schema';
 import { format, parse, compareAsc } from 'date-fns';
 
+// Helper function to get revenue for a record based on processor
+function getRevenue(record: MerchantRecord): number {
+  // Clearent & ML: use 'net' (Tracer's revenue)
+  // Shift4: use 'payoutAmount'
+  // Others: fallback to salesAmount
+  if (record.processor === 'Clearent' || record.processor === 'ML') {
+    return record.net ?? record.salesAmount ?? 0;
+  }
+  if (record.processor === 'Shift4') {
+    return record.payoutAmount ?? record.salesAmount ?? 0;
+  }
+  // For TSYS, Micamp, PayBright, TRX - use salesAmount or net if available
+  return record.net ?? record.salesAmount ?? 0;
+}
+
 export function calculateMonthlyMetrics(
   records: MerchantRecord[],
   processor: Processor = 'All'
@@ -30,7 +45,7 @@ export function calculateMonthlyMetrics(
     const monthRecords = recordsByMonth.get(month)!;
     const currentMerchantIds = new Set(monthRecords.map(r => r.merchantId));
 
-    const totalRevenue = monthRecords.reduce((sum, r) => sum + r.salesAmount, 0);
+    const totalRevenue = monthRecords.reduce((sum, r) => sum + getRevenue(r), 0);
     const totalAccounts = currentMerchantIds.size;
 
     let retainedAccounts = 0;
@@ -108,19 +123,20 @@ export function getTopMerchants(
     ? records.filter(r => r.month === month)
     : records;
 
-  const merchantRevenue = new Map<string, { name: string; revenue: number; processor: 'Clearent' | 'ML' | 'Shift4' }>();
+  const merchantRevenue = new Map<string, { name: string; revenue: number; processor: Exclude<Processor, 'All'> }>();
 
   filteredRecords.forEach(record => {
     if (record.processor === 'All') return;
     
+    const revenue = getRevenue(record);
     const existing = merchantRevenue.get(record.merchantId);
     if (existing) {
-      existing.revenue += record.salesAmount;
+      existing.revenue += revenue;
     } else {
       merchantRevenue.set(record.merchantId, {
         name: record.merchantName,
-        revenue: record.salesAmount,
-        processor: record.processor as 'Clearent' | 'ML' | 'Shift4',
+        revenue,
+        processor: record.processor as Exclude<Processor, 'All'>,
       });
     }
   });

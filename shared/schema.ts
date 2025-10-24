@@ -3,10 +3,31 @@ import { z } from "zod";
 export const merchantRecordSchema = z.object({
   merchantId: z.string(),
   merchantName: z.string(),
-  salesAmount: z.number(),
-  branchId: z.string().optional(),
   month: z.string(),
   processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'All']),
+  branchId: z.string().optional(),
+  
+  // Common fields
+  salesAmount: z.number().optional(),
+  
+  // Clearent-specific fields
+  transactions: z.number().optional(), // Number of swipes
+  net: z.number().optional(), // Tracer's revenue
+  commissionPercent: z.number().optional(), // Commission %
+  agentNet: z.number().optional(), // Agent's cut
+  
+  // Shift4-specific fields
+  payoutAmount: z.number().optional(),
+  volume: z.number().optional(),
+  sales: z.number().optional(),
+  refunds: z.number().optional(),
+  rejectAmount: z.number().optional(),
+  bankSplit: z.number().optional(),
+  bankPayout: z.number().optional(),
+  
+  // ML-specific fields
+  income: z.number().optional(),
+  expenses: z.number().optional(),
 });
 
 export const uploadedFileSchema = z.object({
