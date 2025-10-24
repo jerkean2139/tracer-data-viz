@@ -1,11 +1,18 @@
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import { MerchantRecord, Processor } from '@shared/schema';
+import { MerchantRecord, Processor, MerchantMetadata } from '@shared/schema';
 import { format, parse } from 'date-fns';
 
 export interface CSVParseResult {
   success: boolean;
   data?: MerchantRecord[];
+  errors: string[];
+  warnings: string[];
+}
+
+export interface LeadsParseResult {
+  success: boolean;
+  data?: MerchantMetadata[];
   errors: string[];
   warnings: string[];
 }

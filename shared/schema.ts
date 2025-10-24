@@ -28,6 +28,12 @@ export const merchantRecordSchema = z.object({
   // ML-specific fields
   income: z.number().optional(),
   expenses: z.number().optional(),
+  
+  // Metadata from Leads file (cross-reference)
+  partnerBranchNumber: z.string().optional(),
+  status: z.string().optional(),
+  statusCategory: z.string().optional(),
+  expectedProcessor: z.string().optional(), // Current Processor from leads file
 });
 
 export const uploadedFileSchema = z.object({
@@ -39,6 +45,24 @@ export const uploadedFileSchema = z.object({
   uploadedAt: z.string(),
   isValid: z.boolean(),
   errors: z.array(z.string()).optional(),
+});
+
+export const merchantMetadataSchema = z.object({
+  merchantId: z.string(),
+  dbaName: z.string(),
+  partnerBranchNumber: z.string().optional(),
+  status: z.string().optional(),
+  statusCategory: z.string().optional(),
+  currentProcessor: z.string().optional(),
+});
+
+export const validationWarningSchema = z.object({
+  merchantId: z.string(),
+  merchantName: z.string(),
+  warningType: z.enum(['branch_mismatch', 'processor_mismatch']),
+  expected: z.string(),
+  actual: z.string(),
+  processor: z.string(),
 });
 
 export const monthlyMetricsSchema = z.object({
@@ -104,4 +128,6 @@ export type BranchPerformance = z.infer<typeof branchPerformanceSchema>;
 export type DateRange = z.infer<typeof dateRangeSchema>;
 export type MerchantChange = z.infer<typeof merchantChangeSchema>;
 export type MerchantChanges = z.infer<typeof merchantChangesSchema>;
+export type MerchantMetadata = z.infer<typeof merchantMetadataSchema>;
+export type ValidationWarning = z.infer<typeof validationWarningSchema>;
 export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'All';

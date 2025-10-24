@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Upload, Calendar } from 'lucide-react';
 import { formatMonthLabel } from '@/lib/analytics';
 import { CSVUpload } from '@/components/csv-upload';
+import { LeadsUpload } from '@/components/leads-upload';
 import { DashboardContent } from '@/components/dashboard-content';
 import { ProcessorComparison } from '@/components/processor-comparison';
 import { EmptyState } from '@/components/empty-state';
@@ -18,11 +19,13 @@ import { DataValidationPanel } from '@/components/data-validation-panel';
 export default function Dashboard() {
   const [records, setRecords] = useState(storageService.getAllRecords());
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [leadsDialogOpen, setLeadsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [showDashboard, setShowDashboard] = useState(false);
   const [dateRange, setDateRange] = useState<'current' | '3months' | '6months' | '12months' | 'all' | 'custom'>('all');
   const [customStartMonth, setCustomStartMonth] = useState<string>('');
   const [customEndMonth, setCustomEndMonth] = useState<string>('');
+  const [validationWarnings, setValidationWarnings] = useState(storageService.getValidationWarnings());
 
   useEffect(() => {
     setRecords(storageService.getAllRecords());
@@ -30,8 +33,14 @@ export default function Dashboard() {
 
   const handleUploadComplete = () => {
     setRecords(storageService.getAllRecords());
+    setValidationWarnings(storageService.getValidationWarnings());
     setUploadDialogOpen(false);
     setShowDashboard(true);
+  };
+
+  const handleLeadsUploadComplete = () => {
+    setValidationWarnings(storageService.getValidationWarnings());
+    setLeadsDialogOpen(false);
   };
 
   const hasData = records.length > 0;
@@ -200,16 +209,30 @@ export default function Dashboard() {
                   )}
                 </div>
               )}
+              <Dialog open={leadsDialogOpen} onOpenChange={setLeadsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" data-testid="button-upload-leads">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload Leads
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Upload Merchant Leads</DialogTitle>
+                  </DialogHeader>
+                  <LeadsUpload onUploadComplete={handleLeadsUploadComplete} />
+                </DialogContent>
+              </Dialog>
               <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
                 <DialogTrigger asChild>
                   <Button data-testid="button-upload-new">
                     <Upload className="w-4 h-4 mr-2" />
-                    Upload New Month
+                    Upload Revenue
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl">
                   <DialogHeader>
-                    <DialogTitle>Upload CSV Files</DialogTitle>
+                    <DialogTitle>Upload Revenue CSV Files</DialogTitle>
                   </DialogHeader>
                   <CSVUpload onUploadComplete={handleUploadComplete} />
                 </DialogContent>
@@ -328,7 +351,7 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="validation">
-            <DataValidationPanel records={filteredRecords} />
+            <DataValidationPanel records={filteredRecords} warnings={validationWarnings} />
           </TabsContent>
         </Tabs>
       </main>

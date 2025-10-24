@@ -1,8 +1,9 @@
-import { MerchantRecord, UploadedFile } from '@shared/schema';
+import { MerchantRecord, UploadedFile, MerchantMetadata, ValidationWarning } from '@shared/schema';
 
 const STORAGE_KEYS = {
   RECORDS: 'merchant_records',
   FILES: 'uploaded_files',
+  METADATA: 'merchant_metadata',
 };
 
 export const storageService = {
@@ -91,5 +92,101 @@ export const storageService = {
     const files = this.getUploadedFiles();
     const filtered = files.filter(f => f.id !== fileId);
     localStorage.setItem(STORAGE_KEYS.FILES, JSON.stringify(filtered));
+  },
+
+  // Merchant Metadata Management
+  getAllMetadata(): MerchantMetadata[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.METADATA);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error loading metadata:', error);
+      return [];
+    }
+  },
+
+  saveMetadata(metadata: MerchantMetadata[]): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.METADATA, JSON.stringify(metadata));
+    } catch (error) {
+      console.error('Error saving metadata:', error);
+      throw new Error('Failed to save metadata to storage');
+    }
+  },
+
+  addMetadata(newMetadata: MerchantMetadata[]): void {
+    const existing = this.getAllMetadata();
+    const metadataMap = new Map<string, MerchantMetadata>();
+
+    // Keep existing metadata
+    existing.forEach(meta => {
+      metadataMap.set(meta.merchantId, meta);
+    });
+
+    // Overwrite with new metadata (latest upload wins)
+    newMetadata.forEach(meta => {
+      metadataMap.set(meta.merchantId, meta);
+    });
+
+    const merged = Array.from(metadataMap.values());
+    this.saveMetadata(merged);
+  },
+
+  getMetadataByMID(merchantId: string): MerchantMetadata | undefined {
+    const allMetadata = this.getAllMetadata();
+    return allMetadata.find(m => m.merchantId === merchantId);
+  },
+
+  clearAllMetadata(): void {
+    localStorage.removeItem(STORAGE_KEYS.METADATA);
+  },
+
+  // Cross-reference validation
+  getValidationWarnings(): ValidationWarning[] {
+    const records = this.getAllRecords();
+    const metadata = this.getAllMetadata();
+    const warnings: ValidationWarning[] = [];
+
+    if (metadata.length === 0) {
+      return warnings; // No metadata to validate against
+    }
+
+    // Create metadata lookup
+    const metadataMap = new Map<string, MerchantMetadata>();
+    metadata.forEach(m => metadataMap.set(m.merchantId, m));
+
+    // Check each record
+    records.forEach(record => {
+      const meta = metadataMap.get(record.merchantId);
+      if (!meta) return; // No metadata for this merchant
+
+      // Check branch mismatch
+      if (meta.partnerBranchNumber && record.branchId && 
+          meta.partnerBranchNumber !== record.branchId) {
+        warnings.push({
+          merchantId: record.merchantId,
+          merchantName: record.merchantName,
+          warningType: 'branch_mismatch',
+          expected: meta.partnerBranchNumber,
+          actual: record.branchId,
+          processor: record.processor,
+        });
+      }
+
+      // Check processor mismatch
+      if (meta.currentProcessor && 
+          meta.currentProcessor.toLowerCase() !== record.processor.toLowerCase()) {
+        warnings.push({
+          merchantId: record.merchantId,
+          merchantName: record.merchantName,
+          warningType: 'processor_mismatch',
+          expected: meta.currentProcessor,
+          actual: record.processor,
+          processor: record.processor,
+        });
+      }
+    });
+
+    return warnings;
   },
 };

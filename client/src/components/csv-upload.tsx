@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface FileUpload {
   file: File;
-  processor: 'Clearent' | 'ML' | 'Shift4' | null;
+  processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | null;
   status: 'pending' | 'processing' | 'success' | 'error';
   recordCount?: number;
   errors?: string[];
@@ -80,7 +80,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
     e.target.value = '';
   }, []);
 
-  const updateProcessor = useCallback((index: number, processor: 'Clearent' | 'ML' | 'Shift4') => {
+  const updateProcessor = useCallback((index: number, processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX') => {
     setUploads(prev => prev.map((upload, i) =>
       i === index ? { ...upload, processor } : upload
     ));
