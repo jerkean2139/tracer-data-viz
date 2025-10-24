@@ -54,7 +54,7 @@ export function LeadsUpload({ onUploadComplete }: LeadsUploadProps) {
       }
 
       // Save metadata to storage
-      storageService.addMetadata(result.data);
+      await storageService.addMetadata(result.data);
 
       setUploadStatus({
         status: 'success',

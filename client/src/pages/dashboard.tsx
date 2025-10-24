@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { storageService } from '@/lib/storage';
 import { calculateMonthlyMetrics, getTopMerchants, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import { getNextExpectedMonth } from '@/lib/csvParser';
-import { Processor, MerchantRecord } from '@shared/schema';
+import { Processor, MerchantRecord, ValidationWarning } from '@shared/schema';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 
 export default function Dashboard() {
-  const [records, setRecords] = useState(storageService.getAllRecords());
+  const [records, setRecords] = useState<MerchantRecord[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [leadsDialogOpen, setLeadsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
@@ -27,21 +27,33 @@ export default function Dashboard() {
   const [customStartMonth, setCustomStartMonth] = useState<string>('');
   const [customEndMonth, setCustomEndMonth] = useState<string>('');
   const [selectedBranch, setSelectedBranch] = useState<string>('all');
-  const [validationWarnings, setValidationWarnings] = useState(storageService.getValidationWarnings());
+  const [validationWarnings, setValidationWarnings] = useState<ValidationWarning[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setRecords(storageService.getAllRecords());
+    async function loadData() {
+      setIsLoading(true);
+      const data = await storageService.getAllRecords();
+      const warnings = await storageService.getValidationWarnings();
+      setRecords(data);
+      setValidationWarnings(warnings);
+      setIsLoading(false);
+    }
+    loadData();
   }, []);
 
-  const handleUploadComplete = () => {
-    setRecords(storageService.getAllRecords());
-    setValidationWarnings(storageService.getValidationWarnings());
+  const handleUploadComplete = async () => {
+    const data = await storageService.getAllRecords();
+    const warnings = await storageService.getValidationWarnings();
+    setRecords(data);
+    setValidationWarnings(warnings);
     setUploadDialogOpen(false);
     setShowDashboard(true);
   };
 
-  const handleLeadsUploadComplete = () => {
-    setValidationWarnings(storageService.getValidationWarnings());
+  const handleLeadsUploadComplete = async () => {
+    const warnings = await storageService.getValidationWarnings();
+    setValidationWarnings(warnings);
     setLeadsDialogOpen(false);
   };
 

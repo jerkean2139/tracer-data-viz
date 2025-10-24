@@ -1,5 +1,84 @@
 import { z } from "zod";
+import { pgTable, text, real, varchar, timestamp, serial } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 
+// Database Tables
+export const merchantRecords = pgTable("merchant_records", {
+  id: serial("id").primaryKey(),
+  merchantId: varchar("merchant_id", { length: 255 }).notNull(),
+  merchantName: text("merchant_name").notNull(),
+  month: varchar("month", { length: 7 }).notNull(),
+  processor: varchar("processor", { length: 50 }).notNull(),
+  branchId: varchar("branch_id", { length: 50 }),
+  
+  // Revenue fields
+  salesAmount: real("sales_amount"),
+  
+  // Clearent-specific
+  transactions: real("transactions"),
+  net: real("net"),
+  commissionPercent: real("commission_percent"),
+  agentNet: real("agent_net"),
+  
+  // Shift4-specific
+  payoutAmount: real("payout_amount"),
+  volume: real("volume"),
+  sales: real("sales"),
+  refunds: real("refunds"),
+  rejectAmount: real("reject_amount"),
+  bankSplit: real("bank_split"),
+  bankPayout: real("bank_payout"),
+  
+  // ML-specific
+  income: real("income"),
+  expenses: real("expenses"),
+  
+  // Metadata
+  partnerBranchNumber: varchar("partner_branch_number", { length: 50 }),
+  status: varchar("status", { length: 100 }),
+  statusCategory: varchar("status_category", { length: 100 }),
+  expectedProcessor: varchar("expected_processor", { length: 50 }),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const uploadedFiles = pgTable("uploaded_files", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  fileName: text("file_name").notNull(),
+  processor: varchar("processor", { length: 50 }).notNull(),
+  month: varchar("month", { length: 7 }).notNull(),
+  recordCount: real("record_count").notNull(),
+  uploadedAt: text("uploaded_at").notNull(),
+  isValid: text("is_valid").notNull(),
+  errors: text("errors"),
+});
+
+export const merchantMetadata = pgTable("merchant_metadata", {
+  id: serial("id").primaryKey(),
+  merchantId: varchar("merchant_id", { length: 255 }).notNull().unique(),
+  dbaName: text("dba_name").notNull(),
+  partnerBranchNumber: varchar("partner_branch_number", { length: 50 }),
+  status: varchar("status", { length: 100 }),
+  statusCategory: varchar("status_category", { length: 100 }),
+  currentProcessor: varchar("current_processor", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Insert schemas for API validation
+export const insertMerchantRecordSchema = createInsertSchema(merchantRecords).omit({ id: true, createdAt: true });
+export const insertUploadedFileSchema = createInsertSchema(uploadedFiles);
+export const insertMerchantMetadataSchema = createInsertSchema(merchantMetadata).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Type exports for database
+export type DbMerchantRecord = typeof merchantRecords.$inferSelect;
+export type InsertMerchantRecord = z.infer<typeof insertMerchantRecordSchema>;
+export type DbUploadedFile = typeof uploadedFiles.$inferSelect;
+export type InsertUploadedFile = z.infer<typeof insertUploadedFileSchema>;
+export type DbMerchantMetadata = typeof merchantMetadata.$inferSelect;
+export type InsertMerchantMetadata = z.infer<typeof insertMerchantMetadataSchema>;
+
+// Legacy Zod schemas for frontend compatibility
 export const merchantRecordSchema = z.object({
   merchantId: z.string(),
   merchantName: z.string(),

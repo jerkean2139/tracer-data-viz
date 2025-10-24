@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Upload, FileText, AlertCircle, CheckCircle2, X, Calendar } from 'lucide-react';
 import { parseCSVFile, detectProcessor, getNextExpectedMonth } from '@/lib/csvParser';
 import { storageService } from '@/lib/storage';
@@ -29,11 +29,19 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploads, setUploads] = useState<FileUpload[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [latestMonth, setLatestMonth] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Get next expected month from existing data
-  const existingRecords = storageService.getAllRecords();
-  const latestMonth = getLatestMonth(existingRecords);
+  useEffect(() => {
+    async function loadLatestMonth() {
+      const records = await storageService.getAllRecords();
+      const latest = getLatestMonth(records);
+      setLatestMonth(latest);
+    }
+    loadLatestMonth();
+  }, []);
+
   const nextExpectedMonth = getNextExpectedMonth(latestMonth);
   const nextExpectedLabel = formatMonthLabel(nextExpectedMonth);
 
@@ -142,7 +150,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
             });
           }
 
-          storageService.addRecords(result.data);
+          await storageService.addRecords(result.data);
 
           const uploadedFile: UploadedFile = {
             id: `${Date.now()}-${i}`,
@@ -155,7 +163,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
             errors: result.errors,
           };
 
-          storageService.addUploadedFile(uploadedFile);
+          await storageService.addUploadedFile(uploadedFile);
 
           setUploads(prev => prev.map((u, idx) =>
             idx === i ? {

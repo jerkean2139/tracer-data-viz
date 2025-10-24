@@ -1,192 +1,151 @@
 import { MerchantRecord, UploadedFile, MerchantMetadata, ValidationWarning } from '@shared/schema';
 
-const STORAGE_KEYS = {
-  RECORDS: 'merchant_records',
-  FILES: 'uploaded_files',
-  METADATA: 'merchant_metadata',
-};
+// Helper function to make API calls
+async function apiCall<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API call failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
 
 export const storageService = {
-  getAllRecords(): MerchantRecord[] {
+  async getAllRecords(): Promise<MerchantRecord[]> {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.RECORDS);
-      return data ? JSON.parse(data) : [];
+      return await apiCall<MerchantRecord[]>('/api/records');
     } catch (error) {
       console.error('Error loading records:', error);
       return [];
     }
   },
 
-  saveRecords(records: MerchantRecord[]): void {
+  async saveRecords(records: MerchantRecord[]): Promise<void> {
+    // Not used in API-based storage
+    console.warn('saveRecords is deprecated, use addRecords instead');
+  },
+
+  async addRecords(newRecords: MerchantRecord[]): Promise<void> {
     try {
-      localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
+      await apiCall('/api/records', {
+        method: 'POST',
+        body: JSON.stringify(newRecords),
+      });
     } catch (error) {
-      console.error('Error saving records:', error);
+      console.error('Error adding records:', error);
       throw new Error('Failed to save records to storage');
     }
   },
 
-  addRecords(newRecords: MerchantRecord[]): void {
-    const existing = this.getAllRecords();
-    const recordMap = new Map<string, MerchantRecord>();
-
-    // Helper to get revenue for comparison
-    const getRevenue = (record: MerchantRecord): number => {
-      if (record.processor === 'Clearent' || record.processor === 'ML') {
-        return record.net ?? record.salesAmount ?? 0;
-      }
-      if (record.processor === 'Shift4') {
-        return record.payoutAmount ?? record.salesAmount ?? 0;
-      }
-      return record.net ?? record.salesAmount ?? 0;
-    };
-
-    existing.forEach(record => {
-      const key = `${record.processor}-${record.month}-${record.merchantId}`;
-      recordMap.set(key, record);
-    });
-
-    newRecords.forEach(record => {
-      const key = `${record.processor}-${record.month}-${record.merchantId}`;
-      const existingRecord = recordMap.get(key);
-      
-      if (!existingRecord || getRevenue(record) > getRevenue(existingRecord)) {
-        recordMap.set(key, record);
-      }
-    });
-
-    const merged = Array.from(recordMap.values());
-    this.saveRecords(merged);
-  },
-
-  deleteRecordsByMonth(month: string, processor?: string): void {
-    const records = this.getAllRecords();
-    const filtered = records.filter(r =>
-      !(r.month === month && (!processor || r.processor === processor))
-    );
-    this.saveRecords(filtered);
-  },
-
-  clearAllRecords(): void {
-    localStorage.removeItem(STORAGE_KEYS.RECORDS);
-    localStorage.removeItem(STORAGE_KEYS.FILES);
-  },
-
-  getUploadedFiles(): UploadedFile[] {
+  async deleteRecordsByMonth(month: string, processor?: string): Promise<void> {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.FILES);
-      return data ? JSON.parse(data) : [];
+      const url = processor 
+        ? `/api/records/${month}/${processor}`
+        : `/api/records/${month}`;
+      await apiCall(url, { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error deleting records:', error);
+      throw new Error('Failed to delete records');
+    }
+  },
+
+  async clearAllRecords(): Promise<void> {
+    try {
+      await apiCall('/api/records', { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error clearing records:', error);
+      throw new Error('Failed to clear records');
+    }
+  },
+
+  async getUploadedFiles(): Promise<UploadedFile[]> {
+    try {
+      return await apiCall<UploadedFile[]>('/api/files');
     } catch (error) {
       console.error('Error loading files:', error);
       return [];
     }
   },
 
-  addUploadedFile(file: UploadedFile): void {
-    const files = this.getUploadedFiles();
-    files.push(file);
-    localStorage.setItem(STORAGE_KEYS.FILES, JSON.stringify(files));
-  },
-
-  deleteUploadedFile(fileId: string): void {
-    const files = this.getUploadedFiles();
-    const filtered = files.filter(f => f.id !== fileId);
-    localStorage.setItem(STORAGE_KEYS.FILES, JSON.stringify(filtered));
-  },
-
-  // Merchant Metadata Management
-  getAllMetadata(): MerchantMetadata[] {
+  async addUploadedFile(file: UploadedFile): Promise<void> {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.METADATA);
-      return data ? JSON.parse(data) : [];
+      await apiCall('/api/files', {
+        method: 'POST',
+        body: JSON.stringify(file),
+      });
+    } catch (error) {
+      console.error('Error adding file:', error);
+      throw new Error('Failed to save file to storage');
+    }
+  },
+
+  async deleteUploadedFile(fileId: string): Promise<void> {
+    try {
+      await apiCall(`/api/files/${fileId}`, { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      throw new Error('Failed to delete file');
+    }
+  },
+
+  async getAllMetadata(): Promise<MerchantMetadata[]> {
+    try {
+      return await apiCall<MerchantMetadata[]>('/api/metadata');
     } catch (error) {
       console.error('Error loading metadata:', error);
       return [];
     }
   },
 
-  saveMetadata(metadata: MerchantMetadata[]): void {
+  async saveMetadata(metadata: MerchantMetadata[]): Promise<void> {
+    // Not used in API-based storage
+    console.warn('saveMetadata is deprecated, use addMetadata instead');
+  },
+
+  async addMetadata(newMetadata: MerchantMetadata[]): Promise<void> {
     try {
-      localStorage.setItem(STORAGE_KEYS.METADATA, JSON.stringify(metadata));
+      await apiCall('/api/metadata', {
+        method: 'POST',
+        body: JSON.stringify(newMetadata),
+      });
     } catch (error) {
-      console.error('Error saving metadata:', error);
+      console.error('Error adding metadata:', error);
       throw new Error('Failed to save metadata to storage');
     }
   },
 
-  addMetadata(newMetadata: MerchantMetadata[]): void {
-    const existing = this.getAllMetadata();
-    const metadataMap = new Map<string, MerchantMetadata>();
-
-    // Keep existing metadata
-    existing.forEach(meta => {
-      metadataMap.set(meta.merchantId, meta);
-    });
-
-    // Overwrite with new metadata (latest upload wins)
-    newMetadata.forEach(meta => {
-      metadataMap.set(meta.merchantId, meta);
-    });
-
-    const merged = Array.from(metadataMap.values());
-    this.saveMetadata(merged);
-  },
-
-  getMetadataByMID(merchantId: string): MerchantMetadata | undefined {
-    const allMetadata = this.getAllMetadata();
-    return allMetadata.find(m => m.merchantId === merchantId);
-  },
-
-  clearAllMetadata(): void {
-    localStorage.removeItem(STORAGE_KEYS.METADATA);
-  },
-
-  // Cross-reference validation
-  getValidationWarnings(): ValidationWarning[] {
-    const records = this.getAllRecords();
-    const metadata = this.getAllMetadata();
-    const warnings: ValidationWarning[] = [];
-
-    if (metadata.length === 0) {
-      return warnings; // No metadata to validate against
+  async getMetadataByMID(merchantId: string): Promise<MerchantMetadata | undefined> {
+    try {
+      const metadata = await apiCall<MerchantMetadata | null>(`/api/metadata/${merchantId}`);
+      return metadata || undefined;
+    } catch (error) {
+      console.error('Error loading metadata:', error);
+      return undefined;
     }
+  },
 
-    // Create metadata lookup
-    const metadataMap = new Map<string, MerchantMetadata>();
-    metadata.forEach(m => metadataMap.set(m.merchantId, m));
+  async clearAllMetadata(): Promise<void> {
+    try {
+      await apiCall('/api/metadata', { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error clearing metadata:', error);
+      throw new Error('Failed to clear metadata');
+    }
+  },
 
-    // Check each record
-    records.forEach(record => {
-      const meta = metadataMap.get(record.merchantId);
-      if (!meta) return; // No metadata for this merchant
-
-      // Check branch mismatch
-      if (meta.partnerBranchNumber && record.branchId && 
-          meta.partnerBranchNumber !== record.branchId) {
-        warnings.push({
-          merchantId: record.merchantId,
-          merchantName: record.merchantName,
-          warningType: 'branch_mismatch',
-          expected: meta.partnerBranchNumber,
-          actual: record.branchId,
-          processor: record.processor,
-        });
-      }
-
-      // Check processor mismatch
-      if (meta.currentProcessor && 
-          meta.currentProcessor.toLowerCase() !== record.processor.toLowerCase()) {
-        warnings.push({
-          merchantId: record.merchantId,
-          merchantName: record.merchantName,
-          warningType: 'processor_mismatch',
-          expected: meta.currentProcessor,
-          actual: record.processor,
-          processor: record.processor,
-        });
-      }
-    });
-
-    return warnings;
+  async getValidationWarnings(): Promise<ValidationWarning[]> {
+    try {
+      return await apiCall<ValidationWarning[]>('/api/validation-warnings');
+    } catch (error) {
+      console.error('Error loading validation warnings:', error);
+      return [];
+    }
   },
 };
