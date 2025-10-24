@@ -192,6 +192,33 @@ The dashboard is built on a modern web stack designed for performance and a rich
 - Partner logos persist across browser sessions
 - PDF generation triggers successfully with download
 
+### Processor Start Date Handling (October 24, 2025)
+
+**Feature**: Recognition of processor collection start dates to eliminate false "missing data" warnings.
+
+**Implementation**:
+- Defined processor start dates:
+  - Clearent, ML, Shift4, TSYS: January 2024
+  - Micamp: March 2024
+  - TRX: May 2024
+  - PayBright: June 2024
+  
+**Components Updated**:
+1. **Data Validation Panel** (`data-validation-panel.tsx`):
+   - Months before processor start show muted dash (-) instead of orange warning
+   - No orange background highlighting for pre-collection periods
+   - Distinguishes between "missing data" (should exist) and "not started" (processor not in use)
+
+2. **Upload Tracking** (`upload-tracking.tsx`):
+   - Months before processor start show gray dash (Minus icon) instead of red X
+   - Updated legend with "Not Started Yet" indicator
+   - Upload completion rates only count months after processor start dates
+
+**User Impact**:
+- TRX no longer shows missing data warnings for Jan-Apr 2024 (started May 2024)
+- Micamp no longer shows missing data warnings for Jan-Feb 2024 (started March 2024)
+- Clearer distinction between genuine data gaps vs. pre-collection periods
+
 ## External Dependencies
 
 -   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data integrated from these platforms via CSV/XLSX uploads).

@@ -1,12 +1,31 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, Minus } from "lucide-react";
 import { MerchantRecord, UploadedFile, Processor } from "@shared/schema";
 import { formatMonthLabel } from "@/lib/analytics";
 
 interface UploadTrackingProps {
   records: MerchantRecord[];
   uploadedFiles: UploadedFile[];
+}
+
+// Processor collection start dates (YYYY-MM format)
+const PROCESSOR_START_DATES: Record<Processor, string> = {
+  'Clearent': '2024-01',
+  'ML': '2024-01',
+  'Shift4': '2024-01',
+  'TSYS': '2024-01',
+  'Micamp': '2024-03',    // Started March 2024
+  'PayBright': '2024-06',
+  'TRX': '2024-05',        // Started May 2024
+  'All': '2024-01',
+};
+
+// Helper to check if a month is before processor's start date
+function isBeforeStartDate(processor: string, month: string): boolean {
+  const startDate = PROCESSOR_START_DATES[processor as Processor];
+  if (!startDate) return false;
+  return month < startDate;
 }
 
 export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) {
@@ -22,7 +41,12 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
   const PROCESSORS = Array.from(new Set([...processorsFromRecords, ...processorsFromFiles])).sort();
 
   // Check if a processor has data for a given month
-  const hasData = (processor: Processor, month: string): 'uploaded' | 'missing' | 'partial' => {
+  const hasData = (processor: Processor, month: string): 'uploaded' | 'missing' | 'partial' | 'before-start' => {
+    // Check if month is before processor's start date
+    if (isBeforeStartDate(processor, month)) {
+      return 'before-start';
+    }
+    
     const file = uploadedFiles.find(f => f.processor === processor && f.month === month);
     const recordsExist = records.some(r => r.processor === processor && r.month === month);
     
@@ -161,6 +185,11 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
                                 className="h-5 w-5 text-red-600 mx-auto" 
                                 data-testid={`status-${processor.toLowerCase()}-${month}-missing`}
                               />
+                            ) : status === 'before-start' ? (
+                              <Minus 
+                                className="h-5 w-5 text-muted-foreground mx-auto" 
+                                data-testid={`status-${processor.toLowerCase()}-${month}-before-start`}
+                              />
                             ) : (
                               <AlertCircle 
                                 className="h-5 w-5 text-yellow-600 mx-auto" 
@@ -178,7 +207,7 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-6 mt-6 pt-4 border-t text-sm">
+          <div className="flex flex-wrap items-center gap-6 mt-6 pt-4 border-t text-sm">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <span className="text-muted-foreground">Data Uploaded</span>
@@ -190,6 +219,10 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-yellow-600" />
               <span className="text-muted-foreground">Partial Data</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Minus className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Not Started Yet</span>
             </div>
           </div>
         </CardContent>

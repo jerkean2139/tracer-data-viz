@@ -1,4 +1,4 @@
-import { MerchantRecord, ValidationWarning } from '@shared/schema';
+import { MerchantRecord, ValidationWarning, Processor } from '@shared/schema';
 import { Card } from '@/components/ui/card';
 import { formatMonthLabel, formatCurrency } from '@/lib/analytics';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,6 +8,28 @@ import { Badge } from '@/components/ui/badge';
 interface DataValidationPanelProps {
   records: MerchantRecord[];
   warnings: ValidationWarning[];
+}
+
+// Processor collection start dates (YYYY-MM format)
+const PROCESSOR_START_DATES: Record<Processor, string> = {
+  'Clearent': '2024-01',
+  'ML': '2024-01',
+  'Shift4': '2024-01',
+  'TSYS': '2024-01',
+  'Micamp': '2024-03',    // Started March 2024
+  'PayBright': '2024-06',
+  'TRX': '2024-05',        // Started May 2024
+  'All': '2024-01',
+};
+
+// Helper to check if a month is before processor's start date
+function isBeforeStartDate(processor: string, month: string): boolean {
+  const startDate = PROCESSOR_START_DATES[processor as Processor];
+  if (!startDate) return false;
+  
+  // Convert both to comparable format (YYYY-MM)
+  const normalizedMonth = month.length === 7 ? month : month; // Already in YYYY-MM
+  return normalizedMonth < startDate;
 }
 
 // Helper to get revenue for a record
@@ -170,7 +192,8 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                     <TableCell className="font-medium">{processor}</TableCell>
                     {allMonths.map(month => {
                       const data = monthMap.get(month);
-                      const isMissing = !data;
+                      const isBeforeStart = isBeforeStartDate(processor, month);
+                      const isMissing = !data && !isBeforeStart;
                       return (
                         <TableCell 
                           key={month} 
@@ -179,6 +202,8 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                         >
                           {data ? (
                             data.count
+                          ) : isBeforeStart ? (
+                            <span className="text-muted-foreground">-</span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400">
                               <AlertTriangle className="w-3 h-3" />
@@ -229,7 +254,8 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                     <TableCell className="font-medium">{processor}</TableCell>
                     {allMonths.map(month => {
                       const data = monthMap.get(month);
-                      const isMissing = !data;
+                      const isBeforeStart = isBeforeStartDate(processor, month);
+                      const isMissing = !data && !isBeforeStart;
                       return (
                         <TableCell 
                           key={month} 
@@ -238,6 +264,8 @@ export function DataValidationPanel({ records, warnings }: DataValidationPanelPr
                         >
                           {data ? (
                             formatCurrency(data.revenue)
+                          ) : isBeforeStart ? (
+                            <span className="text-muted-foreground">-</span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400">
                               <AlertTriangle className="w-3 h-3" />
