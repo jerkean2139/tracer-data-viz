@@ -17,12 +17,18 @@ interface RevenueForecastProps {
 }
 
 export function RevenueForecast({ metrics }: RevenueForecastProps) {
-  if (metrics.length < 3) {
+  // Filter to only valid yyyy-MM formatted months
+  const validMetrics = metrics.filter(m => {
+    // Check if month matches yyyy-MM format (e.g., "2024-01")
+    return /^\d{4}-\d{2}$/.test(m.month);
+  });
+
+  if (validMetrics.length < 3) {
     return null; // Need at least 3 months for forecasting
   }
 
   // Get last 6 months for trend analysis (or all if less than 6)
-  const recentMetrics = metrics.slice(-6);
+  const recentMetrics = validMetrics.slice(-6);
   
   // Calculate simple linear regression for trend
   const xValues = recentMetrics.map((_, i) => i);
@@ -47,7 +53,7 @@ export function RevenueForecast({ metrics }: RevenueForecastProps) {
   const rSquared = ssTotal === 0 ? 1 : 1 - (ssResidual / ssTotal);
   
   // Generate 3-month forecast
-  const lastMonth = metrics[metrics.length - 1].month;
+  const lastMonth = validMetrics[validMetrics.length - 1].month;
   const lastMonthDate = parse(lastMonth, 'yyyy-MM', new Date());
   
   const forecasts: ForecastMonth[] = [];
