@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [dateRange, setDateRange] = useState<'current' | '3months' | '6months' | '12months' | 'all' | 'custom'>('all');
   const [customStartMonth, setCustomStartMonth] = useState<string>('');
   const [customEndMonth, setCustomEndMonth] = useState<string>('');
+  const [selectedBranch, setSelectedBranch] = useState<string>('all');
   const [validationWarnings, setValidationWarnings] = useState(storageService.getValidationWarnings());
 
   useEffect(() => {
@@ -46,9 +47,21 @@ export default function Dashboard() {
 
   const hasData = records.length > 0;
 
-  // Get all unique months sorted
-  const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
-  const latestMonth = getLatestMonth(records);
+  // Get all unique branch IDs sorted
+  const allBranches = Array.from(new Set(
+    records
+      .map(r => r.branchId)
+      .filter((b): b is string => !!b && b.trim() !== '')
+  )).sort();
+
+  // Apply branch filter first
+  const branchFilteredRecords = selectedBranch === 'all' 
+    ? records 
+    : records.filter(r => r.branchId && r.branchId === selectedBranch);
+
+  // Get all unique months sorted (from branch-filtered records)
+  const allMonths = Array.from(new Set(branchFilteredRecords.map(r => r.month))).sort();
+  const latestMonth = getLatestMonth(branchFilteredRecords);
   
   // Auto-select custom range on first load
   useEffect(() => {
@@ -77,14 +90,14 @@ export default function Dashboard() {
   };
 
   const filteredMonths = getFilteredMonths();
-  const filteredRecords = records.filter(r => filteredMonths.includes(r.month));
+  const filteredRecords = branchFilteredRecords.filter(r => filteredMonths.includes(r.month));
   const currentMonth = filteredMonths.length > 0 ? filteredMonths[filteredMonths.length - 1] : latestMonth;
 
   // Get records for calculation including anchor month (month before filtered range)
   // This ensures accurate retention calculations for the first month in any filtered range
   const getRecordsForCalculation = (): MerchantRecord[] => {
     if (filteredMonths.length === 0 || dateRange === 'all') {
-      return records; // No filtering needed for 'all'
+      return branchFilteredRecords; // No date filtering needed for 'all'
     }
     
     const firstFilteredMonth = filteredMonths[0];
@@ -97,7 +110,7 @@ export default function Dashboard() {
       ? [anchorMonth, ...filteredMonths]  // Include anchor month
       : filteredMonths;
       
-    return records.filter(r => monthsForCalculation.includes(r.month));
+    return branchFilteredRecords.filter(r => monthsForCalculation.includes(r.month));
   };
 
   const recordsForCalculation = getRecordsForCalculation();
@@ -194,6 +207,22 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               {records.length > 0 && (
                 <>
+                  {allBranches.length > 0 && (
+                    <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                      <SelectTrigger className="w-[140px]" data-testid="select-branch">
+                        <SelectValue placeholder="All Branches" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Branches</SelectItem>
+                        {allBranches.map(branch => (
+                          <SelectItem key={branch} value={branch}>
+                            Branch {branch}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
