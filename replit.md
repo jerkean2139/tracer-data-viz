@@ -35,9 +35,10 @@ The dashboard is built on a modern web stack designed for performance and a rich
 -   **UI Framework**: shadcn/ui components and Tailwind CSS for styling
 -   **Charts**: Recharts for data visualization
 -   **CSV Processing**: PapaParse library for client-side CSV parsing
--   **Storage**: Browser localStorage for client-side persistence
+-   **Storage**: PostgreSQL database (Neon-backed) with Drizzle ORM for permanent data persistence
+-   **API**: Express.js REST API with validation (Zod schemas)
 -   **Date Handling**: date-fns for robust date operations
--   **Backend**: A minimal Express.js server primarily for serving the frontend.
+-   **Backend**: Express.js server with REST API routes and database integration.
 
 ### Design System
 -   **Branding**: Incorporates TRACER C2 brand colors: navy blue (#1A3A52) and green (#7FA848).
@@ -68,8 +69,51 @@ The dashboard is built on a modern web stack designed for performance and a rich
     -   **Date Range Filtering**: Smart date range selector with presets (Current Month, Last 3/6/12 Months, All Time, Custom Range).
 -   **Data Model**: Uses `MerchantRecord` (merchantId, merchantName, salesAmount, branchId, month, processor) and `MonthlyMetrics` (totalRevenue, totalAccounts, retentionRate, etc.) schemas.
 
+## Recent Changes (October 24, 2025)
+
+### Database Migration - localStorage to PostgreSQL
+**Issue**: User lost data after 5 hours due to browser localStorage limitations.
+
+**Solution**: Migrated entire application to PostgreSQL database for permanent data persistence.
+
+**Changes Made**:
+1. **Database Schema**: Created three tables with Drizzle ORM:
+   - `merchant_records`: Stores all merchant revenue data (merchantId, merchantName, salesAmount, branchId, month, processor)
+   - `uploaded_files`: Tracks file upload history with validation status (boolean) and errors (jsonb array)
+   - `merchant_metadata`: Stores merchant additional information (salesRep, accountType, industry, etc.)
+
+2. **API Layer**: Implemented REST endpoints:
+   - `GET/POST/DELETE /api/records`: Merchant data CRUD operations
+   - `GET/POST/DELETE /api/files`: Upload history management
+   - `GET/POST/PUT/DELETE /api/metadata/:merchantId`: Merchant metadata operations
+   - All routes validate requests using Zod schemas
+
+3. **Storage Layer**: Replaced in-memory storage with `DatabaseStorage` class:
+   - Async database operations with proper error handling
+   - Deduplication logic: keeps highest revenue entry per (merchantId, month, processor)
+   - Batch operations for efficient data processing
+
+4. **Frontend Updates**:
+   - Replaced localStorage calls with API requests using React Query
+   - Added loading states for all async operations
+   - Error handling with toast notifications
+   - Automatic data refresh after uploads/changes
+
+5. **Bug Fixes**:
+   - Increased Express body size limit to 50MB for large XLSX files
+   - Expanded month column to varchar(20) to support various date formats
+   - Fixed boolean/jsonb type handling for uploaded_files table
+
+**Test Results**: ✅ E2E tested successfully - uploaded 102 Clearent merchants ($31,834 revenue), verified data persists across browser sessions.
+
+**Architect Recommendations**:
+- Consider adding ON CONFLICT upsert for better performance
+- Add database indexes on (merchant_id, month, processor) for faster queries
+- Enhance API error responses for better user feedback
+
 ## External Dependencies
 
 -   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data integrated from these platforms via CSV/XLSX uploads).
--   **Frontend Libraries**: React, TypeScript, Tailwind CSS, shadcn/ui, Recharts, PapaParse, date-fns, xlsx (for Excel processing).
--   **Backend Libraries**: Express.js (minimal server).
+-   **Frontend Libraries**: React, TypeScript, Tailwind CSS, shadcn/ui, Recharts, PapaParse, date-fns, xlsx (for Excel processing), @tanstack/react-query.
+-   **Backend Libraries**: Express.js, Drizzle ORM, @neondatabase/serverless, zod.
+-   **Database**: PostgreSQL (Neon-backed) for permanent data storage.
