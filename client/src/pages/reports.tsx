@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Upload, Building2 } from 'lucide-react';
+import { FileText, Download, Upload, Building2, Calendar } from 'lucide-react';
 import { storageService } from '@/lib/storage';
 import { MerchantRecord, Processor, PartnerLogo } from '@shared/schema';
 import { calculateMonthlyMetrics, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
@@ -17,10 +17,15 @@ import { ReportTemplate } from '@/components/report-template';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
+type DateRangeType = 'current' | '3months' | '6months' | '12months' | 'all' | 'custom';
+
 export default function Reports() {
   const { toast } = useToast();
   const [selectedProcessor, setSelectedProcessor] = useState<Processor>('All');
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedBranch, setSelectedBranch] = useState<string>('all');
+  const [dateRange, setDateRange] = useState<DateRangeType>('all');
+  const [customStartMonth, setCustomStartMonth] = useState<string>('');
+  const [customEndMonth, setCustomEndMonth] = useState<string>('');
   const [partnerName, setPartnerName] = useState('');
   const [selectedLogoId, setSelectedLogoId] = useState<number | null>(null);
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('');
@@ -56,19 +61,62 @@ export default function Reports() {
 
   const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
   const latestMonth = getLatestMonth(records);
+  const allBranches = Array.from(new Set(records.map(r => r.branchId).filter((b): b is string => !!b))).sort();
+  const currentMonth = latestMonth || '';
 
+  // Initialize custom date range
   useEffect(() => {
-    if (!selectedMonth && latestMonth) {
-      setSelectedMonth(latestMonth);
+    if (allMonths.length > 0 && !customStartMonth) {
+      setCustomStartMonth(allMonths[0]);
+      setCustomEndMonth(allMonths[allMonths.length - 1]);
     }
-  }, [selectedMonth, latestMonth]);
+  }, [allMonths, customStartMonth]);
 
-  const processedRecords = selectedProcessor === 'All' 
-    ? records 
-    : records.filter(r => r.processor === selectedProcessor);
-    
-  const metrics = calculateMonthlyMetrics(processedRecords, selectedProcessor);
-  const selectedMetrics = metrics.find(m => m.month === selectedMonth);
+  // Calculate date range filter
+  const getFilteredMonths = (): string[] => {
+    if (dateRange === 'current') {
+      return currentMonth ? [currentMonth] : [];
+    } else if (dateRange === '3months') {
+      return allMonths.slice(-3);
+    } else if (dateRange === '6months') {
+      return allMonths.slice(-6);
+    } else if (dateRange === '12months') {
+      return allMonths.slice(-12);
+    } else if (dateRange === 'custom') {
+      const startIdx = allMonths.indexOf(customStartMonth);
+      const endIdx = allMonths.indexOf(customEndMonth);
+      if (startIdx !== -1 && endIdx !== -1) {
+        return allMonths.slice(startIdx, endIdx + 1);
+      }
+      return allMonths;
+    }
+    return allMonths; // 'all'
+  };
+
+  const filteredMonths = getFilteredMonths();
+
+  // Apply filters
+  const filteredRecords = records.filter(record => {
+    const matchesProcessor = selectedProcessor === 'All' || record.processor === selectedProcessor;
+    const matchesBranch = selectedBranch === 'all' || record.branchId === selectedBranch;
+    const matchesMonth = filteredMonths.includes(record.month);
+    return matchesProcessor && matchesBranch && matchesMonth;
+  });
+
+  // Calculate metrics for filtered records
+  const metrics = calculateMonthlyMetrics(filteredRecords, selectedProcessor);
+  
+  // Aggregate metrics across all months in the range
+  const aggregateMetrics = {
+    totalRevenue: metrics.reduce((sum, m) => sum + m.totalRevenue, 0),
+    totalAccounts: metrics.length > 0 ? metrics[metrics.length - 1]?.totalAccounts || 0 : 0,
+    retentionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length : 0,
+    attritionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length : 0,
+    revenueGrowth: metrics.length > 1 ? metrics[metrics.length - 1]?.revenueGrowth || 0 : 0,
+    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : filteredMonths[0] || '',
+  };
+
+  const selectedMetrics = aggregateMetrics;
 
   const handleGeneratePDF = async () => {
     if (!selectedMetrics) {
@@ -111,7 +159,10 @@ export default function Reports() {
 
       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
 
-      const fileName = `TRACER_C2_Report_${selectedProcessor}_${selectedMonth}.pdf`;
+      const dateRangeLabel = dateRange === 'custom' || dateRange === 'all' 
+        ? `${filteredMonths[0]}_to_${filteredMonths[filteredMonths.length - 1]}`
+        : dateRange.replace('months', 'mo');
+      const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel}.pdf`;
       pdf.save(fileName);
 
       toast({
@@ -208,21 +259,79 @@ export default function Reports() {
                 </Select>
               </div>
 
+              {allBranches.length > 0 && (
+                <div className="space-y-2">
+                  <Label htmlFor="branch">Branch</Label>
+                  <Select value={selectedBranch} onValueChange={setSelectedBranch} data-testid="select-branch">
+                    <SelectTrigger id="branch">
+                      <SelectValue placeholder="All Branches" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Branches</SelectItem>
+                      {allBranches.map(branch => (
+                        <SelectItem key={branch} value={branch}>
+                          Branch {branch}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <div className="space-y-2">
-                <Label htmlFor="month">Reporting Period</Label>
-                <Select value={selectedMonth} onValueChange={setSelectedMonth} data-testid="select-month">
-                  <SelectTrigger id="month">
-                    <SelectValue placeholder="Select month" />
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <Label htmlFor="dateRange">Date Range</Label>
+                </div>
+                <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)} data-testid="select-date-range">
+                  <SelectTrigger id="dateRange">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {allMonths.map(month => (
-                      <SelectItem key={month} value={month}>
-                        {formatMonthLabel(month)}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="current">Current Month</SelectItem>
+                    <SelectItem value="3months">Last 3 Months</SelectItem>
+                    <SelectItem value="6months">Last 6 Months</SelectItem>
+                    <SelectItem value="12months">Last 12 Months</SelectItem>
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem value="custom">Custom Range</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {dateRange === 'custom' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="startMonth">From Month</Label>
+                    <Select value={customStartMonth} onValueChange={setCustomStartMonth} data-testid="select-start-month">
+                      <SelectTrigger id="startMonth">
+                        <SelectValue placeholder="From" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allMonths.map(month => (
+                          <SelectItem key={month} value={month}>
+                            {formatMonthLabel(month)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endMonth">To Month</Label>
+                    <Select value={customEndMonth} onValueChange={setCustomEndMonth} data-testid="select-end-month">
+                      <SelectTrigger id="endMonth">
+                        <SelectValue placeholder="To" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allMonths.map(month => (
+                          <SelectItem key={month} value={month}>
+                            {formatMonthLabel(month)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="partner-name">Partner Name</Label>
