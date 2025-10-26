@@ -59,52 +59,80 @@ export default function Reports() {
     },
   });
 
-  const allMonths = Array.from(new Set(records.map(r => r.month))).sort();
-  const latestMonth = getLatestMonth(records);
   const allBranches = Array.from(new Set(records.map(r => r.branchId).filter((b): b is string => !!b))).sort();
+
+  // Apply branch filter first (before calculating allMonths)
+  const branchFilteredRecords = selectedBranch === 'all' 
+    ? records 
+    : records.filter(r => r.branchId && r.branchId === selectedBranch);
+
+  // Apply processor filter
+  const processorAndBranchFilteredRecords = selectedProcessor === 'All'
+    ? branchFilteredRecords
+    : branchFilteredRecords.filter(r => r.processor === selectedProcessor);
+
+  // Get all unique months sorted (from branch-filtered records)
+  const allMonths = Array.from(new Set(processorAndBranchFilteredRecords.map(r => r.month))).sort();
+  const latestMonth = getLatestMonth(processorAndBranchFilteredRecords);
   const currentMonth = latestMonth || '';
 
   // Initialize custom date range
   useEffect(() => {
-    if (allMonths.length > 0 && !customStartMonth) {
-      setCustomStartMonth(allMonths[0]);
-      setCustomEndMonth(allMonths[allMonths.length - 1]);
+    if (latestMonth && !customStartMonth && !customEndMonth) {
+      setCustomStartMonth(latestMonth);
+      setCustomEndMonth(latestMonth);
     }
-  }, [allMonths, customStartMonth]);
+  }, [latestMonth, customStartMonth, customEndMonth]);
 
-  // Calculate date range filter
+  // Calculate date range filter (same logic as dashboard)
   const getFilteredMonths = (): string[] => {
-    if (dateRange === 'current') {
-      return currentMonth ? [currentMonth] : [];
-    } else if (dateRange === '3months') {
-      return allMonths.slice(-3);
-    } else if (dateRange === '6months') {
-      return allMonths.slice(-6);
-    } else if (dateRange === '12months') {
-      return allMonths.slice(-12);
-    } else if (dateRange === 'custom') {
+    if (dateRange === 'all') return allMonths;
+    if (dateRange === 'current') return latestMonth ? [latestMonth] : [];
+    
+    if (dateRange === 'custom') {
+      if (!customStartMonth || !customEndMonth) return allMonths;
       const startIdx = allMonths.indexOf(customStartMonth);
       const endIdx = allMonths.indexOf(customEndMonth);
-      if (startIdx !== -1 && endIdx !== -1) {
-        return allMonths.slice(startIdx, endIdx + 1);
+      if (startIdx === -1 || endIdx === -1) {
+        return allMonths;
       }
-      return allMonths;
+      // Normalize indices to handle start > end
+      return allMonths.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1);
     }
-    return allMonths; // 'all'
+    
+    // For preset ranges (3, 6, 12 months)
+    const monthCount = dateRange === '3months' ? 3 : dateRange === '6months' ? 6 : 12;
+    return allMonths.slice(-monthCount);
   };
 
   const filteredMonths = getFilteredMonths();
+  const filteredRecords = processorAndBranchFilteredRecords.filter(r => filteredMonths.includes(r.month));
 
-  // Apply filters
-  const filteredRecords = records.filter(record => {
-    const matchesProcessor = selectedProcessor === 'All' || record.processor === selectedProcessor;
-    const matchesBranch = selectedBranch === 'all' || record.branchId === selectedBranch;
-    const matchesMonth = filteredMonths.includes(record.month);
-    return matchesProcessor && matchesBranch && matchesMonth;
-  });
+  // Get records for calculation including anchor month (month before filtered range)
+  // This ensures accurate retention calculations for the first month in any filtered range
+  const getRecordsForCalculation = (): MerchantRecord[] => {
+    if (filteredMonths.length === 0 || dateRange === 'all') {
+      return processorAndBranchFilteredRecords; // No date filtering needed for 'all'
+    }
+    
+    const firstFilteredMonth = filteredMonths[0];
+    const firstMonthIndex = allMonths.indexOf(firstFilteredMonth);
+    
+    // If there's a month before the filtered range, include it as anchor for retention baseline
+    const anchorMonth = firstMonthIndex > 0 ? allMonths[firstMonthIndex - 1] : null;
+    
+    const monthsForCalculation = anchorMonth 
+      ? [anchorMonth, ...filteredMonths]  // Include anchor month
+      : filteredMonths;
+      
+    return processorAndBranchFilteredRecords.filter(r => monthsForCalculation.includes(r.month));
+  };
 
-  // Calculate metrics for filtered records
-  const metrics = calculateMonthlyMetrics(filteredRecords, selectedProcessor);
+  const recordsForCalculation = getRecordsForCalculation();
+
+  // Calculate metrics with anchor month logic, then filter out anchor month from results
+  const metricsWithAnchor = calculateMonthlyMetrics(recordsForCalculation, selectedProcessor);
+  const metrics = metricsWithAnchor.filter(m => filteredMonths.includes(m.month));
   
   // Aggregate metrics across all months in the range
   const aggregateMetrics = {
@@ -113,7 +141,7 @@ export default function Reports() {
     retentionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length : 0,
     attritionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length : 0,
     revenueGrowth: metrics.length > 1 ? metrics[metrics.length - 1]?.revenueGrowth || 0 : 0,
-    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : filteredMonths[0] || '',
+    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
   };
 
   const selectedMetrics = aggregateMetrics;
@@ -159,9 +187,17 @@ export default function Reports() {
 
       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
 
-      const dateRangeLabel = dateRange === 'custom' || dateRange === 'all' 
-        ? `${filteredMonths[0]}_to_${filteredMonths[filteredMonths.length - 1]}`
-        : dateRange.replace('months', 'mo');
+      // Generate filename with safeguards for empty filteredMonths
+      let dateRangeLabel = 'report';
+      if (filteredMonths.length > 0) {
+        if (dateRange === 'custom' || dateRange === 'all') {
+          dateRangeLabel = filteredMonths.length > 1
+            ? `${filteredMonths[0]}_to_${filteredMonths[filteredMonths.length - 1]}`
+            : filteredMonths[0];
+        } else {
+          dateRangeLabel = dateRange.replace('months', 'mo');
+        }
+      }
       const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel}.pdf`;
       pdf.save(fileName);
 
