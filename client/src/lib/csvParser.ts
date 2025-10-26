@@ -45,12 +45,12 @@ const COLUMN_MAPPINGS: Record<string, string[]> = {
   branchId: ['branch id', 'branchid', 'branch', 'branch_id', 'agent', 'agent id', 'branch number'],
   month: ['month', 'date', 'period', 'month/year', 'processingdate', 'processing date'],
   
-  // Clearent fields
+  // Clearent & PayBright fields
   transactions: ['transaction', 'transactions', 'swipes', 'trans'],
   salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'sales_amount', 'sale amount'],
   net: ['net', 'tracer net', 'net amount'],
-  commissionPercent: ['%', 'commission %', 'commission', 'commission percent', 'comm %'],
-  agentNet: ['agent net', 'agentnet', 'agent amount'],
+  commissionPercent: ['%', 'commission %', 'commission', 'commission percent', 'comm %', 'bps'],
+  agentNet: ['agent net', 'agentnet', 'agent amount', 'bank payout', 'bankpayout'],
   
   // Shift4 fields
   payoutAmount: ['payout amount', 'payoutamount', 'payout'],
@@ -59,7 +59,7 @@ const COLUMN_MAPPINGS: Record<string, string[]> = {
   refunds: ['refunds', 'refund'],
   rejectAmount: ['reject amount', 'rejectamount', 'reject'],
   bankSplit: ['bank split', 'banksplit'],
-  bankPayout: ['bank payout', 'bankpayout'],
+  bankPayout: ['bank payout'],
   
   // ML fields
   income: ['income', 'inc'],
@@ -149,7 +149,7 @@ export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' 
   if (lower.includes('shift4')) return 'Shift4';
   if (lower.includes('global') || lower.includes('tsys')) return 'TSYS';
   if (lower.includes('micamp')) return 'Micamp';
-  if (lower.includes('paybright')) return 'PayBright';
+  if (lower.includes('paybright') || lower.includes('pb_') || lower.includes('_pb_')) return 'PayBright';
   if (lower.includes('trx')) return 'TRX';
   return null;
 }

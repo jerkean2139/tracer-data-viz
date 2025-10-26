@@ -52,7 +52,9 @@ The dashboard is built on a modern web stack designed for performance and a rich
     -   Automatic conversion of Excel files to CSV.
     -   Multi-sheet XLSX processing and automatic title row detection in CSVs.
     -   Automatic processor and month detection from filenames/sheet names.
-    -   Flexible column mapping (e.g., TRX format: Client, Dba, ProcessingDate).
+    -   Flexible column mapping:
+        -   TRX format: Client, Dba, ProcessingDate
+        -   PayBright format: Merchant Id, Merchant Name, Transaction, Net, %, Bank Payout, Branch ID
     -   Deduplication: Keeps the highest revenue entry for duplicate merchant IDs.
     -   Comprehensive validation and user-friendly error messages.
 -   **Analytics Calculations**:
