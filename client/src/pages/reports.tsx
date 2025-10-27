@@ -31,6 +31,9 @@ export default function Reports() {
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('');
   const [uploadLogoDialogOpen, setUploadLogoDialogOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [saveReportDialogOpen, setSaveReportDialogOpen] = useState(false);
+  const [reportName, setReportName] = useState('');
+  const [generatedPdfBlob, setGeneratedPdfBlob] = useState<Blob | null>(null);
 
   const { data: records = [] } = useQuery<MerchantRecord[]>({
     queryKey: ['/api/records'],
@@ -38,6 +41,28 @@ export default function Reports() {
 
   const { data: partnerLogos = [] } = useQuery<PartnerLogo[]>({
     queryKey: ['/api/partner-logos'],
+  });
+
+  const saveReportMutation = useMutation({
+    mutationFn: async (report: { reportName: string; processor: string; dateRangeLabel: string; partnerName: string; partnerLogoUrl: string; pdfData: string; fileSize: number }) => {
+      return await apiRequest('POST', '/api/saved-reports', report);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saved-reports'] });
+      toast({
+        title: 'Report saved',
+        description: 'PDF report has been saved successfully.',
+      });
+      setSaveReportDialogOpen(false);
+      setReportName('');
+    },
+    onError: () => {
+      toast({
+        title: 'Error saving report',
+        description: 'Failed to save report. Please try again.',
+        variant: 'destructive',
+      });
+    },
   });
 
   const addLogoMutation = useMutation({
@@ -202,23 +227,33 @@ export default function Reports() {
 
       pdf.addImage(imgData, 'PNG', 0, 0, 816, 1056);
 
-      // Generate filename with safeguards for empty filteredMonths
+      // Generate filename and date range label
       let dateRangeLabel = 'report';
       if (filteredMonths.length > 0) {
         if (dateRange === 'custom' || dateRange === 'all') {
           dateRangeLabel = filteredMonths.length > 1
-            ? `${filteredMonths[0]}_to_${filteredMonths[filteredMonths.length - 1]}`
+            ? `${filteredMonths[0]} to ${filteredMonths[filteredMonths.length - 1]}`
             : filteredMonths[0];
         } else {
-          dateRangeLabel = dateRange.replace('months', 'mo');
+          dateRangeLabel = dateRange === 'current' ? 'Current Month' : dateRange === '3months' ? 'Last 3 Months' : dateRange === '6months' ? 'Last 6 Months' : 'Last 12 Months';
         }
       }
-      const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel}.pdf`;
+      const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel.replace(/ /g, '_')}.pdf`;
+
+      // Convert PDF to blob for saving
+      const pdfBlob = pdf.output('blob');
+      setGeneratedPdfBlob(pdfBlob);
+
+      // Auto-download the PDF
       pdf.save(fileName);
+
+      // Set default report name and open save dialog
+      setReportName(fileName.replace('.pdf', ''));
+      setSaveReportDialogOpen(true);
 
       toast({
         title: 'Report generated successfully',
-        description: `${fileName} has been downloaded.`,
+        description: `${fileName} has been downloaded. You can now save it to the database.`,
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -273,6 +308,46 @@ export default function Reports() {
       setPartnerName(logo.partnerName);
       setPartnerLogoUrl(logo.logoUrl);
     }
+  };
+
+  const handleSaveReport = async () => {
+    if (!reportName || !generatedPdfBlob) {
+      toast({
+        title: 'Missing information',
+        description: 'Please provide a report name.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Convert blob to base64
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64data = reader.result as string;
+      const pdfData = base64data.split(',')[1]; // Remove data:application/pdf;base64, prefix
+
+      let dateRangeLabel = 'report';
+      if (filteredMonths.length > 0) {
+        if (dateRange === 'custom' || dateRange === 'all') {
+          dateRangeLabel = filteredMonths.length > 1
+            ? `${filteredMonths[0]} to ${filteredMonths[filteredMonths.length - 1]}`
+            : filteredMonths[0];
+        } else {
+          dateRangeLabel = dateRange === 'current' ? 'Current Month' : dateRange === '3months' ? 'Last 3 Months' : dateRange === '6months' ? 'Last 6 Months' : 'Last 12 Months';
+        }
+      }
+
+      await saveReportMutation.mutateAsync({
+        reportName,
+        processor: selectedProcessor,
+        dateRangeLabel,
+        partnerName,
+        partnerLogoUrl,
+        pdfData,
+        fileSize: generatedPdfBlob.size,
+      });
+    };
+    reader.readAsDataURL(generatedPdfBlob);
   };
 
   return (
@@ -503,6 +578,48 @@ export default function Reports() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Save Report Dialog */}
+          <Dialog open={saveReportDialogOpen} onOpenChange={setSaveReportDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Save Report to Database</DialogTitle>
+                <DialogDescription>
+                  Give your report a name to save it for future reference
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="report-name">Report Name</Label>
+                  <Input
+                    id="report-name"
+                    placeholder="e.g., Q1 2025 Overview Report"
+                    value={reportName}
+                    onChange={(e) => setReportName(e.target.value)}
+                    data-testid="input-report-name"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    className="flex-1" 
+                    onClick={handleSaveReport}
+                    disabled={saveReportMutation.isPending || !reportName}
+                    data-testid="button-save-report"
+                  >
+                    {saveReportMutation.isPending ? 'Saving...' : 'Save Report'}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="flex-1" 
+                    onClick={() => setSaveReportDialogOpen(false)}
+                    data-testid="button-cancel-save-report"
+                  >
+                    Skip
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           <Card className="lg:col-span-2 overflow-hidden">
             <CardHeader>
