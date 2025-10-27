@@ -273,7 +273,7 @@ export default function Dashboard() {
                       {allBranches.length > 0 && (
                         <div className="space-y-2">
                           <label className="text-sm font-medium">Branch</label>
-                          <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                          <Select value={selectedBranch} onValueChange={setSelectedBranch} disabled={activeTab === 'reports'}>
                             <SelectTrigger className="w-full" data-testid="select-branch-mobile">
                               <SelectValue placeholder="All Branches" />
                             </SelectTrigger>
@@ -291,7 +291,7 @@ export default function Dashboard() {
 
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Date Range</label>
-                        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+                        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)} disabled={activeTab === 'reports'}>
                           <SelectTrigger className="w-full" data-testid="select-date-range-mobile">
                             <SelectValue />
                           </SelectTrigger>
@@ -310,7 +310,7 @@ export default function Dashboard() {
                         <>
                           <div className="space-y-2">
                             <label className="text-sm font-medium">From Month</label>
-                            <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
+                            <Select value={customStartMonth} onValueChange={setCustomStartMonth} disabled={activeTab === 'reports'}>
                               <SelectTrigger className="w-full" data-testid="select-start-month-mobile">
                                 <SelectValue placeholder="From" />
                               </SelectTrigger>
@@ -325,7 +325,7 @@ export default function Dashboard() {
                           </div>
                           <div className="space-y-2">
                             <label className="text-sm font-medium">To Month</label>
-                            <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
+                            <Select value={customEndMonth} onValueChange={setCustomEndMonth} disabled={activeTab === 'reports'}>
                               <SelectTrigger className="w-full" data-testid="select-end-month-mobile">
                                 <SelectValue placeholder="To" />
                               </SelectTrigger>
@@ -342,7 +342,7 @@ export default function Dashboard() {
                       )}
 
                       <div className="pt-4 border-t">
-                        <Badge variant="outline" className="w-full justify-center bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
+                        <Badge variant="outline" className={`w-full justify-center border-blue-200 dark:border-blue-800 ${activeTab === 'reports' ? 'bg-muted/50 text-muted-foreground/50' : 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300'}`}>
                           <Info className="w-3 h-3 mr-1" />
                           Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
                         </Badge>
@@ -376,7 +376,7 @@ export default function Dashboard() {
                   </Select>
 
                   {allBranches.length > 0 && (
-                    <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                    <Select value={selectedBranch} onValueChange={setSelectedBranch} disabled={activeTab === 'reports'}>
                       <SelectTrigger className="w-[140px]" data-testid="select-branch">
                         <SelectValue placeholder="All Branches" />
                       </SelectTrigger>
@@ -392,8 +392,8 @@ export default function Dashboard() {
                   )}
                   
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+                    <Calendar className={`w-4 h-4 ${activeTab === 'reports' ? 'text-muted-foreground/50' : 'text-muted-foreground'}`} />
+                    <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)} disabled={activeTab === 'reports'}>
                       <SelectTrigger className="w-[160px]" data-testid="select-date-range">
                         <SelectValue />
                       </SelectTrigger>
@@ -409,7 +409,7 @@ export default function Dashboard() {
                     
                     {dateRange === 'custom' && (
                       <>
-                        <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
+                        <Select value={customStartMonth} onValueChange={setCustomStartMonth} disabled={activeTab === 'reports'}>
                           <SelectTrigger className="w-[140px]" data-testid="select-start-month">
                             <SelectValue placeholder="From" />
                           </SelectTrigger>
@@ -422,7 +422,7 @@ export default function Dashboard() {
                           </SelectContent>
                         </Select>
                         <span className="text-sm text-muted-foreground">to</span>
-                        <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
+                        <Select value={customEndMonth} onValueChange={setCustomEndMonth} disabled={activeTab === 'reports'}>
                           <SelectTrigger className="w-[140px]" data-testid="select-end-month">
                             <SelectValue placeholder="To" />
                           </SelectTrigger>
@@ -438,7 +438,7 @@ export default function Dashboard() {
                     )}
                   </div>
 
-                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" data-testid="badge-next-month">
+                  <Badge variant="outline" className={`border-blue-200 dark:border-blue-800 ${activeTab === 'reports' ? 'bg-muted/50 text-muted-foreground/50' : 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300'}`} data-testid="badge-next-month">
                     <Info className="w-3 h-3 mr-1" />
                     Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
                   </Badge>
