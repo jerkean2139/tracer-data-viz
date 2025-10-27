@@ -176,7 +176,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <img src={c2LogoUrl} alt="C2 Financial Services" className="h-16 mx-auto mb-4 object-contain" />
+          <img src={c2LogoUrl} alt="C2 Financial Services" className="h-20 mx-auto mb-4 object-contain" />
           <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function Dashboard() {
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img src={c2LogoUrl} alt="C2 Financial Services" className="h-10 object-contain" />
+                <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
                 <div>
                   <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
                 </div>
@@ -231,7 +231,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={c2LogoUrl} alt="C2 Financial Services" className="h-10 object-contain" />
+              <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
               <div>
                 <p className="text-sm text-muted-foreground">
                   Merchant Account Analytics

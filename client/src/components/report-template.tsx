@@ -48,7 +48,7 @@ export function ReportTemplate({ metrics, processor, monthLabel, partnerName, pa
             <img 
               src={c2LogoUrl} 
               alt="C2 Financial Services" 
-              className="h-12 mb-2 object-contain"
+              className="h-16 mb-2 object-contain"
               data-testid="img-tracer-logo"
             />
           </div>
@@ -232,7 +232,7 @@ export function ReportTemplate({ metrics, processor, monthLabel, partnerName, pa
             <img 
               src={c2LogoUrl} 
               alt="C2 Financial Services" 
-              className="h-6 object-contain"
+              className="h-8 object-contain"
               data-testid="img-powered-by"
             />
           </div>
