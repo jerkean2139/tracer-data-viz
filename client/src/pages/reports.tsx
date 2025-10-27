@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Badge } from '@/components/ui/badge';
 import { FileText, Download, Upload, Building2, Calendar } from 'lucide-react';
 import { storageService } from '@/lib/storage';
-import { MerchantRecord, Processor, PartnerLogo } from '@shared/schema';
+import { MerchantRecord, Processor, PartnerLogo, MonthlyMetrics } from '@shared/schema';
 import { calculateMonthlyMetrics, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -42,13 +42,7 @@ export default function Reports() {
 
   const addLogoMutation = useMutation({
     mutationFn: async (logo: { partnerName: string; logoUrl: string }) => {
-      return await apiRequest('/api/partner-logos', {
-        method: 'POST',
-        body: JSON.stringify(logo),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return await apiRequest('POST', '/api/partner-logos', logo);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/partner-logos'] });
@@ -135,13 +129,22 @@ export default function Reports() {
   const metrics = metricsWithAnchor.filter(m => filteredMonths.includes(m.month));
   
   // Aggregate metrics across all months in the range
-  const aggregateMetrics = {
+  const aggregateMetrics: MonthlyMetrics = {
+    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
+    processor: selectedProcessor,
     totalRevenue: metrics.reduce((sum, m) => sum + m.totalRevenue, 0),
     totalAccounts: metrics.length > 0 ? metrics[metrics.length - 1]?.totalAccounts || 0 : 0,
+    retainedAccounts: metrics.reduce((sum, m) => sum + m.retainedAccounts, 0),
+    lostAccounts: metrics.reduce((sum, m) => sum + m.lostAccounts, 0),
+    newAccounts: metrics.reduce((sum, m) => sum + m.newAccounts, 0),
     retentionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length : 0,
     attritionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length : 0,
-    revenueGrowth: metrics.length > 1 ? metrics[metrics.length - 1]?.revenueGrowth || 0 : 0,
-    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
+    revenuePerAccount: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.revenuePerAccount, 0) / metrics.length : 0,
+    momRevenueChange: metrics.length > 0 ? metrics[metrics.length - 1]?.momRevenueChange : undefined,
+    momRevenueChangePercent: metrics.length > 0 ? metrics[metrics.length - 1]?.momRevenueChangePercent : undefined,
+    netAccountGrowth: metrics.reduce((sum, m) => sum + m.netAccountGrowth, 0),
+    totalAgentNet: metrics.reduce((sum, m) => sum + m.totalAgentNet, 0),
+    agentNetPerAccount: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.agentNetPerAccount, 0) / metrics.length : 0,
   };
 
   const selectedMetrics = aggregateMetrics;
@@ -501,7 +504,7 @@ export default function Reports() {
                   <ReportTemplate
                     metrics={selectedMetrics}
                     processor={selectedProcessor}
-                    month={selectedMonth}
+                    monthLabel={aggregateMetrics.month}
                     partnerName={partnerName}
                     partnerLogoUrl={partnerLogoUrl}
                   />

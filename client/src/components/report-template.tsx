@@ -5,12 +5,12 @@ import { TrendingUp, TrendingDown, Users, DollarSign, Activity, UserCheck } from
 interface ReportTemplateProps {
   metrics: MonthlyMetrics | undefined;
   processor: Processor;
-  month: string;
+  monthLabel: string;
   partnerName: string;
   partnerLogoUrl: string;
 }
 
-export function ReportTemplate({ metrics, processor, month, partnerName, partnerLogoUrl }: ReportTemplateProps) {
+export function ReportTemplate({ metrics, processor, monthLabel, partnerName, partnerLogoUrl }: ReportTemplateProps) {
   if (!metrics) {
     return (
       <div className="w-[210mm] min-h-[297mm] bg-white p-12 flex items-center justify-center">
@@ -76,7 +76,7 @@ export function ReportTemplate({ metrics, processor, month, partnerName, partner
         </h1>
         <div className="flex items-center gap-6 text-lg text-gray-600">
           <span data-testid="text-reporting-period">
-            <strong>Period:</strong> {formatMonthLabel(month)}
+            <strong>Period:</strong> {monthLabel}
           </span>
           <span data-testid="text-processor">
             <strong>Processor:</strong> {processor}
