@@ -1,6 +1,6 @@
-import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
+import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, savedReports, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, type SavedReport, type InsertSavedReport, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, desc } from "drizzle-orm";
 
 export interface IStorage {
   // Merchant Records
@@ -25,6 +25,12 @@ export interface IStorage {
   addPartnerLogo(logo: InsertPartnerLogo): Promise<PartnerLogo>;
   updatePartnerLogo(id: number, logoUrl: string): Promise<void>;
   deletePartnerLogo(id: number): Promise<void>;
+  
+  // Saved Reports
+  getAllSavedReports(): Promise<SavedReport[]>;
+  savePDFReport(report: InsertSavedReport): Promise<SavedReport>;
+  getSavedReportById(id: number): Promise<SavedReport | undefined>;
+  deleteSavedReport(id: number): Promise<void>;
   
   // Validation
   getValidationWarnings(): Promise<ValidationWarning[]>;
@@ -260,6 +266,39 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(partnerLogos)
       .where(eq(partnerLogos.id, id));
+  }
+
+  async getAllSavedReports(): Promise<SavedReport[]> {
+    const reports = await db
+      .select()
+      .from(savedReports)
+      .orderBy(desc(savedReports.createdAt));
+    
+    return reports;
+  }
+
+  async savePDFReport(report: InsertSavedReport): Promise<SavedReport> {
+    const [newReport] = await db
+      .insert(savedReports)
+      .values(report)
+      .returning();
+    
+    return newReport;
+  }
+
+  async getSavedReportById(id: number): Promise<SavedReport | undefined> {
+    const [report] = await db
+      .select()
+      .from(savedReports)
+      .where(eq(savedReports.id, id));
+    
+    return report;
+  }
+
+  async deleteSavedReport(id: number): Promise<void> {
+    await db
+      .delete(savedReports)
+      .where(eq(savedReports.id, id));
   }
 
   private dbRecordToMerchantRecord(dbRecord: DbMerchantRecord): MerchantRecord {

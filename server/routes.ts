@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema } from "@shared/schema";
+import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema, insertSavedReportSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
@@ -236,6 +236,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching validation warnings:", error);
       res.status(500).json({ error: "Failed to fetch validation warnings" });
+    }
+  });
+
+  // Saved Reports Routes
+  app.get("/api/saved-reports", async (req, res) => {
+    try {
+      const reports = await storage.getAllSavedReports();
+      res.json(reports);
+    } catch (error) {
+      console.error("Error fetching saved reports:", error);
+      res.status(500).json({ error: "Failed to fetch saved reports" });
+    }
+  });
+
+  app.post("/api/saved-reports", async (req, res) => {
+    try {
+      const validatedReport = insertSavedReportSchema.parse(req.body);
+      const newReport = await storage.savePDFReport(validatedReport);
+      res.json(newReport);
+    } catch (error) {
+      console.error("Error saving report:", error);
+      const { statusCode, ...errorResponse } = formatErrorResponse(error);
+      res.status(statusCode).json(errorResponse);
+    }
+  });
+
+  app.get("/api/saved-reports/:id/download", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const report = await storage.getSavedReportById(parseInt(id));
+      
+      if (!report) {
+        res.status(404).json({ error: "Report not found" });
+        return;
+      }
+
+      // Convert base64 PDF data back to buffer
+      const pdfBuffer = Buffer.from(report.pdfData, 'base64');
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${report.reportName}.pdf"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading report:", error);
+      res.status(500).json({ error: "Failed to download report" });
+    }
+  });
+
+  app.delete("/api/saved-reports/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteSavedReport(parseInt(id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting saved report:", error);
+      res.status(500).json({ error: "Failed to delete saved report" });
     }
   });
 
