@@ -191,9 +191,6 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
-                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button 
@@ -232,21 +229,6 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Merchant Account Analytics
-                  {filteredMonths.length > 0 && (
-                    <span className="ml-2 font-medium text-primary">
-                      • {filteredMonths.length === allMonths.length 
-                        ? 'All Time' 
-                        : filteredMonths.length === 1
-                          ? formatMonthLabel(filteredMonths[0])
-                          : `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}`
-                      }
-                    </span>
-                  )}
-                </p>
-              </div>
             </div>
             <div className="flex items-center gap-2">
               {/* Mobile filter button */}
