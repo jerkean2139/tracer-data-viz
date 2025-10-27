@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema, insertSavedReportSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
+import crypto from "crypto";
 
 // Helper function to format error responses
 function formatErrorResponse(error: unknown): { statusCode: number; error: string; details?: any } {
@@ -293,6 +294,231 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting saved report:", error);
       res.status(500).json({ error: "Failed to delete saved report" });
+    }
+  });
+
+  // Admin Authentication Routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { password } = req.body;
+      const adminPassword = process.env.ADMIN_PASSWORD;
+
+      if (!adminPassword) {
+        res.status(500).json({ error: "Admin password not configured" });
+        return;
+      }
+
+      if (password === adminPassword) {
+        // Regenerate session to prevent fixation attacks
+        req.session.regenerate((err) => {
+          if (err) {
+            console.error("Session regeneration error:", err);
+            res.status(500).json({ error: "Login failed" });
+            return;
+          }
+          // Set admin flag in new session (httpOnly cookie)
+          (req.session as any).isAdmin = true;
+          (req.session as any).loginTime = Date.now();
+          
+          // Save session to ensure new session ID is sent to browser
+          req.session.save((saveErr) => {
+            if (saveErr) {
+              console.error("Session save error:", saveErr);
+              res.status(500).json({ error: "Login failed" });
+              return;
+            }
+            res.json({ success: true, isAdmin: true });
+          });
+        });
+      } else {
+        res.status(401).json({ error: "Invalid password" });
+      }
+    } catch (error) {
+      console.error("Error during admin login:", error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/admin/verify", async (req, res) => {
+    try {
+      const session = req.session as any;
+      if (session?.isAdmin && session?.loginTime) {
+        // Check if session is still valid (24 hours)
+        const sessionAge = Date.now() - session.loginTime;
+        if (sessionAge < 24 * 60 * 60 * 1000) {
+          res.json({ isAdmin: true });
+        } else {
+          session.isAdmin = false;
+          res.json({ isAdmin: false });
+        }
+      } else {
+        res.json({ isAdmin: false });
+      }
+    } catch (error) {
+      res.json({ isAdmin: false });
+    }
+  });
+
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      // Destroy session completely to prevent cookie reuse
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destroy error:", err);
+          res.status(500).json({ error: "Logout failed" });
+          return;
+        }
+        // Clear the session cookie from browser
+        res.clearCookie('connect.sid', { path: '/' });
+        res.json({ success: true });
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Logout failed" });
+    }
+  });
+
+  // Middleware to verify admin session
+  const verifyAdminToken = (req: any, res: any, next: any) => {
+    const session = req.session as any;
+    if (!session?.isAdmin || !session?.loginTime) {
+      res.status(403).json({ error: "Unauthorized - Admin access required" });
+      return;
+    }
+    // Check session age
+    const sessionAge = Date.now() - session.loginTime;
+    if (sessionAge >= 24 * 60 * 60 * 1000) {
+      session.isAdmin = false;
+      res.status(403).json({ error: "Session expired - Please login again" });
+      return;
+    }
+    next();
+  };
+
+  // Owner Analytics Routes (Protected)
+  app.get("/api/owner-analytics", verifyAdminToken, async (req, res) => {
+    try {
+      const records = await storage.getAllRecords();
+      
+      // Calculate comprehensive owner analytics
+      const analytics: any = {
+        // Overall company metrics
+        totalRevenue: 0,
+        totalAgentNet: 0,
+        totalMerchants: new Set(),
+        totalAccounts: records.length,
+        
+        // By processor
+        byProcessor: {} as Record<string, any>,
+        
+        // By branch
+        byBranch: {} as Record<string, any>,
+        
+        // Time series
+        monthlyTrends: {} as Record<string, any>,
+        
+        // Top performers
+        topBranches: [] as any[],
+        topMerchants: [] as any[],
+        
+        // Risk indicators
+        decliningRevenue: [] as any[],
+        atRiskMerchants: [] as any[],
+      };
+
+      // Process all records
+      records.forEach(record => {
+        const revenue = record.salesAmount || record.income || record.volume || record.net || 0;
+        const agentNet = record.agentNet || (revenue * (record.commissionPercent || 0) / 100);
+        
+        analytics.totalRevenue += revenue;
+        analytics.totalAgentNet += agentNet;
+        analytics.totalMerchants.add(record.merchantId);
+
+        // By processor
+        if (!analytics.byProcessor[record.processor]) {
+          analytics.byProcessor[record.processor] = {
+            revenue: 0,
+            agentNet: 0,
+            merchantCount: new Set(),
+            accountCount: 0,
+          };
+        }
+        analytics.byProcessor[record.processor].revenue += revenue;
+        analytics.byProcessor[record.processor].agentNet += agentNet;
+        analytics.byProcessor[record.processor].merchantCount.add(record.merchantId);
+        analytics.byProcessor[record.processor].accountCount += 1;
+
+        // By branch
+        if (record.branchId) {
+          if (!analytics.byBranch[record.branchId]) {
+            analytics.byBranch[record.branchId] = {
+              revenue: 0,
+              agentNet: 0,
+              merchantCount: new Set(),
+              accountCount: 0,
+            };
+          }
+          analytics.byBranch[record.branchId].revenue += revenue;
+          analytics.byBranch[record.branchId].agentNet += agentNet;
+          analytics.byBranch[record.branchId].merchantCount.add(record.merchantId);
+          analytics.byBranch[record.branchId].accountCount += 1;
+        }
+
+        // Monthly trends
+        if (!analytics.monthlyTrends[record.month]) {
+          analytics.monthlyTrends[record.month] = {
+            revenue: 0,
+            agentNet: 0,
+            accountCount: 0,
+          };
+        }
+        analytics.monthlyTrends[record.month].revenue += revenue;
+        analytics.monthlyTrends[record.month].agentNet += agentNet;
+        analytics.monthlyTrends[record.month].accountCount += 1;
+      });
+
+      // Convert Sets to counts
+      Object.keys(analytics.byProcessor).forEach(proc => {
+        analytics.byProcessor[proc].merchantCount = analytics.byProcessor[proc].merchantCount.size;
+      });
+      Object.keys(analytics.byBranch).forEach(branch => {
+        analytics.byBranch[branch].merchantCount = analytics.byBranch[branch].merchantCount.size;
+      });
+      
+      // Calculate top branches
+      analytics.topBranches = Object.entries(analytics.byBranch)
+        .map(([branchId, data]: [string, any]) => ({
+          branchId,
+          ...data,
+        }))
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 10);
+
+      // Calculate top merchants by revenue
+      const merchantRevenue = new Map<string, { name: string; revenue: number; processor: string }>();
+      records.forEach(record => {
+        const revenue = record.salesAmount || record.income || record.volume || record.net || 0;
+        const existing = merchantRevenue.get(record.merchantId);
+        if (!existing || existing.revenue < revenue) {
+          merchantRevenue.set(record.merchantId, {
+            name: record.merchantName,
+            revenue,
+            processor: record.processor,
+          });
+        }
+      });
+      
+      analytics.topMerchants = Array.from(merchantRevenue.entries())
+        .map(([merchantId, data]) => ({ merchantId, ...data }))
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 10);
+
+      analytics.totalMerchants = analytics.totalMerchants.size;
+
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error calculating owner analytics:", error);
+      res.status(500).json({ error: "Failed to calculate analytics" });
     }
   });
 

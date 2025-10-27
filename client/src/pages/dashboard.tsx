@@ -19,6 +19,8 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
 import Reports from '@/pages/reports';
+import OwnerAnalytics from '@/pages/owner-analytics';
+import { AdminLoginDialog } from '@/components/admin-login-dialog';
 import c2LogoUrl from '@assets/C2 Financial Services ORIGINAL (1)_1761538780950.png';
 
 export default function Dashboard() {
@@ -35,6 +37,8 @@ export default function Dashboard() {
   const [validationWarnings, setValidationWarnings] = useState<ValidationWarning[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -48,7 +52,36 @@ export default function Dashboard() {
       setIsLoading(false);
     }
     loadData();
+    
+    // Verify admin status with server via session
+    async function verifyAdmin() {
+      try {
+        const response = await fetch('/api/admin/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Include session cookie
+        });
+        const data = await response.json();
+        setIsAdmin(data.isAdmin || false);
+      } catch (error) {
+        setIsAdmin(false);
+      }
+    }
+    verifyAdmin();
   }, []);
+
+  const handleOwnerAnalyticsClick = () => {
+    if (!isAdmin) {
+      setAdminLoginOpen(true);
+    } else {
+      setActiveTab('owner-analytics');
+    }
+  };
+
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+    setActiveTab('owner-analytics');
+  };
 
   const handleUploadComplete = async () => {
     const data = await storageService.getAllRecords();
@@ -249,7 +282,13 @@ export default function Dashboard() {
                     <div className="space-y-6 mt-6">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">View</label>
-                        <Select value={activeTab} onValueChange={setActiveTab}>
+                        <Select value={activeTab} onValueChange={(value) => {
+                          if (value === 'owner-analytics') {
+                            handleOwnerAnalyticsClick();
+                          } else {
+                            setActiveTab(value);
+                          }
+                        }}>
                           <SelectTrigger className="w-full" data-testid="select-processor-mobile">
                             <SelectValue placeholder="Select View" />
                           </SelectTrigger>
@@ -266,6 +305,7 @@ export default function Dashboard() {
                             <SelectItem value="reports">Reports</SelectItem>
                             <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                             <SelectItem value="validation">Data Validation</SelectItem>
+                            <SelectItem value="owner-analytics">Owner Analytics 🔒</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -355,7 +395,13 @@ export default function Dashboard() {
               {/* Desktop filters - hidden on mobile */}
               {records.length > 0 && (
                 <div className="hidden lg:flex items-center gap-3">
-                  <Select value={activeTab} onValueChange={setActiveTab}>
+                  <Select value={activeTab} onValueChange={(value) => {
+                    if (value === 'owner-analytics') {
+                      handleOwnerAnalyticsClick();
+                    } else {
+                      setActiveTab(value);
+                    }
+                  }}>
                     <SelectTrigger className="w-[180px]" data-testid="select-processor">
                       <SelectValue placeholder="Select View" />
                     </SelectTrigger>
@@ -372,6 +418,7 @@ export default function Dashboard() {
                       <SelectItem value="reports">Reports</SelectItem>
                       <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                       <SelectItem value="validation">Data Validation</SelectItem>
+                      <SelectItem value="owner-analytics">Owner Analytics 🔒</SelectItem>
                     </SelectContent>
                   </Select>
 
@@ -585,8 +632,27 @@ export default function Dashboard() {
           <TabsContent value="upload-tracking" data-testid="tab-upload-tracking">
             <UploadTracking records={records} uploadedFiles={uploadedFiles} />
           </TabsContent>
+
+          <TabsContent value="owner-analytics" data-testid="tab-owner-analytics">
+            {isAdmin ? (
+              <OwnerAnalytics />
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20">
+                <p className="text-muted-foreground mb-4">Admin authentication required</p>
+                <Button onClick={handleOwnerAnalyticsClick} data-testid="button-login-owner-analytics">
+                  Login to Access Owner Analytics
+                </Button>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </main>
+
+      <AdminLoginDialog
+        open={adminLoginOpen}
+        onOpenChange={setAdminLoginOpen}
+        onLoginSuccess={handleAdminLogin}
+      />
     </div>
   );
 }
