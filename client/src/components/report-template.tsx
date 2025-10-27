@@ -1,6 +1,7 @@
 import { MonthlyMetrics, Processor } from '@shared/schema';
 import { formatCurrency, formatPercent, formatMonthLabel } from '@/lib/analytics';
 import { TrendingUp, TrendingDown, Users, DollarSign, Activity, UserCheck } from 'lucide-react';
+import c2LogoUrl from '@assets/C2 Financial Services ORIGINAL (1)_1761538780950.png';
 
 interface ReportTemplateProps {
   metrics: MonthlyMetrics | undefined;
@@ -18,21 +19,6 @@ export function ReportTemplate({ metrics, processor, monthLabel, partnerName, pa
       </div>
     );
   }
-
-  const tracerLogoSvg = `data:image/svg+xml,${encodeURIComponent(`
-    <svg width="200" height="60" xmlns="http://www.w3.org/2000/svg">
-      <text x="10" y="35" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#1A3A52">TRACER</text>
-      <text x="130" y="35" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#7FA848">C2</text>
-      <text x="165" y="35" font-family="Inter, sans-serif" font-size="20" font-weight="400" fill="#1A3A52">FS</text>
-    </svg>
-  `)}`;
-
-  const poweredByLogoSvg = `data:image/svg+xml,${encodeURIComponent(`
-    <svg width="150" height="30" xmlns="http://www.w3.org/2000/svg">
-      <text x="5" y="20" font-family="Inter, sans-serif" font-size="12" font-weight="400" fill="#666">Powered by</text>
-      <text x="75" y="20" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1A3A52">TRACER C2</text>
-    </svg>
-  `)}`;
 
   const isPositive = (value: number) => value >= 0;
 
@@ -60,9 +46,9 @@ export function ReportTemplate({ metrics, processor, monthLabel, partnerName, pa
           </div>
           <div className="text-right">
             <img 
-              src={tracerLogoSvg} 
-              alt="TRACER C2 FS" 
-              className="h-12 mb-2"
+              src={c2LogoUrl} 
+              alt="C2 Financial Services" 
+              className="h-12 mb-2 object-contain"
               data-testid="img-tracer-logo"
             />
           </div>
@@ -244,9 +230,9 @@ export function ReportTemplate({ metrics, processor, monthLabel, partnerName, pa
           </div>
           <div>
             <img 
-              src={poweredByLogoSvg} 
-              alt="Powered by TRACER C2" 
-              className="h-6"
+              src={c2LogoUrl} 
+              alt="C2 Financial Services" 
+              className="h-6 object-contain"
               data-testid="img-powered-by"
             />
           </div>

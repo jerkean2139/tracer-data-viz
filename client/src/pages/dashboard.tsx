@@ -19,6 +19,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
 import Reports from '@/pages/reports';
+import c2LogoUrl from '@assets/C2 Financial Services ORIGINAL (1)_1761538780950.png';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<MerchantRecord[]>([]);
@@ -175,7 +176,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary mb-4">TRACER C2</h1>
+          <img src={c2LogoUrl} alt="C2 Financial Services" className="h-16 mx-auto mb-4 object-contain" />
           <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
@@ -188,9 +189,11 @@ export default function Dashboard() {
         <header className="border-b sticky top-0 bg-background z-50">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
-                <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
+              <div className="flex items-center gap-3">
+                <img src={c2LogoUrl} alt="C2 Financial Services" className="h-10 object-contain" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button 
@@ -227,21 +230,23 @@ export default function Dashboard() {
       <header className="border-b sticky top-0 bg-background z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
-              <p className="text-sm text-muted-foreground">
-                Merchant Account Analytics
-                {filteredMonths.length > 0 && (
-                  <span className="ml-2 font-medium text-primary">
-                    • {filteredMonths.length === allMonths.length 
-                      ? 'All Time' 
-                      : filteredMonths.length === 1
-                        ? formatMonthLabel(filteredMonths[0])
-                        : `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}`
-                    }
-                  </span>
-                )}
-              </p>
+            <div className="flex items-center gap-3">
+              <img src={c2LogoUrl} alt="C2 Financial Services" className="h-10 object-contain" />
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  Merchant Account Analytics
+                  {filteredMonths.length > 0 && (
+                    <span className="ml-2 font-medium text-primary">
+                      • {filteredMonths.length === allMonths.length 
+                        ? 'All Time' 
+                        : filteredMonths.length === 1
+                          ? formatMonthLabel(filteredMonths[0])
+                          : `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}`
+                      }
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               {/* Mobile filter button */}
