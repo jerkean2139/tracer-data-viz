@@ -488,19 +488,25 @@ export default function Reports() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 overflow-hidden">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Report Preview
               </CardTitle>
               <CardDescription>
-                Preview your report before generating PDF
+                Preview your report before generating PDF (8.5" × 11")
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="border rounded-lg bg-muted/10 overflow-hidden">
-                <div className="transform scale-[0.5] origin-top-left" style={{ width: '200%', height: '200%' }}>
+            <CardContent className="p-0">
+              <div className="w-full bg-white overflow-hidden" style={{ aspectRatio: '8.5/11' }}>
+                <div style={{ 
+                  width: '816px',
+                  height: '1056px',
+                  transform: 'scale(0.6)',
+                  transformOrigin: 'top center',
+                  margin: '0 auto'
+                }}>
                   <ReportTemplate
                     metrics={selectedMetrics}
                     processor={selectedProcessor}
