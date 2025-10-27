@@ -160,35 +160,47 @@ export default function Reports() {
     }
 
     setIsGenerating(true);
+    let cloneContainer: HTMLDivElement | null = null;
+    
     try {
       const reportElement = document.getElementById('pdf-report-template');
       if (!reportElement) {
         throw new Error('Report template not found');
       }
 
-      const canvas = await html2canvas(reportElement, {
-        scale: 2,
+      // Clone the report element and render it off-screen at full size (1:1 scale)
+      // This prevents html2canvas from capturing the 0.6x scaled preview version
+      cloneContainer = document.createElement('div');
+      cloneContainer.style.position = 'absolute';
+      cloneContainer.style.left = '-9999px';
+      cloneContainer.style.top = '0';
+      cloneContainer.style.width = '816px';
+      cloneContainer.style.height = '1056px';
+      
+      const clonedReport = reportElement.cloneNode(true) as HTMLElement;
+      cloneContainer.appendChild(clonedReport);
+      document.body.appendChild(cloneContainer);
+
+      // Wait for any images to load in the cloned element
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const canvas = await html2canvas(clonedReport, {
+        scale: window.devicePixelRatio || 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
+        width: 816,
+        height: 1056,
       });
 
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
+        unit: 'px',
+        format: [816, 1056],
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 0;
-
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.addImage(imgData, 'PNG', 0, 0, 816, 1056);
 
       // Generate filename with safeguards for empty filteredMonths
       let dateRangeLabel = 'report';
@@ -216,6 +228,10 @@ export default function Reports() {
         variant: 'destructive',
       });
     } finally {
+      // Clean up the cloned element
+      if (cloneContainer && cloneContainer.parentNode) {
+        cloneContainer.parentNode.removeChild(cloneContainer);
+      }
       setIsGenerating(false);
     }
   };
