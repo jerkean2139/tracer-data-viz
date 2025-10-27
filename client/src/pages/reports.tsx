@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Upload, Building2, Calendar } from 'lucide-react';
+import { FileText, Download, Upload, Building2, Calendar, Archive, Trash2 } from 'lucide-react';
 import { storageService } from '@/lib/storage';
 import { MerchantRecord, Processor, PartnerLogo, MonthlyMetrics } from '@shared/schema';
 import { calculateMonthlyMetrics, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
@@ -652,6 +652,148 @@ export default function Reports() {
             </CardContent>
           </Card>
       </div>
+
+      {/* Saved Reports Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Archive className="w-5 h-5" />
+            Saved Reports
+          </CardTitle>
+          <CardDescription>
+            Access and manage your previously saved reports
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SavedReportsSection />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function SavedReportsSection() {
+  const { toast } = useToast();
+  const { data: savedReports = [], isLoading } = useQuery<any[]>({
+    queryKey: ['/api/saved-reports'],
+  });
+
+  const deleteReportMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest('DELETE', `/api/saved-reports/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saved-reports'] });
+      toast({
+        title: 'Report deleted',
+        description: 'The saved report has been removed.',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Error deleting report',
+        description: 'Failed to delete report. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleDownload = async (id: number, reportName: string) => {
+    try {
+      const response = await fetch(`/api/saved-reports/${id}/download`);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${reportName}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: 'Download started',
+        description: `${reportName}.pdf is downloading.`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Download failed',
+        description: 'Could not download the report. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (isLoading) {
+    return <div className="text-muted-foreground">Loading saved reports...</div>;
+  }
+
+  if (savedReports.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No saved reports yet. Generate and save a report to see it here.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {savedReports.map((report) => (
+        <div
+          key={report.id}
+          className="flex items-center justify-between p-4 border rounded-lg hover-elevate"
+          data-testid={`saved-report-${report.id}`}
+        >
+          <div className="flex-1 space-y-1">
+            <h4 className="font-semibold text-foreground" data-testid={`text-report-name-${report.id}`}>
+              {report.reportName}
+            </h4>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Badge variant="outline">{report.processor}</Badge>
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                {report.dateRangeLabel}
+              </span>
+              {report.partnerName && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="w-3 h-3" />
+                  {report.partnerName}
+                </span>
+              )}
+              <span className="text-xs">
+                {(report.fileSize / 1024).toFixed(1)} KB
+              </span>
+              <span className="text-xs">
+                {new Date(report.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleDownload(report.id, report.reportName)}
+              data-testid={`button-download-${report.id}`}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => deleteReportMutation.mutate(report.id)}
+              disabled={deleteReportMutation.isPending}
+              data-testid={`button-delete-${report.id}`}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
