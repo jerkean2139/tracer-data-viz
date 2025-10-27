@@ -84,10 +84,25 @@ export const partnerLogos = pgTable("partner_logos", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const savedReports = pgTable("saved_reports", {
+  id: serial("id").primaryKey(),
+  reportName: varchar("report_name", { length: 255 }).notNull(),
+  processor: varchar("processor", { length: 50 }).notNull(),
+  dateRangeLabel: varchar("date_range_label", { length: 255 }).notNull(),
+  partnerName: varchar("partner_name", { length: 255 }),
+  partnerLogoUrl: text("partner_logo_url"),
+  pdfData: text("pdf_data").notNull(),
+  fileSize: real("file_size").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  createdAtIdx: index("saved_reports_created_at_idx").on(table.createdAt),
+}));
+
 // Insert schemas for API validation - will be defined after merchantRecordSchema
 export const insertUploadedFileSchema = createInsertSchema(uploadedFiles);
 export const insertMerchantMetadataSchema = createInsertSchema(merchantMetadata).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertPartnerLogoSchema = createInsertSchema(partnerLogos).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertSavedReportSchema = createInsertSchema(savedReports).omit({ id: true, createdAt: true });
 
 // Type exports for database
 export type DbMerchantRecord = typeof merchantRecords.$inferSelect;
@@ -98,6 +113,8 @@ export type DbMerchantMetadata = typeof merchantMetadata.$inferSelect;
 export type InsertMerchantMetadata = z.infer<typeof insertMerchantMetadataSchema>;
 export type DbPartnerLogo = typeof partnerLogos.$inferSelect;
 export type InsertPartnerLogo = z.infer<typeof insertPartnerLogoSchema>;
+export type SavedReport = typeof savedReports.$inferSelect;
+export type InsertSavedReport = z.infer<typeof insertSavedReportSchema>;
 
 // Legacy Zod schemas for frontend compatibility
 export const merchantRecordSchema = z.object({
