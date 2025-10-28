@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Upload, Building2, Calendar, Archive, Trash2 } from 'lucide-react';
+import { FileText, Download, Upload, Building2, Calendar } from 'lucide-react';
 import { storageService } from '@/lib/storage';
-import { MerchantRecord, Processor, PartnerLogo, MonthlyMetrics } from '@shared/schema';
+import { MerchantRecord, Processor, PartnerLogo } from '@shared/schema';
 import { calculateMonthlyMetrics, getLatestMonth, formatMonthLabel } from '@/lib/analytics';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -31,9 +31,6 @@ export default function Reports() {
   const [partnerLogoUrl, setPartnerLogoUrl] = useState('');
   const [uploadLogoDialogOpen, setUploadLogoDialogOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [saveReportDialogOpen, setSaveReportDialogOpen] = useState(false);
-  const [reportName, setReportName] = useState('');
-  const [generatedPdfBlob, setGeneratedPdfBlob] = useState<Blob | null>(null);
 
   const { data: records = [] } = useQuery<MerchantRecord[]>({
     queryKey: ['/api/records'],
@@ -43,31 +40,15 @@ export default function Reports() {
     queryKey: ['/api/partner-logos'],
   });
 
-  const saveReportMutation = useMutation({
-    mutationFn: async (report: { reportName: string; processor: string; dateRangeLabel: string; partnerName: string; partnerLogoUrl: string; pdfData: string; fileSize: number }) => {
-      return await apiRequest('POST', '/api/saved-reports', report);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/saved-reports'] });
-      toast({
-        title: 'Report saved',
-        description: 'PDF report has been saved successfully.',
-      });
-      setSaveReportDialogOpen(false);
-      setReportName('');
-    },
-    onError: () => {
-      toast({
-        title: 'Error saving report',
-        description: 'Failed to save report. Please try again.',
-        variant: 'destructive',
-      });
-    },
-  });
-
   const addLogoMutation = useMutation({
     mutationFn: async (logo: { partnerName: string; logoUrl: string }) => {
-      return await apiRequest('POST', '/api/partner-logos', logo);
+      return await apiRequest('/api/partner-logos', {
+        method: 'POST',
+        body: JSON.stringify(logo),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/partner-logos'] });
@@ -154,22 +135,13 @@ export default function Reports() {
   const metrics = metricsWithAnchor.filter(m => filteredMonths.includes(m.month));
   
   // Aggregate metrics across all months in the range
-  const aggregateMetrics: MonthlyMetrics = {
-    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
-    processor: selectedProcessor,
+  const aggregateMetrics = {
     totalRevenue: metrics.reduce((sum, m) => sum + m.totalRevenue, 0),
     totalAccounts: metrics.length > 0 ? metrics[metrics.length - 1]?.totalAccounts || 0 : 0,
-    retainedAccounts: metrics.reduce((sum, m) => sum + m.retainedAccounts, 0),
-    lostAccounts: metrics.reduce((sum, m) => sum + m.lostAccounts, 0),
-    newAccounts: metrics.reduce((sum, m) => sum + m.newAccounts, 0),
     retentionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length : 0,
     attritionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length : 0,
-    revenuePerAccount: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.revenuePerAccount, 0) / metrics.length : 0,
-    momRevenueChange: metrics.length > 0 ? metrics[metrics.length - 1]?.momRevenueChange : undefined,
-    momRevenueChangePercent: metrics.length > 0 ? metrics[metrics.length - 1]?.momRevenueChangePercent : undefined,
-    netAccountGrowth: metrics.reduce((sum, m) => sum + m.netAccountGrowth, 0),
-    totalAgentNet: metrics.reduce((sum, m) => sum + m.totalAgentNet, 0),
-    agentNetPerAccount: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.agentNetPerAccount, 0) / metrics.length : 0,
+    revenueGrowth: metrics.length > 1 ? metrics[metrics.length - 1]?.revenueGrowth || 0 : 0,
+    month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
   };
 
   const selectedMetrics = aggregateMetrics;
@@ -185,75 +157,53 @@ export default function Reports() {
     }
 
     setIsGenerating(true);
-    let cloneContainer: HTMLDivElement | null = null;
-    
     try {
       const reportElement = document.getElementById('pdf-report-template');
       if (!reportElement) {
         throw new Error('Report template not found');
       }
 
-      // Clone the report element and render it off-screen at full size (1:1 scale)
-      // This prevents html2canvas from capturing the 0.6x scaled preview version
-      cloneContainer = document.createElement('div');
-      cloneContainer.style.position = 'absolute';
-      cloneContainer.style.left = '-9999px';
-      cloneContainer.style.top = '0';
-      cloneContainer.style.width = '816px';
-      cloneContainer.style.height = '1056px';
-      
-      const clonedReport = reportElement.cloneNode(true) as HTMLElement;
-      cloneContainer.appendChild(clonedReport);
-      document.body.appendChild(cloneContainer);
-
-      // Wait for any images to load in the cloned element
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      const canvas = await html2canvas(clonedReport, {
-        scale: window.devicePixelRatio || 2,
+      const canvas = await html2canvas(reportElement, {
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
-        width: 816,
-        height: 1056,
       });
 
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'px',
-        format: [816, 1056],
+        unit: 'mm',
+        format: 'a4',
       });
 
-      pdf.addImage(imgData, 'PNG', 0, 0, 816, 1056);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
 
-      // Generate filename and date range label
+      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+
+      // Generate filename with safeguards for empty filteredMonths
       let dateRangeLabel = 'report';
       if (filteredMonths.length > 0) {
         if (dateRange === 'custom' || dateRange === 'all') {
           dateRangeLabel = filteredMonths.length > 1
-            ? `${filteredMonths[0]} to ${filteredMonths[filteredMonths.length - 1]}`
+            ? `${filteredMonths[0]}_to_${filteredMonths[filteredMonths.length - 1]}`
             : filteredMonths[0];
         } else {
-          dateRangeLabel = dateRange === 'current' ? 'Current Month' : dateRange === '3months' ? 'Last 3 Months' : dateRange === '6months' ? 'Last 6 Months' : 'Last 12 Months';
+          dateRangeLabel = dateRange.replace('months', 'mo');
         }
       }
-      const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel.replace(/ /g, '_')}.pdf`;
-
-      // Convert PDF to blob for saving
-      const pdfBlob = pdf.output('blob');
-      setGeneratedPdfBlob(pdfBlob);
-
-      // Auto-download the PDF
+      const fileName = `TRACER_C2_Report_${selectedProcessor}_${dateRangeLabel}.pdf`;
       pdf.save(fileName);
-
-      // Set default report name and open save dialog
-      setReportName(fileName.replace('.pdf', ''));
-      setSaveReportDialogOpen(true);
 
       toast({
         title: 'Report generated successfully',
-        description: `${fileName} has been downloaded. You can now save it to the database.`,
+        description: `${fileName} has been downloaded.`,
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -263,10 +213,6 @@ export default function Reports() {
         variant: 'destructive',
       });
     } finally {
-      // Clean up the cloned element
-      if (cloneContainer && cloneContainer.parentNode) {
-        cloneContainer.parentNode.removeChild(cloneContainer);
-      }
       setIsGenerating(false);
     }
   };
@@ -308,46 +254,6 @@ export default function Reports() {
       setPartnerName(logo.partnerName);
       setPartnerLogoUrl(logo.logoUrl);
     }
-  };
-
-  const handleSaveReport = async () => {
-    if (!reportName || !generatedPdfBlob) {
-      toast({
-        title: 'Missing information',
-        description: 'Please provide a report name.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Convert blob to base64
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64data = reader.result as string;
-      const pdfData = base64data.split(',')[1]; // Remove data:application/pdf;base64, prefix
-
-      let dateRangeLabel = 'report';
-      if (filteredMonths.length > 0) {
-        if (dateRange === 'custom' || dateRange === 'all') {
-          dateRangeLabel = filteredMonths.length > 1
-            ? `${filteredMonths[0]} to ${filteredMonths[filteredMonths.length - 1]}`
-            : filteredMonths[0];
-        } else {
-          dateRangeLabel = dateRange === 'current' ? 'Current Month' : dateRange === '3months' ? 'Last 3 Months' : dateRange === '6months' ? 'Last 6 Months' : 'Last 12 Months';
-        }
-      }
-
-      await saveReportMutation.mutateAsync({
-        reportName,
-        processor: selectedProcessor,
-        dateRangeLabel,
-        partnerName,
-        partnerLogoUrl,
-        pdfData,
-        fileSize: generatedPdfBlob.size,
-      });
-    };
-    reader.readAsDataURL(generatedPdfBlob);
   };
 
   return (
@@ -579,71 +485,23 @@ export default function Reports() {
             </CardContent>
           </Card>
 
-          {/* Save Report Dialog */}
-          <Dialog open={saveReportDialogOpen} onOpenChange={setSaveReportDialogOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Save Report to Database</DialogTitle>
-                <DialogDescription>
-                  Give your report a name to save it for future reference
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="report-name">Report Name</Label>
-                  <Input
-                    id="report-name"
-                    placeholder="e.g., Q1 2025 Overview Report"
-                    value={reportName}
-                    onChange={(e) => setReportName(e.target.value)}
-                    data-testid="input-report-name"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button 
-                    className="flex-1" 
-                    onClick={handleSaveReport}
-                    disabled={saveReportMutation.isPending || !reportName}
-                    data-testid="button-save-report"
-                  >
-                    {saveReportMutation.isPending ? 'Saving...' : 'Save Report'}
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="flex-1" 
-                    onClick={() => setSaveReportDialogOpen(false)}
-                    data-testid="button-cancel-save-report"
-                  >
-                    Skip
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Card className="lg:col-span-2 overflow-hidden">
+          <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Report Preview
               </CardTitle>
               <CardDescription>
-                Preview your report before generating PDF (8.5" × 11")
+                Preview your report before generating PDF
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="w-full bg-white overflow-hidden" style={{ aspectRatio: '8.5/11' }}>
-                <div style={{ 
-                  width: '816px',
-                  height: '1056px',
-                  transform: 'scale(0.6)',
-                  transformOrigin: 'top center',
-                  margin: '0 auto'
-                }}>
+            <CardContent>
+              <div className="border rounded-lg bg-muted/10 overflow-hidden">
+                <div className="transform scale-[0.5] origin-top-left" style={{ width: '200%', height: '200%' }}>
                   <ReportTemplate
                     metrics={selectedMetrics}
                     processor={selectedProcessor}
-                    monthLabel={aggregateMetrics.month}
+                    month={selectedMonth}
                     partnerName={partnerName}
                     partnerLogoUrl={partnerLogoUrl}
                   />
@@ -652,148 +510,6 @@ export default function Reports() {
             </CardContent>
           </Card>
       </div>
-
-      {/* Saved Reports Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Archive className="w-5 h-5" />
-            Saved Reports
-          </CardTitle>
-          <CardDescription>
-            Access and manage your previously saved reports
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SavedReportsSection />
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function SavedReportsSection() {
-  const { toast } = useToast();
-  const { data: savedReports = [], isLoading } = useQuery<any[]>({
-    queryKey: ['/api/saved-reports'],
-  });
-
-  const deleteReportMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest('DELETE', `/api/saved-reports/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/saved-reports'] });
-      toast({
-        title: 'Report deleted',
-        description: 'The saved report has been removed.',
-      });
-    },
-    onError: () => {
-      toast({
-        title: 'Error deleting report',
-        description: 'Failed to delete report. Please try again.',
-        variant: 'destructive',
-      });
-    },
-  });
-
-  const handleDownload = async (id: number, reportName: string) => {
-    try {
-      const response = await fetch(`/api/saved-reports/${id}/download`);
-      if (!response.ok) throw new Error('Download failed');
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${reportName}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      toast({
-        title: 'Download started',
-        description: `${reportName}.pdf is downloading.`,
-      });
-    } catch (error) {
-      toast({
-        title: 'Download failed',
-        description: 'Could not download the report. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  if (isLoading) {
-    return <div className="text-muted-foreground">Loading saved reports...</div>;
-  }
-
-  if (savedReports.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        No saved reports yet. Generate and save a report to see it here.
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      {savedReports.map((report) => (
-        <div
-          key={report.id}
-          className="flex items-center justify-between p-4 border rounded-lg hover-elevate"
-          data-testid={`saved-report-${report.id}`}
-        >
-          <div className="flex-1 space-y-1">
-            <h4 className="font-semibold text-foreground" data-testid={`text-report-name-${report.id}`}>
-              {report.reportName}
-            </h4>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Badge variant="outline">{report.processor}</Badge>
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {report.dateRangeLabel}
-              </span>
-              {report.partnerName && (
-                <span className="flex items-center gap-1">
-                  <Building2 className="w-3 h-3" />
-                  {report.partnerName}
-                </span>
-              )}
-              <span className="text-xs">
-                {(report.fileSize / 1024).toFixed(1)} KB
-              </span>
-              <span className="text-xs">
-                {new Date(report.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleDownload(report.id, report.reportName)}
-              data-testid={`button-download-${report.id}`}
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => deleteReportMutation.mutate(report.id)}
-              disabled={deleteReportMutation.isPending}
-              data-testid={`button-delete-${report.id}`}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      ))}
     </div>
   );
 }

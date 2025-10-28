@@ -19,9 +19,6 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
 import Reports from '@/pages/reports';
-import OwnerAnalytics from '@/pages/owner-analytics';
-import { AdminLoginDialog } from '@/components/admin-login-dialog';
-import c2LogoUrl from '@assets/C2 Financial Services ORIGINAL (1)_1761538780950.png';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<MerchantRecord[]>([]);
@@ -37,8 +34,6 @@ export default function Dashboard() {
   const [validationWarnings, setValidationWarnings] = useState<ValidationWarning[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -52,36 +47,7 @@ export default function Dashboard() {
       setIsLoading(false);
     }
     loadData();
-    
-    // Verify admin status with server via session
-    async function verifyAdmin() {
-      try {
-        const response = await fetch('/api/admin/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Include session cookie
-        });
-        const data = await response.json();
-        setIsAdmin(data.isAdmin || false);
-      } catch (error) {
-        setIsAdmin(false);
-      }
-    }
-    verifyAdmin();
   }, []);
-
-  const handleOwnerAnalyticsClick = () => {
-    if (!isAdmin) {
-      setAdminLoginOpen(true);
-    } else {
-      setActiveTab('owner-analytics');
-    }
-  };
-
-  const handleAdminLogin = () => {
-    setIsAdmin(true);
-    setActiveTab('owner-analytics');
-  };
 
   const handleUploadComplete = async () => {
     const data = await storageService.getAllRecords();
@@ -209,7 +175,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <img src={c2LogoUrl} alt="C2 Financial Services" className="h-20 mx-auto mb-4 object-contain" />
+          <h1 className="text-2xl font-bold text-primary mb-4">TRACER C2</h1>
           <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
@@ -222,8 +188,9 @@ export default function Dashboard() {
         <header className="border-b sticky top-0 bg-background z-50">
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
+              <div>
+                <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
+                <p className="text-sm text-muted-foreground">Merchant Account Analytics</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button 
@@ -260,8 +227,21 @@ export default function Dashboard() {
       <header className="border-b sticky top-0 bg-background z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={c2LogoUrl} alt="C2 Financial Services" className="h-12 object-contain" />
+            <div>
+              <h1 className="text-2xl font-bold text-primary">TRACER C2</h1>
+              <p className="text-sm text-muted-foreground">
+                Merchant Account Analytics
+                {filteredMonths.length > 0 && (
+                  <span className="ml-2 font-medium text-primary">
+                    • {filteredMonths.length === allMonths.length 
+                      ? 'All Time' 
+                      : filteredMonths.length === 1
+                        ? formatMonthLabel(filteredMonths[0])
+                        : `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}`
+                    }
+                  </span>
+                )}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               {/* Mobile filter button */}
@@ -282,13 +262,7 @@ export default function Dashboard() {
                     <div className="space-y-6 mt-6">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">View</label>
-                        <Select value={activeTab} onValueChange={(value) => {
-                          if (value === 'owner-analytics') {
-                            handleOwnerAnalyticsClick();
-                          } else {
-                            setActiveTab(value);
-                          }
-                        }}>
+                        <Select value={activeTab} onValueChange={setActiveTab}>
                           <SelectTrigger className="w-full" data-testid="select-processor-mobile">
                             <SelectValue placeholder="Select View" />
                           </SelectTrigger>
@@ -305,7 +279,6 @@ export default function Dashboard() {
                             <SelectItem value="reports">Reports</SelectItem>
                             <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                             <SelectItem value="validation">Data Validation</SelectItem>
-                            <SelectItem value="owner-analytics">Owner Analytics 🔒</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -313,7 +286,7 @@ export default function Dashboard() {
                       {allBranches.length > 0 && (
                         <div className="space-y-2">
                           <label className="text-sm font-medium">Branch</label>
-                          <Select value={selectedBranch} onValueChange={setSelectedBranch} disabled={activeTab === 'reports'}>
+                          <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                             <SelectTrigger className="w-full" data-testid="select-branch-mobile">
                               <SelectValue placeholder="All Branches" />
                             </SelectTrigger>
@@ -331,7 +304,7 @@ export default function Dashboard() {
 
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Date Range</label>
-                        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)} disabled={activeTab === 'reports'}>
+                        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
                           <SelectTrigger className="w-full" data-testid="select-date-range-mobile">
                             <SelectValue />
                           </SelectTrigger>
@@ -350,7 +323,7 @@ export default function Dashboard() {
                         <>
                           <div className="space-y-2">
                             <label className="text-sm font-medium">From Month</label>
-                            <Select value={customStartMonth} onValueChange={setCustomStartMonth} disabled={activeTab === 'reports'}>
+                            <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
                               <SelectTrigger className="w-full" data-testid="select-start-month-mobile">
                                 <SelectValue placeholder="From" />
                               </SelectTrigger>
@@ -365,7 +338,7 @@ export default function Dashboard() {
                           </div>
                           <div className="space-y-2">
                             <label className="text-sm font-medium">To Month</label>
-                            <Select value={customEndMonth} onValueChange={setCustomEndMonth} disabled={activeTab === 'reports'}>
+                            <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
                               <SelectTrigger className="w-full" data-testid="select-end-month-mobile">
                                 <SelectValue placeholder="To" />
                               </SelectTrigger>
@@ -382,7 +355,7 @@ export default function Dashboard() {
                       )}
 
                       <div className="pt-4 border-t">
-                        <Badge variant="outline" className={`w-full justify-center border-blue-200 dark:border-blue-800 ${activeTab === 'reports' ? 'bg-muted/50 text-muted-foreground/50' : 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300'}`}>
+                        <Badge variant="outline" className="w-full justify-center bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                           <Info className="w-3 h-3 mr-1" />
                           Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
                         </Badge>
@@ -395,13 +368,7 @@ export default function Dashboard() {
               {/* Desktop filters - hidden on mobile */}
               {records.length > 0 && (
                 <div className="hidden lg:flex items-center gap-3">
-                  <Select value={activeTab} onValueChange={(value) => {
-                    if (value === 'owner-analytics') {
-                      handleOwnerAnalyticsClick();
-                    } else {
-                      setActiveTab(value);
-                    }
-                  }}>
+                  <Select value={activeTab} onValueChange={setActiveTab}>
                     <SelectTrigger className="w-[180px]" data-testid="select-processor">
                       <SelectValue placeholder="Select View" />
                     </SelectTrigger>
@@ -418,12 +385,11 @@ export default function Dashboard() {
                       <SelectItem value="reports">Reports</SelectItem>
                       <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                       <SelectItem value="validation">Data Validation</SelectItem>
-                      <SelectItem value="owner-analytics">Owner Analytics 🔒</SelectItem>
                     </SelectContent>
                   </Select>
 
                   {allBranches.length > 0 && (
-                    <Select value={selectedBranch} onValueChange={setSelectedBranch} disabled={activeTab === 'reports'}>
+                    <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                       <SelectTrigger className="w-[140px]" data-testid="select-branch">
                         <SelectValue placeholder="All Branches" />
                       </SelectTrigger>
@@ -439,8 +405,8 @@ export default function Dashboard() {
                   )}
                   
                   <div className="flex items-center gap-2">
-                    <Calendar className={`w-4 h-4 ${activeTab === 'reports' ? 'text-muted-foreground/50' : 'text-muted-foreground'}`} />
-                    <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)} disabled={activeTab === 'reports'}>
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
                       <SelectTrigger className="w-[160px]" data-testid="select-date-range">
                         <SelectValue />
                       </SelectTrigger>
@@ -456,7 +422,7 @@ export default function Dashboard() {
                     
                     {dateRange === 'custom' && (
                       <>
-                        <Select value={customStartMonth} onValueChange={setCustomStartMonth} disabled={activeTab === 'reports'}>
+                        <Select value={customStartMonth} onValueChange={setCustomStartMonth}>
                           <SelectTrigger className="w-[140px]" data-testid="select-start-month">
                             <SelectValue placeholder="From" />
                           </SelectTrigger>
@@ -469,7 +435,7 @@ export default function Dashboard() {
                           </SelectContent>
                         </Select>
                         <span className="text-sm text-muted-foreground">to</span>
-                        <Select value={customEndMonth} onValueChange={setCustomEndMonth} disabled={activeTab === 'reports'}>
+                        <Select value={customEndMonth} onValueChange={setCustomEndMonth}>
                           <SelectTrigger className="w-[140px]" data-testid="select-end-month">
                             <SelectValue placeholder="To" />
                           </SelectTrigger>
@@ -485,7 +451,7 @@ export default function Dashboard() {
                     )}
                   </div>
 
-                  <Badge variant="outline" className={`border-blue-200 dark:border-blue-800 ${activeTab === 'reports' ? 'bg-muted/50 text-muted-foreground/50' : 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300'}`} data-testid="badge-next-month">
+                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800" data-testid="badge-next-month">
                     <Info className="w-3 h-3 mr-1" />
                     Next: {formatMonthLabel(getNextExpectedMonth(currentMonth))}
                   </Badge>
@@ -632,27 +598,8 @@ export default function Dashboard() {
           <TabsContent value="upload-tracking" data-testid="tab-upload-tracking">
             <UploadTracking records={records} uploadedFiles={uploadedFiles} />
           </TabsContent>
-
-          <TabsContent value="owner-analytics" data-testid="tab-owner-analytics">
-            {isAdmin ? (
-              <OwnerAnalytics />
-            ) : (
-              <div className="flex flex-col items-center justify-center py-20">
-                <p className="text-muted-foreground mb-4">Admin authentication required</p>
-                <Button onClick={handleOwnerAnalyticsClick} data-testid="button-login-owner-analytics">
-                  Login to Access Owner Analytics
-                </Button>
-              </div>
-            )}
-          </TabsContent>
         </Tabs>
       </main>
-
-      <AdminLoginDialog
-        open={adminLoginOpen}
-        onOpenChange={setAdminLoginOpen}
-        onLoginSuccess={handleAdminLogin}
-      />
     </div>
   );
 }
