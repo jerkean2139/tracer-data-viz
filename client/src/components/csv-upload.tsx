@@ -287,7 +287,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <Select
                         value={upload.processor || undefined}
-                        onValueChange={(value) => updateProcessor(index, value as 'Clearent' | 'ML' | 'Shift4')}
+                        onValueChange={(value) => updateProcessor(index, value as 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX')}
                         disabled={upload.status === 'processing' || upload.status === 'success'}
                       >
                         <SelectTrigger className="w-[180px]" data-testid={`select-processor-${index}`}>
@@ -297,6 +297,10 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
                           <SelectItem value="Clearent">Clearent</SelectItem>
                           <SelectItem value="ML">ML</SelectItem>
                           <SelectItem value="Shift4">Shift4</SelectItem>
+                          <SelectItem value="TSYS">TSYS</SelectItem>
+                          <SelectItem value="Micamp">Micamp</SelectItem>
+                          <SelectItem value="PayBright">PayBright</SelectItem>
+                          <SelectItem value="TRX">TRX</SelectItem>
                         </SelectContent>
                       </Select>
 
