@@ -225,7 +225,7 @@ export default function Dashboard() {
       <header className="border-b sticky top-0 bg-background z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <img src={c2Logo} alt="C2 Financial Services" className="h-12" />
+            <img src={c2Logo} alt="C2 Financial Services" className="h-12 pr-6" />
             <div className="flex items-center gap-2">
               {/* Mobile filter button */}
               {records.length > 0 && (
