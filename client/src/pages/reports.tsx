@@ -42,13 +42,7 @@ export default function Reports() {
 
   const addLogoMutation = useMutation({
     mutationFn: async (logo: { partnerName: string; logoUrl: string }) => {
-      return await apiRequest('/api/partner-logos', {
-        method: 'POST',
-        body: JSON.stringify(logo),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return await apiRequest('POST', '/api/partner-logos', logo);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/partner-logos'] });
@@ -135,14 +129,15 @@ export default function Reports() {
   const metrics = metricsWithAnchor.filter(m => filteredMonths.includes(m.month));
   
   // Aggregate metrics across all months in the range
-  const aggregateMetrics = {
+  const lastMetric = metrics.length > 0 ? metrics[metrics.length - 1] : null;
+  const aggregateMetrics = lastMetric ? {
+    ...lastMetric,
     totalRevenue: metrics.reduce((sum, m) => sum + m.totalRevenue, 0),
-    totalAccounts: metrics.length > 0 ? metrics[metrics.length - 1]?.totalAccounts || 0 : 0,
-    retentionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length : 0,
-    attritionRate: metrics.length > 0 ? metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length : 0,
-    revenueGrowth: metrics.length > 1 ? metrics[metrics.length - 1]?.revenueGrowth || 0 : 0,
+    totalAccounts: lastMetric.totalAccounts,
+    retentionRate: metrics.reduce((sum, m) => sum + m.retentionRate, 0) / metrics.length,
+    attritionRate: metrics.reduce((sum, m) => sum + m.attritionRate, 0) / metrics.length,
     month: filteredMonths.length > 1 ? `${formatMonthLabel(filteredMonths[0])} - ${formatMonthLabel(filteredMonths[filteredMonths.length - 1])}` : (filteredMonths[0] ? formatMonthLabel(filteredMonths[0]) : ''),
-  };
+  } : null;
 
   const selectedMetrics = aggregateMetrics;
 
@@ -498,13 +493,15 @@ export default function Reports() {
             <CardContent>
               <div className="border rounded-lg bg-muted/10 overflow-hidden">
                 <div className="transform scale-[0.5] origin-top-left" style={{ width: '200%', height: '200%' }}>
-                  <ReportTemplate
-                    metrics={selectedMetrics}
-                    processor={selectedProcessor}
-                    month={selectedMonth}
-                    partnerName={partnerName}
-                    partnerLogoUrl={partnerLogoUrl}
-                  />
+                  {selectedMetrics && (
+                    <ReportTemplate
+                      metrics={selectedMetrics}
+                      processor={selectedProcessor}
+                      month={selectedMetrics.month}
+                      partnerName={partnerName}
+                      partnerLogoUrl={partnerLogoUrl}
+                    />
+                  )}
                 </div>
               </div>
             </CardContent>
