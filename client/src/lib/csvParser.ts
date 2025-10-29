@@ -50,7 +50,7 @@ const COLUMN_MAPPINGS: Record<string, string[]> = {
   salesAmount: ['sales amount', 'salesamount', 'sales', 'amount', 'revenue', 'sales_amount', 'sale amount'],
   net: ['net', 'tracer net', 'net amount'],
   commissionPercent: ['%', 'commission %', 'commission', 'commission percent', 'comm %', 'bps'],
-  agentNet: ['agent net', 'agentnet', 'agent amount', 'bank payout', 'bankpayout'],
+  partnerNet: ['partner net', 'partnernet', 'partner amount', 'agent net', 'agentnet', 'agent amount', 'bank payout', 'bankpayout'],
   
   // Shift4 fields
   payoutAmount: ['payout amount', 'payoutamount', 'payout'],
@@ -355,7 +355,7 @@ function parseCSVData(
               const transactions = parseNumeric('transactions');
               const net = parseNumeric('net');
               const commissionPercent = parseNumeric('commissionPercent');
-              const agentNet = parseNumeric('agentNet');
+              const partnerNet = parseNumeric('partnerNet');
               const payoutAmount = parseNumeric('payoutAmount');
               const volume = parseNumeric('volume');
               const sales = parseNumeric('sales');
@@ -401,7 +401,7 @@ function parseCSVData(
                 transactions,
                 net,
                 commissionPercent,
-                agentNet,
+                partnerNet,
                 payoutAmount,
                 volume,
                 sales,

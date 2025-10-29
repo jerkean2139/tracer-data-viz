@@ -18,7 +18,7 @@ export const merchantRecords = pgTable("merchant_records", {
   transactions: real("transactions"),
   net: real("net"),
   commissionPercent: real("commission_percent"),
-  agentNet: real("agent_net"),
+  partnerNet: real("partner_net"),
   
   // Shift4-specific
   payoutAmount: real("payout_amount"),
@@ -114,7 +114,7 @@ export const merchantRecordSchema = z.object({
   transactions: z.number().optional(), // Number of swipes
   net: z.number().optional(), // Tracer's revenue
   commissionPercent: z.number().optional(), // Commission %
-  agentNet: z.number().optional(), // Agent's cut
+  partnerNet: z.number().optional(), // Partner's cut
   
   // Shift4-specific fields
   payoutAmount: z.number().optional(),
@@ -182,8 +182,8 @@ export const monthlyMetricsSchema = z.object({
   momRevenueChange: z.number().optional(),
   momRevenueChangePercent: z.number().optional(),
   netAccountGrowth: z.number(),
-  totalAgentNet: z.number(),
-  agentNetPerAccount: z.number(),
+  totalPartnerNet: z.number(),
+  partnerNetPerAccount: z.number(),
 });
 
 export const topMerchantSchema = z.object({

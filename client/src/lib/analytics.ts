@@ -47,26 +47,14 @@ export function calculateMonthlyMetrics(
     const totalRevenue = monthRecords.reduce((sum, r) => sum + getRevenue(r), 0);
     const totalAccounts = currentMerchantIds.size;
     
-    // Calculate agent net revenue (commission)
-    const totalAgentNet = monthRecords.reduce((sum, r) => {
-      // Agent net is only applicable to Clearent records
-      if (r.processor === 'Clearent' && r.agentNet !== undefined) {
-        return sum + r.agentNet;
+    // Calculate partner net revenue (commission)
+    const totalPartnerNet = monthRecords.reduce((sum, r) => {
+      // Partner net is only applicable to Clearent records
+      if (r.processor === 'Clearent' && r.partnerNet !== undefined) {
+        return sum + r.partnerNet;
       }
       return sum;
     }, 0);
-    
-    // Debug logging for Feb 2024
-    if (month === '2024-02') {
-      console.log(`[Analytics] Feb 2024 has ${monthRecords.length} records, ${totalAccounts} unique merchants`);
-      console.log(`[Analytics] Feb 2024 total revenue: $${totalRevenue}`);
-      console.log(`[Analytics] First 3 Feb records:`, monthRecords.slice(0, 3).map(r => ({
-        merchantId: r.merchantId,
-        merchantName: r.merchantName,
-        revenue: getRevenue(r),
-        processor: r.processor
-      })));
-    }
 
     let retainedAccounts = 0;
     let lostAccounts = 0;
@@ -99,7 +87,7 @@ export function calculateMonthlyMetrics(
       : 0;
 
     const revenuePerAccount = totalAccounts > 0 ? totalRevenue / totalAccounts : 0;
-    const agentNetPerAccount = totalAccounts > 0 ? totalAgentNet / totalAccounts : 0;
+    const partnerNetPerAccount = totalAccounts > 0 ? totalPartnerNet / totalAccounts : 0;
     const netAccountGrowth = newAccounts - lostAccounts;
 
     let momRevenueChange: number | undefined;
@@ -127,8 +115,8 @@ export function calculateMonthlyMetrics(
       momRevenueChange,
       momRevenueChangePercent,
       netAccountGrowth,
-      totalAgentNet,
-      agentNetPerAccount,
+      totalPartnerNet,
+      partnerNetPerAccount,
     });
 
     previousMonthMerchantIds = currentMerchantIds;
