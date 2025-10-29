@@ -79,7 +79,7 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       <div className={`grid gap-4 md:grid-cols-2 ${hideRevenue ? 'lg:grid-cols-4' : 'lg:grid-cols-5'}`}>
         {!hideRevenue && (
           <MetricCard
-            title="Total Revenue"
+            title="TRACER C2 Revenue"
             value={formatCurrency(displayMetrics.totalRevenue)}
             change={displayMetrics.momRevenueChangePercent}
             changeLabel="vs last month"
