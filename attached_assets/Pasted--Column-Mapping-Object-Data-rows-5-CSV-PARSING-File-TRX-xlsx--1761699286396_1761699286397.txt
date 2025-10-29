@@ -1,0 +1,1122 @@
+ Column Mapping: Object
+ Data rows: 5
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 5
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_July 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 13
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Aug 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 18
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Sept 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 21
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Oct 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Nov 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 28
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Dec 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Jan 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 42
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 44
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_April 2025.csv
+ Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 45
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 45
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 48
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 52
+ ===================
+ Sending records to API: 233 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: PB.xlsx
+ Total Sheets: 2
+ Sheet Names: June 2025, July 2025
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Bank Payout,Branch ID
+   Data Rows: 6
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Bank Payout,Branch ID
+   Data Rows: 5
+ =======================
+ === CSV PARSING ===
+ File: PB.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 6
+ ===================
+ === CSV PARSING ===
+ File: PB.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 5
+ ===================
+ Sending records to API: 11 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: MiCamp.xlsx
+ Total Sheets: 17
+ Sheet Names: March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: March 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 19
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 22
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: April 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,%,Agent Net,Branch ID
+   Data Rows: 22
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 22
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 22
+ =======================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_March 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 19
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_July 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Aug 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Sept 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Oct 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Nov 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Dec 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Jan 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 21
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 21
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_April 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 21
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ Sending records to API: 299 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: Global.xlsx
+ Total Sheets: 19
+ Sheet Names: Jan 2024, Feb 2024, Mar 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sep 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: Jan 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 16
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 16
+ 
+  Sheet: Mar 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Sep 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch,
+   Data Rows: 15
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ =======================
+ === CSV PARSING ===
+ File: Global.xlsx_Jan 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Feb 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Mar 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_July 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Aug 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Sep 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Oct 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Nov 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Dec 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch, 
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Jan 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_April 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 15
+ ===================
+ Sending records to API: 263 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: shift4.xlsx
+ Total Sheets: 19
+ Sheet Names: Jan 2024, Feb 2024, March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: Jan 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Agent Net,Branch Number
+   Data Rows: 25
+ 
+  Sheet: March 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 26
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 32
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 32
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 30
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 27
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 30
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 27
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 28
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 30
+ =======================
+ === CSV PARSING ===
+ File: shift4.xlsx_Jan 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Feb 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 25
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_March 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_July 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Aug 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 32
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Sept 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Oct 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 32
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Nov 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Dec 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Jan 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 30
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_April 2025.csv
+ Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 30
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 28
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+ Column Mapping: Object
+ Data rows: 30
+ ===================
+ Sending records to API: 525 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: ML.xlsx
+ Total Sheets: 19
+ Sheet Names: Jan 2024, Feb 2024, March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: Jan 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,
+   Data Rows: 29
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 28
+ 
+  Sheet: March 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 28
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 26
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 26
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 26
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 27
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 26
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 26
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 25
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 24
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 22
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 22
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 20
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 19
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 19
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 18
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 17
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 16
+ =======================
+ === CSV PARSING ===
+ File: ML.xlsx_Jan 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, 
+ Column Mapping: Object
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Feb 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: Object
+ Data rows: 28
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_March 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 28
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_July 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 27
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Aug 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Sept 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Oct 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 25
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Nov 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 24
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Dec 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Jan 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: Object
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 20
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 19
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_April 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 19
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 18
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 17
+ ===================
+ === CSV PARSING ===
+ File: ML.xlsx_July 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 16
+ ===================
+ Sending records to API: 335 records
+ First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ Error adding records: 
+addRecords @ storage.ts:35
+ Full error details: 
+addRecords @ storage.ts:36
+ === XLSX CONVERSION ===
+ File: Clearent.xlsx
+ Total Sheets: 19
+ Sheet Names: January 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025, January 2024, Feb 2024, Mar 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024
+ 
+  Sheet: January 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 74
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 75
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 72
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 69
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 70
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 70
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 69
+ 
+  Sheet: January 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 61
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 57
+ 
+  Sheet: Mar 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch
+   Data Rows: 59
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch
+   Data Rows: 61
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 69
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 69
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 73
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 71
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 71
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+   Data Rows: 75
+ 
+  Sheet: Nov 2024
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 75
+ 
+  Sheet: Dec 2024
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 75
+ =======================
+ === CSV PARSING ===
+ File: Clearent.xlsx_January 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 74
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_Feb 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 75
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_March 2025.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 72
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_April 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 69
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_May 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 70
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_June 2025.csv
+ Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+ Column Mapping: Object
+ Data rows: 70
+ ===================
+ === CSV PARSING ===
+ File: Clearent.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 69
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_January 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 61
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Feb 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 57
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Mar 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 59
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_April 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 61
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_May 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 68
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_June 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 68
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 73
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 71
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 71
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: Object
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 1217 records
+storage.ts:38 First record sample: Object
+/api/records:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+storage.ts:44 Error adding records: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addRecords (storage.ts:39:7)
+    at async csv-upload.tsx:153:11
+addRecords @ storage.ts:44
+storage.ts:45 Full error details: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addRecords (storage.ts:39:7)
+    at async csv-upload.tsx:153:11
+addRecords @ storage.ts:45
