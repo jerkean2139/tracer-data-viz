@@ -1,8 +1,13 @@
-import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
+import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, users, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, type User, type UpsertUser, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
 
 export interface IStorage {
+  // User operations (required for Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  updateUserRole(id: string, role: string): Promise<void>;
+  
   // Merchant Records
   getAllRecords(): Promise<MerchantRecord[]>;
   addRecords(records: InsertMerchantRecord[]): Promise<void>;
@@ -31,6 +36,34 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // User operations (required for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUserRole(id: string, role: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ role, updatedAt: new Date() })
+      .where(eq(users.id, id));
+  }
+
   async getAllRecords(): Promise<MerchantRecord[]> {
     const records = await db.select().from(merchantRecords);
     return records.map(this.dbRecordToMerchantRecord);
@@ -273,7 +306,7 @@ export class DatabaseStorage implements IStorage {
       transactions: dbRecord.transactions ?? undefined,
       net: dbRecord.net ?? undefined,
       commissionPercent: dbRecord.commissionPercent ?? undefined,
-      agentNet: dbRecord.agentNet ?? undefined,
+      partnerNet: dbRecord.partnerNet ?? undefined,
       payoutAmount: dbRecord.payoutAmount ?? undefined,
       volume: dbRecord.volume ?? undefined,
       sales: dbRecord.sales ?? undefined,

@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { isAuthenticated } from "./replitAuth";
 import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -58,6 +59,40 @@ function formatErrorResponse(error: unknown): { statusCode: number; error: strin
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Update user role (admin only - for now, anyone can update their own role until we have an admin user)
+  app.put('/api/auth/role', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { role } = req.body;
+      
+      if (!['admin', 'partner', 'agent'].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
+      
+      await storage.updateUserRole(userId, role);
+      const updatedUser = await storage.getUser(userId);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
   // Merchant Records Routes
   app.get("/api/records", async (req, res) => {
     try {
