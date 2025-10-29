@@ -211,7 +211,7 @@ export default function Dashboard() {
         </main>
 
         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Upload CSV Files</DialogTitle>
             </DialogHeader>
@@ -466,7 +466,7 @@ export default function Dashboard() {
                     Upload Leads
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Upload Merchant Leads</DialogTitle>
                   </DialogHeader>
@@ -480,7 +480,7 @@ export default function Dashboard() {
                     Upload Revenue
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl">
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Upload Revenue CSV Files</DialogTitle>
                   </DialogHeader>

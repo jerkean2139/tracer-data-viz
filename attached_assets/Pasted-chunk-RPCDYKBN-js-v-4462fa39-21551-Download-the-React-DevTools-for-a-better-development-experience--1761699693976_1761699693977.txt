@@ -1,0 +1,1428 @@
+chunk-RPCDYKBN.js?v=4462fa39:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+@radix-ui_react-dialog.js?v=4462fa39:339 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ @radix-ui_react-dialog.js?v=4462fa39:339
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=4462fa39:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=4462fa39:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=4462fa39:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=4462fa39:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=4462fa39:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=4462fa39:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=4462fa39:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=4462fa39:19416
+commitRoot @ chunk-RPCDYKBN.js?v=4462fa39:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=4462fa39:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=4462fa39:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:18627
+csvParser.ts:168 === XLSX CONVERSION ===
+csvParser.ts:169 File: TRX.xlsx
+csvParser.ts:170 Total Sheets: 15
+csvParser.ts:171 Sheet Names: May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+csvParser.ts:180 
+  Sheet: May 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+csvParser.ts:182   Data Rows: 5
+csvParser.ts:180 
+  Sheet: June 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+csvParser.ts:182   Data Rows: 5
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 13
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 18
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 21
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 22
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 28
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 42
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 44
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant DBA,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 45
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant DBA,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 45
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant DBA,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 48
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant DBA,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 52
+ =======================
+ === CSV PARSING ===
+ File: TRX.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 5
+ ===================
+ === CSV PARSING ===
+ File: TRX.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 5
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 13
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 18
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 21
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 28
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 29
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Jan 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 29
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 42
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 44
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', payoutAmount: 'Payout Amount', …}
+csvParser.ts:301 Data rows: 45
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', payoutAmount: 'Payout Amount', …}
+csvParser.ts:301 Data rows: 45
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', payoutAmount: 'Payout Amount', …}
+csvParser.ts:301 Data rows: 48
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: TRX.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', payoutAmount: 'Payout Amount', …}
+csvParser.ts:301 Data rows: 52
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 233 records
+storage.ts:38 First record sample: {merchantId: '10397', merchantName: 'FACES', month: '2024-05', processor: 'TRX', branchId: '1001', …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+csvParser.ts:168 === XLSX CONVERSION ===
+csvParser.ts:169 File: PB.xlsx
+csvParser.ts:170 Total Sheets: 2
+csvParser.ts:171 Sheet Names: June 2025, July 2025
+csvParser.ts:180 
+  Sheet: June 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Bank Payout,Branch ID
+csvParser.ts:182   Data Rows: 6
+csvParser.ts:180 
+  Sheet: July 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Bank Payout,Branch ID
+csvParser.ts:182   Data Rows: 5
+csvParser.ts:187 =======================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: PB.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 6
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: PB.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 5
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 11 records
+storage.ts:38 First record sample: {merchantId: '3286748394349254', merchantName: 'ST. CHARLES COMMUNITY ASSOCIATION INC', month: '2025-06', processor: 'PayBright', branchId: '9033', …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+ === XLSX CONVERSION ===
+ File: MiCamp.xlsx
+ Total Sheets: 17
+ Sheet Names: March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: March 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 19
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 22
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 27
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: April 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,%,Agent Net,Branch ID
+   Data Rows: 22
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 21
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 22
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 22
+ =======================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_March 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 19
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 22
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: MiCamp.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Jan 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 21
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 21
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 21
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: MiCamp.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 299 records
+storage.ts:38 First record sample: {merchantId: '820100009480', merchantName: 'ARKANSAS USA WRESTLING', month: '2024-03', processor: 'Micamp', branchId: '1201', …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+ === XLSX CONVERSION ===
+ File: Global.xlsx
+ Total Sheets: 19
+ Sheet Names: Jan 2024, Feb 2024, Mar 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sep 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: Jan 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 16
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+   Data Rows: 16
+ 
+  Sheet: Mar 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Sep 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 16
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch,
+   Data Rows: 15
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+   Data Rows: 15
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+   Data Rows: 15
+ =======================
+ === CSV PARSING ===
+ File: Global.xlsx_Jan 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Feb 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_Mar 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+ ===================
+ === CSV PARSING ===
+ File: Global.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+ Data rows: 16
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 16
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 16
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Sep 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 16
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 16
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch, 
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Jan 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Global.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 15
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 263 records
+storage.ts:38 First record sample: {merchantId: '5436845560030586', merchantName: 'ADULT AND GERIATRIC CEN', month: '2024-01', processor: 'TSYS', branchId: '4605', …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+ === XLSX CONVERSION ===
+ File: shift4.xlsx
+ Total Sheets: 19
+ Sheet Names: Jan 2024, Feb 2024, March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+ 
+  Sheet: Jan 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 26
+ 
+  Sheet: Feb 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Agent Net,Branch Number
+   Data Rows: 25
+ 
+  Sheet: March 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 26
+ 
+  Sheet: April 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: May 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: June 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: July 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Aug 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 32
+ 
+  Sheet: Sept 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Oct 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 32
+ 
+  Sheet: Nov 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Dec 2024
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 31
+ 
+  Sheet: Jan 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 30
+ 
+  Sheet: Feb 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 29
+ 
+  Sheet: March 2025
+   Headers: Merchant ID,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch Number
+   Data Rows: 27
+ 
+  Sheet: April 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 30
+ 
+  Sheet: May 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 27
+ 
+  Sheet: June 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 28
+ 
+  Sheet: July 2025
+   Headers: Merchant Id,Merchant Name,Payout Amount,Volume,Sales,Refunds,Reject Amount,Bank Split,Bank Payout,Branch ID
+   Data Rows: 30
+ =======================
+ === CSV PARSING ===
+ File: shift4.xlsx_Jan 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_Feb 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Agent Net, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Agent Net', …}
+ Data rows: 25
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_March 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 26
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_April 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 29
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_May 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 31
+ ===================
+ === CSV PARSING ===
+ File: shift4.xlsx_June 2024.csv
+ Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+ Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+ Data rows: 31
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 31
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 32
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 31
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 32
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 31
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 31
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Jan 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 30
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 29
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant Name', branchId: 'Branch Number', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 30
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 28
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: shift4.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', salesAmount: 'Sales', agentNet: 'Bank Payout', …}
+csvParser.ts:301 Data rows: 30
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 525 records
+storage.ts:38 First record sample: {merchantId: '0021848373', merchantName: 'AACTION BETTER BUILT TRANSMISSIO', month: '2024-01', processor: 'Shift4', branchId: '4606', …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+csvParser.ts:168 === XLSX CONVERSION ===
+csvParser.ts:169 File: ML.xlsx
+csvParser.ts:170 Total Sheets: 19
+csvParser.ts:171 Sheet Names: Jan 2024, Feb 2024, March 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024, Jan 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025
+csvParser.ts:180 
+  Sheet: Jan 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,
+csvParser.ts:182   Data Rows: 29
+csvParser.ts:180 
+  Sheet: Feb 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch Number
+csvParser.ts:182   Data Rows: 28
+csvParser.ts:180 
+  Sheet: March 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 28
+csvParser.ts:180 
+  Sheet: April 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 26
+csvParser.ts:180 
+  Sheet: May 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 26
+csvParser.ts:180 
+  Sheet: June 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 26
+csvParser.ts:180 
+  Sheet: July 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 27
+csvParser.ts:180 
+  Sheet: Aug 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 26
+csvParser.ts:180 
+  Sheet: Sept 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 26
+csvParser.ts:180 
+  Sheet: Oct 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 25
+csvParser.ts:180 
+  Sheet: Nov 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 24
+csvParser.ts:180 
+  Sheet: Dec 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 22
+csvParser.ts:180 
+  Sheet: Jan 2025
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 22
+csvParser.ts:180 
+  Sheet: Feb 2025
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 20
+csvParser.ts:180 
+  Sheet: March 2025
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 19
+csvParser.ts:180 
+  Sheet: April 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 19
+csvParser.ts:180 
+  Sheet: May 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 18
+csvParser.ts:180 
+  Sheet: June 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 17
+csvParser.ts:180 
+  Sheet: July 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 16
+csvParser.ts:187 =======================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Jan 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, 
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', transactions: 'Transactions', salesAmount: 'Sales Amount', net: 'Net', …}
+csvParser.ts:301 Data rows: 29
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Feb 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 28
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_March 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 28
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_April 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_May 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_June 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 27
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 26
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 25
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 24
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Jan 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 22
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 20
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 19
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 19
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 18
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 17
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: ML.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 16
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 335 records
+storage.ts:38 First record sample: {merchantId: '924600888802506', merchantName: 'ARKANSAS VACATION RENTAL', month: '2024-01', processor: 'ML', branchId: undefined, …}
+requests.js:1  POST https://68e0c2b3-7367-4833-8a0d-e371ebee37a6-00-22jcixk27o44s.riker.replit.dev/api/files 500 (Internal Server Error)
+s.fetch @ requests.js:1
+apiCall @ storage.ts:5
+addUploadedFile @ storage.ts:82
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+storage.ts:87 Error adding file: Error: API call failed: Internal Server Error
+    at apiCall (storage.ts:14:11)
+    at async Object.addUploadedFile (storage.ts:82:7)
+    at async csv-upload.tsx:166:11
+addUploadedFile @ storage.ts:87
+await in addUploadedFile
+(anonymous) @ csv-upload.tsx:166
+await in (anonymous)
+callCallback2 @ chunk-RPCDYKBN.js?v=4462fa39:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=4462fa39:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=4462fa39:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=4462fa39:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=4462fa39:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=4462fa39:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=4462fa39:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=4462fa39:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=4462fa39:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=4462fa39:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=4462fa39:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=4462fa39:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=4462fa39:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=4462fa39:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=4462fa39:5449
+csvParser.ts:168 === XLSX CONVERSION ===
+csvParser.ts:169 File: Clearent.xlsx
+csvParser.ts:170 Total Sheets: 19
+csvParser.ts:171 Sheet Names: January 2025, Feb 2025, March 2025, April 2025, May 2025, June 2025, July 2025, January 2024, Feb 2024, Mar 2024, April 2024, May 2024, June 2024, July 2024, Aug 2024, Sept 2024, Oct 2024, Nov 2024, Dec 2024
+csvParser.ts:180 
+  Sheet: January 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 74
+csvParser.ts:180 
+  Sheet: Feb 2025
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 75
+csvParser.ts:180 
+  Sheet: March 2025
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 72
+csvParser.ts:180 
+  Sheet: April 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 69
+csvParser.ts:180 
+  Sheet: May 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 70
+csvParser.ts:180 
+  Sheet: June 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 70
+csvParser.ts:180 
+  Sheet: July 2025
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 69
+csvParser.ts:180 
+  Sheet: January 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch Number
+csvParser.ts:182   Data Rows: 61
+csvParser.ts:180 
+  Sheet: Feb 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch Number
+csvParser.ts:182   Data Rows: 57
+csvParser.ts:180 
+  Sheet: Mar 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 59
+csvParser.ts:180 
+  Sheet: April 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch
+csvParser.ts:182   Data Rows: 61
+csvParser.ts:180 
+  Sheet: May 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 69
+csvParser.ts:180 
+  Sheet: June 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 69
+csvParser.ts:180 
+  Sheet: July 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 73
+csvParser.ts:180 
+  Sheet: Aug 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 71
+csvParser.ts:180 
+  Sheet: Sept 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 71
+csvParser.ts:180 
+  Sheet: Oct 2024
+csvParser.ts:181   Headers: Merchant ID,Merchant,Transactions,Sales Amount,Net,BPS,%,Agent Net,Branch 
+csvParser.ts:182   Data Rows: 75
+csvParser.ts:180 
+  Sheet: Nov 2024
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Income,Expenses,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 75
+csvParser.ts:180 
+  Sheet: Dec 2024
+csvParser.ts:181   Headers: Merchant Id,Merchant Name,Transaction,Sales Amount,Net,BPS,%,Agent Net,Branch ID
+csvParser.ts:182   Data Rows: 75
+csvParser.ts:187 =======================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_January 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 74
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Feb 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_March 2025.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch ID', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 72
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_April 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 69
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_May 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 70
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_June 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 70
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_July 2025.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 69
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_January 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 61
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Feb 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch Number
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch Number', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 57
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Mar 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 59
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_April 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 61
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_May 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 68
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_June 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 68
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_July 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 73
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Aug 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 71
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Sept 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 71
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Oct 2024.csv
+csvParser.ts:299 Headers found: Merchant ID, Merchant, Transactions, Sales Amount, Net, BPS, %, Agent Net, Branch
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant ID', merchantName: 'Merchant', branchId: 'Branch', transactions: 'Transactions', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Nov 2024.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Income, Expenses, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+csvParser.ts:297 === CSV PARSING ===
+csvParser.ts:298 File: Clearent.xlsx_Dec 2024.csv
+csvParser.ts:299 Headers found: Merchant Id, Merchant Name, Transaction, Sales Amount, Net, BPS, %, Agent Net, Branch ID
+csvParser.ts:300 Column Mapping: {merchantId: 'Merchant Id', merchantName: 'Merchant Name', branchId: 'Branch ID', transactions: 'Transaction', salesAmount: 'Sales Amount', …}
+csvParser.ts:301 Data rows: 75
+csvParser.ts:302 ===================
+storage.ts:37 Sending records to API: 1217 records
+storage.ts:38 First record sample: {merchantId: '6588000002455723', merchantName: 'A-1 CHIMNEY PRO, INC.', month: '2025-01', processor: 'Clearent', branchId: '1001', …}
