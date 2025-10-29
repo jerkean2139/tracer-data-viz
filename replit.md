@@ -59,6 +59,20 @@ The dashboard is built on a modern web stack designed for performance and a rich
     -   Upload Tracking dashboard to monitor data ingestion status by processor and month.
     -   Smart date range selector and Branch ID filtering across all views and reports.
 
+## Processor Start Dates (Anchor Months)
+
+Each processor has a different start date, which serves as the "anchor month" for retention calculations:
+
+-   **Clearent**: January 2024 (2024-01) - 19 months of data
+-   **ML**: January 2024 (2024-01) - 19 months of data
+-   **Shift4**: January 2024 (2024-01) - 19 months of data
+-   **TSYS**: January 2024 (2024-01) - 19 months of data (complete coverage)
+-   **Micamp**: March 2024 (2024-03) - 17 months of data
+-   **PayBright**: June 2025 (2025-06) - 2 months of data
+-   **TRX**: May 2024 (2024-05) - 11 months of data
+
+These start dates are critical for accurate retention calculations and prevent false "missing data" warnings for months before a processor began operations with TRACER C2.
+
 ## External Dependencies
 
 -   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data sourced from these platforms via file uploads).
