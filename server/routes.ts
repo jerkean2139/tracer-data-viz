@@ -74,14 +74,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update user role (admin only - for now, anyone can update their own role until we have an admin user)
+  // Update user role (admin only)
   app.put('/api/auth/role', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
+      
+      // Check if current user is admin
+      if (!currentUser || currentUser.role !== 'admin') {
+        return res.status(403).json({ message: "Forbidden: Only admins can change roles" });
+      }
+      
       const { role } = req.body;
       
       if (!['admin', 'partner', 'agent'].includes(role)) {
         return res.status(400).json({ message: "Invalid role" });
+      }
+      
+      // Prevent admin from demoting themselves (no recovery path)
+      if (currentUser.role === 'admin' && role !== 'admin') {
+        return res.status(403).json({ message: "Forbidden: Admins cannot demote themselves to prevent loss of admin access" });
       }
       
       await storage.updateUserRole(userId, role);

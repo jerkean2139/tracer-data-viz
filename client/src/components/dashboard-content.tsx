@@ -18,9 +18,10 @@ interface DashboardContentProps {
   processor: Processor;
   currentMonth?: string | null;
   filteredRecords: MerchantRecord[];
+  hideRevenue?: boolean;
 }
 
-export function DashboardContent({ metrics, topMerchants, processor, currentMonth, filteredRecords }: DashboardContentProps) {
+export function DashboardContent({ metrics, topMerchants, processor, currentMonth, filteredRecords, hideRevenue = false }: DashboardContentProps) {
   // Debug: Log what months are in the metrics array
   console.log(`[${processor}] Received metrics for months:`, metrics.map(m => `${m.month}: $${m.totalRevenue}`));
   console.log(`[${processor}] Current month:`, currentMonth);
@@ -75,15 +76,17 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <MetricCard
-          title="Total Revenue"
-          value={formatCurrency(displayMetrics.totalRevenue)}
-          change={displayMetrics.momRevenueChangePercent}
-          changeLabel="vs last month"
-          icon={<DollarSign className="w-5 h-5" />}
-          tooltip="Total revenue across all merchant accounts in the selected date range. Month-over-month change compares the latest month to the previous month."
-        />
+      <div className={`grid gap-4 md:grid-cols-2 ${hideRevenue ? 'lg:grid-cols-4' : 'lg:grid-cols-5'}`}>
+        {!hideRevenue && (
+          <MetricCard
+            title="Total Revenue"
+            value={formatCurrency(displayMetrics.totalRevenue)}
+            change={displayMetrics.momRevenueChangePercent}
+            changeLabel="vs last month"
+            icon={<DollarSign className="w-5 h-5" />}
+            tooltip="Total revenue across all merchant accounts in the selected date range. Month-over-month change compares the latest month to the previous month."
+          />
+        )}
         <MetricCard
           title="Active Accounts"
           value={displayMetrics.totalAccounts.toString()}
@@ -122,13 +125,13 @@ export function DashboardContent({ metrics, topMerchants, processor, currentMont
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <RevenueChart metrics={metrics} />
+        {!hideRevenue && <RevenueChart metrics={metrics} />}
         <AccountActivityChart metrics={metrics} />
       </div>
 
       <RetentionChart metrics={metrics} />
 
-      <RevenueForecast metrics={metrics} />
+      {!hideRevenue && <RevenueForecast metrics={metrics} />}
 
       <TrendingMerchants records={filteredRecords} currentMonth={currentMonth} />
 

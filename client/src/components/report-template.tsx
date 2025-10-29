@@ -8,9 +8,10 @@ interface ReportTemplateProps {
   month: string;
   partnerName: string;
   partnerLogoUrl: string;
+  hideRevenue?: boolean;
 }
 
-export function ReportTemplate({ metrics, processor, month, partnerName, partnerLogoUrl }: ReportTemplateProps) {
+export function ReportTemplate({ metrics, processor, month, partnerName, partnerLogoUrl, hideRevenue = false }: ReportTemplateProps) {
   if (!metrics) {
     return (
       <div className="w-[210mm] min-h-[297mm] bg-white p-12 flex items-center justify-center">
@@ -85,19 +86,21 @@ export function ReportTemplate({ metrics, processor, month, partnerName, partner
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-3 gap-6 mb-10">
-        {/* Total Revenue */}
-        <div className="bg-gradient-to-br from-[#1A3A52] to-[#2a5a7a] text-white p-6 rounded-lg shadow-lg" data-testid="card-total-revenue">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="bg-white/20 p-3 rounded-lg">
-              <DollarSign className="w-6 h-6" />
+      <div className={`grid gap-6 mb-10 ${hideRevenue ? 'grid-cols-2' : 'grid-cols-3'}`}>
+        {/* Total Revenue - Hidden for non-admin users */}
+        {!hideRevenue && (
+          <div className="bg-gradient-to-br from-[#1A3A52] to-[#2a5a7a] text-white p-6 rounded-lg shadow-lg" data-testid="card-total-revenue">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-white/20 p-3 rounded-lg">
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-medium opacity-90">Total Revenue</h3>
             </div>
-            <h3 className="text-sm font-medium opacity-90">Total Revenue</h3>
+            <div className="text-3xl font-bold" data-testid="value-total-revenue">
+              {formatCurrency(metrics.totalRevenue)}
+            </div>
           </div>
-          <div className="text-3xl font-bold" data-testid="value-total-revenue">
-            {formatCurrency(metrics.totalRevenue)}
-          </div>
-        </div>
+        )}
 
         {/* Active Accounts */}
         <div className="bg-gradient-to-br from-[#7FA848] to-[#9fc858] text-white p-6 rounded-lg shadow-lg" data-testid="card-total-accounts">
@@ -132,36 +135,40 @@ export function ReportTemplate({ metrics, processor, month, partnerName, partner
           Performance Metrics
         </h2>
         <div className="grid grid-cols-2 gap-6">
-          {/* Revenue per Account */}
-          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-700">Revenue per Account</h3>
-              <Activity className="w-5 h-5 text-[#1A3A52]" />
+          {/* Revenue per Account - Hidden for non-admin users */}
+          {!hideRevenue && (
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">Revenue per Account</h3>
+                <Activity className="w-5 h-5 text-[#1A3A52]" />
+              </div>
+              <div className="text-2xl font-bold text-[#1A3A52]" data-testid="value-revenue-per-account">
+                {formatCurrency(metrics.revenuePerAccount)}
+              </div>
             </div>
-            <div className="text-2xl font-bold text-[#1A3A52]" data-testid="value-revenue-per-account">
-              {formatCurrency(metrics.revenuePerAccount)}
-            </div>
-          </div>
+          )}
 
-          {/* MoM Revenue Growth */}
-          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-700">MoM Revenue Growth</h3>
-              {isPositive(metrics.momRevenueChange || 0) ? (
-                <TrendingUp className="w-5 h-5 text-green-600" />
-              ) : (
-                <TrendingDown className="w-5 h-5 text-red-600" />
+          {/* MoM Revenue Growth - Hidden for non-admin users */}
+          {!hideRevenue && (
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">MoM Revenue Growth</h3>
+                {isPositive(metrics.momRevenueChange || 0) ? (
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                ) : (
+                  <TrendingDown className="w-5 h-5 text-red-600" />
+                )}
+              </div>
+              <div className={`text-2xl font-bold ${isPositive(metrics.momRevenueChange || 0) ? 'text-green-600' : 'text-red-600'}`} data-testid="value-mom-revenue">
+                {metrics.momRevenueChange ? formatCurrency(metrics.momRevenueChange) : 'N/A'}
+              </div>
+              {metrics.momRevenueChangePercent !== undefined && (
+                <div className="text-sm text-gray-600 mt-1">
+                  {formatPercent(metrics.momRevenueChangePercent)}
+                </div>
               )}
             </div>
-            <div className={`text-2xl font-bold ${isPositive(metrics.momRevenueChange || 0) ? 'text-green-600' : 'text-red-600'}`} data-testid="value-mom-revenue">
-              {metrics.momRevenueChange ? formatCurrency(metrics.momRevenueChange) : 'N/A'}
-            </div>
-            {metrics.momRevenueChangePercent !== undefined && (
-              <div className="text-sm text-gray-600 mt-1">
-                {formatPercent(metrics.momRevenueChangePercent)}
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Retained Accounts */}
           <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">

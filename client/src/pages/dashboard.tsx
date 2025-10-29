@@ -18,10 +18,13 @@ import { EmptyState } from '@/components/empty-state';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
+import { UserProfile } from '@/components/user-profile';
+import { useAuth } from '@/hooks/useAuth';
 import Reports from '@/pages/reports';
 import c2Logo from '@assets/C2 Rectangle_1761700102507.jpg';
 
 export default function Dashboard() {
+  const { isAdmin } = useAuth();
   const [records, setRecords] = useState<MerchantRecord[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -198,6 +201,7 @@ export default function Dashboard() {
                 >
                   View Dashboard
                 </Button>
+                <UserProfile />
                 <ThemeToggle />
               </div>
             </div>
@@ -470,6 +474,7 @@ export default function Dashboard() {
                   <CSVUpload onUploadComplete={handleUploadComplete} />
                 </DialogContent>
               </Dialog>
+              <UserProfile />
               <ThemeToggle />
             </div>
           </div>
@@ -485,6 +490,7 @@ export default function Dashboard() {
               processor="All"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -495,6 +501,7 @@ export default function Dashboard() {
               processor="Clearent"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -505,6 +512,7 @@ export default function Dashboard() {
               processor="ML"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -515,6 +523,7 @@ export default function Dashboard() {
               processor="Shift4"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -525,6 +534,7 @@ export default function Dashboard() {
               processor="TSYS"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -535,6 +545,7 @@ export default function Dashboard() {
               processor="Micamp"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -545,6 +556,7 @@ export default function Dashboard() {
               processor="PayBright"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 
@@ -555,6 +567,7 @@ export default function Dashboard() {
               processor="TRX"
               currentMonth={currentMonth}
               filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
             />
           </TabsContent>
 

@@ -7,36 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { redirectToLogout } from "@/lib/authUtils";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { queryClient } from "@/lib/queryClient";
 import { LogOut, User, Shield } from "lucide-react";
-import { useState } from "react";
 
 export function UserProfile() {
   const { user, isAdmin, isPartner, isAgent } = useAuth();
-  const [roleSelectOpen, setRoleSelectOpen] = useState(false);
-
-  const updateRoleMutation = useMutation({
-    mutationFn: async (newRole: string) => {
-      await apiRequest('PUT', '/api/auth/role', { role: newRole });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-      setRoleSelectOpen(false);
-    },
-  });
 
   if (!user) return null;
 
@@ -96,30 +74,18 @@ export function UserProfile() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="p-2">
-          <label className="text-xs font-medium text-muted-foreground mb-2 block">
-            Select Role
-          </label>
-          <Select
-            value={user.role}
-            onValueChange={(newRole) => updateRoleMutation.mutate(newRole)}
-            open={roleSelectOpen}
-            onOpenChange={setRoleSelectOpen}
-          >
-            <SelectTrigger
-              className="w-full"
-              data-testid="select-role"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="admin">Admin (Full Access)</SelectItem>
-              <SelectItem value="partner">Partner (Limited)</SelectItem>
-              <SelectItem value="agent">Agent (Limited)</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground mt-2">
-            {isAdmin && "Admins can view all revenue data"}
-            {(isPartner || isAgent) && "Total revenue is hidden"}
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs font-medium text-muted-foreground">
+              Role
+            </label>
+            <Badge variant={getRoleBadgeVariant()} className="gap-1">
+              {getRoleIcon()}
+              {user.role}
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {isAdmin && "Full access to all revenue data"}
+            {(isPartner || isAgent) && "Total revenue is hidden for your role"}
           </p>
         </div>
         <DropdownMenuSeparator />

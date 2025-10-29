@@ -42,22 +42,30 @@ The dashboard is built on a modern web stack designed for performance and a rich
 -   **Responsiveness**: Designed for desktop-first, adapting to tablet and mobile viewports.
 
 ### Core Features
+-   **Authentication & Role-Based Access Control**:
+    -   **Replit Auth Integration**: Session-based authentication with PostgreSQL session storage.
+    -   **Role-Based Security**: Three roles (admin, partner, agent) with differential access to revenue data.
+    -   **Revenue Hiding**: Total revenue metrics are hidden from non-admin users in both dashboard and PDF reports.
+    -   **First User Bootstrap**: First user to log in automatically receives admin role.
+    -   **Security Features**: Admin-only role management, prevention of privilege escalation and self-demotion, secure session cookies.
+    -   **Testing Non-Admin Views**: Create a second Replit account to test partner/agent views (second and subsequent users default to partner role).
 -   **Data Processing & Storage**:
     -   Multi-file drag-and-drop upload for `.csv` and `.xlsx` files.
     -   Automatic conversion of Excel files to CSV and multi-sheet processing.
     -   Flexible column mapping and automatic processor/month detection.
     -   Deduplication logic prioritizing highest revenue entries.
-    -   Persistent data storage in PostgreSQL with `merchant_records`, `uploaded_files`, and `merchant_metadata` tables.
+    -   Persistent data storage in PostgreSQL with `merchant_records`, `uploaded_files`, `merchant_metadata`, `users`, and `sessions` tables.
     -   Processor start date recognition to prevent false "missing data" warnings.
 -   **Analytics & Reporting**:
     -   Calculates retention rate, attrition rate, month-over-month revenue growth, revenue per account, net account growth, and top 10 merchants.
     -   **Anchor Month Strategy**: Ensures accurate retention calculations by including preceding months.
     -   **CEO-Level Analytics**: Includes revenue concentration, at-risk merchants, 3-month revenue forecast, branch performance, and trending merchants.
-    -   Co-branded PDF report generation using `jsPDF` and `html2canvas`, supporting user-uploaded partner logos.
+    -   **Role-Based Reporting**: Co-branded PDF reports automatically exclude revenue data for non-admin users.
 -   **Dashboard Views**:
     -   Overview, Processor-specific, and Compare tabs for aggregated and individual processor insights.
     -   Upload Tracking dashboard to monitor data ingestion status by processor and month.
     -   Smart date range selector and Branch ID filtering across all views and reports.
+    -   User profile component with role display and logout functionality.
 
 ## Processor Start Dates (Anchor Months)
 

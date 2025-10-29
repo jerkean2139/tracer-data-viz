@@ -15,12 +15,14 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ReportTemplate } from '@/components/report-template';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
 type DateRangeType = 'current' | '3months' | '6months' | '12months' | 'all' | 'custom';
 
 export default function Reports() {
   const { toast } = useToast();
+  const { isAdmin } = useAuth();
   const [selectedProcessor, setSelectedProcessor] = useState<Processor>('All');
   const [selectedBranch, setSelectedBranch] = useState<string>('all');
   const [dateRange, setDateRange] = useState<DateRangeType>('all');
@@ -500,6 +502,7 @@ export default function Reports() {
                       month={selectedMetrics.month}
                       partnerName={partnerName}
                       partnerLogoUrl={partnerLogoUrl}
+                      hideRevenue={!isAdmin}
                     />
                   )}
                 </div>

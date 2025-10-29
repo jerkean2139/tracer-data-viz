@@ -53,12 +53,32 @@ function updateUserSession(
 async function upsertUser(
   claims: any,
 ) {
+  const userId = claims["sub"];
+  const existingUser = await storage.getUser(userId);
+  
+  // Check if this is a new user and if there are any existing users
+  // If this is the first user in the system, make them an admin
+  let role: string | undefined = undefined;
+  if (!existingUser) {
+    // Check if any users exist in the system
+    const allUsers = await storage.getAllUsers();
+    if (allUsers.length === 0) {
+      // This is the first user, make them admin
+      role = 'admin';
+      console.log(`First user ${claims["email"]} created with admin role`);
+    } else {
+      // Not the first user, default role will be set by database (partner)
+      role = 'partner';
+    }
+  }
+  
   await storage.upsertUser({
-    id: claims["sub"],
+    id: userId,
     email: claims["email"],
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
+    role,
   });
 }
 
