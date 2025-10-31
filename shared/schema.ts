@@ -16,13 +16,24 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User storage table for Replit Auth with role-based access
+// User storage table for Replit Auth and username/password auth with role-based access
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Replit Auth fields (optional for username/password users)
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  
+  // Username/password auth fields (optional for Replit Auth users)
+  username: varchar("username", { length: 100 }).unique(),
+  passwordHash: varchar("password_hash", { length: 255 }),
+  
+  // Auth type to distinguish between Replit Auth and username/password
+  authType: varchar("auth_type", { length: 20 }).notNull().default('replit'), // 'replit' or 'local'
+  
+  // Common fields
   role: varchar("role", { length: 20 }).notNull().default('agent'), // admin, partner, agent
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

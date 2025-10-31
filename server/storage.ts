@@ -9,6 +9,12 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserRole(id: string, role: string): Promise<void>;
   
+  // User operations (username/password auth)
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createLocalUser(data: { username: string; passwordHash: string; firstName: string; lastName: string; role: string }): Promise<User>;
+  updateUser(id: string, data: Partial<User>): Promise<void>;
+  deleteUser(id: string): Promise<void>;
+  
   // Merchant Records
   getAllRecords(): Promise<MerchantRecord[]>;
   addRecords(records: InsertMerchantRecord[]): Promise<void>;
@@ -67,6 +73,37 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ role, updatedAt: new Date() })
       .where(eq(users.id, id));
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createLocalUser(data: { username: string; passwordHash: string; firstName: string; lastName: string; role: string }): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        username: data.username,
+        passwordHash: data.passwordHash,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role: data.role,
+        authType: 'local',
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: string, data: Partial<User>): Promise<void> {
+    await db
+      .update(users)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(users.id, id));
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
   }
 
   async getAllRecords(): Promise<MerchantRecord[]> {
