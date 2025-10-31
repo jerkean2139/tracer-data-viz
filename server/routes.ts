@@ -2,12 +2,21 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
-import { insertMerchantRecordSchema, insertUploadedFileSchema, insertMerchantMetadataSchema, insertPartnerLogoSchema } from "@shared/schema";
+import {
+  insertMerchantRecordSchema,
+  insertUploadedFileSchema,
+  insertMerchantMetadataSchema,
+  insertPartnerLogoSchema,
+} from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 // Helper function to format error responses
-function formatErrorResponse(error: unknown): { statusCode: number; error: string; details?: any } {
+function formatErrorResponse(error: unknown): {
+  statusCode: number;
+  error: string;
+  details?: any;
+} {
   // Zod validation errors
   if (error instanceof z.ZodError) {
     const validationError = fromZodError(error);
@@ -16,51 +25,54 @@ function formatErrorResponse(error: unknown): { statusCode: number; error: strin
       error: "Validation error",
       details: {
         message: validationError.message,
-        issues: error.errors.map(e => ({
-          path: e.path.join('.'),
+        issues: error.errors.map((e) => ({
+          path: e.path.join("."),
           message: e.message,
-        }))
-      }
+        })),
+      },
     };
   }
-  
+
   // Database errors
   if (error instanceof Error) {
-    if (error.message.includes('duplicate key') || error.message.includes('unique constraint')) {
+    if (
+      error.message.includes("duplicate key") ||
+      error.message.includes("unique constraint")
+    ) {
       return {
         statusCode: 409,
         error: "Duplicate record",
-        details: "A record with the same identifier already exists"
+        details: "A record with the same identifier already exists",
       };
     }
-    
-    if (error.message.includes('foreign key')) {
+
+    if (error.message.includes("foreign key")) {
       return {
         statusCode: 400,
         error: "Invalid reference",
-        details: "Referenced record does not exist"
+        details: "Referenced record does not exist",
       };
     }
-    
+
     // Generic error with message
     return {
       statusCode: 500,
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     };
   }
-  
+
   // Unknown error
   return {
     statusCode: 500,
     error: "An unexpected error occurred",
-    details: String(error)
+    details: String(error),
   };
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -75,27 +87,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update user role (admin only)
-  app.put('/api/auth/role', isAuthenticated, async (req: any, res) => {
+  app.put("/api/auth/role", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const currentUser = await storage.getUser(userId);
-      
+
       // Check if current user is admin
-      if (!currentUser || currentUser.role !== 'admin') {
-        return res.status(403).json({ message: "Forbidden: Only admins can change roles" });
+      if (!currentUser || currentUser.role !== "admin") {
+        return res
+          .status(403)
+          .json({ message: "Forbidden: Only admins can change roles" });
       }
-      
+
       const { role } = req.body;
-      
-      if (!['admin', 'partner', 'agent'].includes(role)) {
+
+      if (!["admin", "partner", "agent"].includes(role)) {
         return res.status(400).json({ message: "Invalid role" });
       }
-      
+
       // Prevent admin from demoting themselves (no recovery path)
-      if (currentUser.role === 'admin' && role !== 'admin') {
-        return res.status(403).json({ message: "Forbidden: Admins cannot demote themselves to prevent loss of admin access" });
+      if (currentUser.role === "admin" && role !== "admin") {
+        return res
+          .status(403)
+          .json({
+            message:
+              "Forbidden: Admins cannot demote themselves to prevent loss of admin access",
+          });
       }
-      
+
       await storage.updateUserRole(userId, role);
       const updatedUser = await storage.getUser(userId);
       res.json(updatedUser);
