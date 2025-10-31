@@ -12,6 +12,15 @@ function normalizeColumnName(name: string): string {
   return name.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
+function generateTempMerchantId(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = 'LEAD-';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 // Parse Leads file (MyLeads Excel)
 export async function parseLeadsFile(file: File): Promise<LeadsParseResult> {
   const errors: string[] = [];
@@ -51,20 +60,27 @@ export async function parseLeadsFile(file: File): Promise<LeadsParseResult> {
     const statusCategoryIndex = getColumnIndex(['Status Category']);
     const processorIndex = getColumnIndex(['Current Processor', 'Processor']);
 
-    if (midIndex === -1 || dbaIndex === -1) {
-      errors.push('Required columns not found: Existing MID and DBA are required');
+    if (dbaIndex === -1) {
+      errors.push('Required column not found: DBA is required');
       return { success: false, errors, warnings };
     }
 
     const metadata: MerchantMetadata[] = [];
+    let generatedIdsCount = 0;
 
     rows.forEach((row, index) => {
-      const mid = row[midIndex]?.toString().trim();
       const dba = row[dbaIndex]?.toString().trim();
 
-      if (!mid || !dba) {
-        warnings.push(`Row ${index + 2}: Missing MID or DBA, skipping`);
+      if (!dba) {
+        warnings.push(`Row ${index + 2}: Missing DBA, skipping`);
         return;
+      }
+
+      let mid = midIndex !== -1 ? row[midIndex]?.toString().trim() : '';
+      
+      if (!mid) {
+        mid = generateTempMerchantId();
+        generatedIdsCount++;
       }
 
       metadata.push({
@@ -76,6 +92,10 @@ export async function parseLeadsFile(file: File): Promise<LeadsParseResult> {
         currentProcessor: processorIndex !== -1 ? row[processorIndex]?.toString().trim() : undefined,
       });
     });
+
+    if (generatedIdsCount > 0) {
+      warnings.push(`Auto-generated temporary IDs for ${generatedIdsCount} leads without Existing MID`);
+    }
 
     if (metadata.length === 0) {
       errors.push('No valid merchant metadata found in file');
