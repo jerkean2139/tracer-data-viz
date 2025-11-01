@@ -180,7 +180,7 @@ export const insertMerchantRecordSchema = merchantRecordSchema;
 export const uploadedFileSchema = z.object({
   id: z.string(),
   fileName: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Leads']),
   month: z.string(),
   recordCount: z.number(),
   uploadedAt: z.string(),

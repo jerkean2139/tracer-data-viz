@@ -56,6 +56,20 @@ export function LeadsUpload({ onUploadComplete }: LeadsUploadProps) {
       // Save metadata to storage
       await storageService.addMetadata(result.data);
 
+      // Track the upload in uploaded_files table
+      const uploadRecord = {
+        id: `leads-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        fileName: file.name,
+        processor: 'Leads' as const,
+        month: new Date().toISOString().substring(0, 7), // Current month in YYYY-MM format
+        recordCount: result.data.length,
+        uploadedAt: new Date().toISOString(),
+        isValid: true,
+        errors: result.warnings && result.warnings.length > 0 ? result.warnings : undefined,
+      };
+
+      await storageService.addUploadedFile(uploadRecord);
+
       setUploadStatus({
         status: 'success',
         recordCount: result.data.length,
