@@ -1,9 +1,49 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, TrendingUp, Users } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { BarChart3, TrendingUp, Users, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Landing() {
-  const handleLogin = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleUsernameLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!username || !password) {
+      toast({
+        title: "Missing credentials",
+        description: "Please enter both username and password",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await apiRequest("POST", "/api/auth/login", { username, password });
+      // Reload to trigger auth check
+      window.location.href = "/";
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: error instanceof Error ? error.message : "Invalid credentials",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReplitLogin = () => {
     window.location.href = "/api/login";
   };
 
@@ -55,17 +95,77 @@ export default function Landing() {
               </p>
             </div>
           </div>
-          <div className="flex justify-center pt-4">
+
+          <Separator className="my-6" />
+
+          {/* Username/Password Login Form */}
+          <form onSubmit={handleUsernameLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
+                data-testid="input-username"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                data-testid="input-password"
+              />
+            </div>
             <Button 
-              size="lg" 
-              onClick={handleLogin}
-              data-testid="button-login"
+              type="submit" 
+              className="w-full" 
+              size="lg"
+              disabled={isLoading}
+              data-testid="button-login-submit"
             >
-              Sign In to Access Dashboard
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
+          </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
           </div>
+
+          {/* Replit Auth Option */}
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={handleReplitLogin}
+            className="w-full"
+            data-testid="button-replit-login"
+          >
+            Sign In with Replit
+          </Button>
+
           <p className="text-xs text-center text-muted-foreground">
-            Secure authentication powered by Replit
+            Contact your administrator for account access
           </p>
         </CardContent>
       </Card>
