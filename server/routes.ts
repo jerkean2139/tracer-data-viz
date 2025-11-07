@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { isAuthenticated } from "./auth";
+import { isAuthenticated } from "./replitAuth";
 import {
   insertMerchantRecordSchema,
   insertUploadedFileSchema,
@@ -75,7 +75,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
     try {
-      const user = req.user;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -89,7 +90,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update user role (admin only)
   app.put("/api/auth/role", isAuthenticated, async (req: any, res) => {
     try {
-      const currentUser = req.user;
+      const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
 
       // Check if current user is admin
       if (!currentUser || currentUser.role !== "admin") {
@@ -114,8 +116,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
       }
 
-      await storage.updateUserRole(currentUser.id, role);
-      const updatedUser = await storage.getUser(currentUser.id);
+      await storage.updateUserRole(userId, role);
+      const updatedUser = await storage.getUser(userId);
       res.json(updatedUser);
     } catch (error) {
       console.error("Error updating user role:", error);
@@ -178,7 +180,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User Management (admin only)
   app.get("/api/users", isAuthenticated, async (req: any, res) => {
     try {
-      const currentUser = req.user;
+      const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ message: "Forbidden: Only admins can view users" });
@@ -205,7 +208,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", isAuthenticated, async (req: any, res) => {
     try {
-      const currentUser = req.user;
+      const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ message: "Forbidden: Only admins can create users" });
@@ -253,7 +257,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/users/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const currentUser = req.user;
+      const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ message: "Forbidden: Only admins can update users" });
@@ -292,7 +297,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/users/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const currentUser = req.user;
+      const userId = req.user.claims.sub;
+      const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ message: "Forbidden: Only admins can delete users" });
@@ -301,7 +307,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
 
       // Prevent admin from deleting themselves
-      if (id === currentUser.id) {
+      if (id === userId) {
         return res.status(403).json({ message: "Cannot delete your own account" });
       }
 

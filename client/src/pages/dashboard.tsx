@@ -19,7 +19,6 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
 import { UserProfile } from '@/components/user-profile';
-import { UserManagement } from '@/components/user-management';
 import { useAuth } from '@/hooks/useAuth';
 import Reports from '@/pages/reports';
 import c2Logo from '@assets/C2 Rectangle_1761700102507.jpg';
@@ -267,7 +266,6 @@ export default function Dashboard() {
                             <SelectItem value="reports">Reports</SelectItem>
                             <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                             <SelectItem value="validation">Data Validation</SelectItem>
-                            {isAdmin && <SelectItem value="users">User Management</SelectItem>}
                           </SelectContent>
                         </Select>
                       </div>
@@ -374,7 +372,6 @@ export default function Dashboard() {
                       <SelectItem value="reports">Reports</SelectItem>
                       <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
                       <SelectItem value="validation">Data Validation</SelectItem>
-                      {isAdmin && <SelectItem value="users">User Management</SelectItem>}
                     </SelectContent>
                   </Select>
 
@@ -597,12 +594,6 @@ export default function Dashboard() {
           <TabsContent value="upload-tracking" data-testid="tab-upload-tracking">
             <UploadTracking records={records} uploadedFiles={uploadedFiles} />
           </TabsContent>
-
-          {isAdmin && (
-            <TabsContent value="users" data-testid="tab-users">
-              <UserManagement />
-            </TabsContent>
-          )}
         </Tabs>
       </main>
     </div>
