@@ -43,9 +43,6 @@ export default function Landing() {
     }
   };
 
-  const handleReplitLogin = () => {
-    window.location.href = "/api/login";
-  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -142,29 +139,7 @@ export default function Landing() {
             </Button>
           </form>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          {/* Replit Auth Option */}
-          <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={handleReplitLogin}
-            className="w-full"
-            data-testid="button-replit-login"
-          >
-            Sign In with Replit
-          </Button>
-
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-center text-muted-foreground mt-4">
             Contact your administrator for account access
           </p>
         </CardContent>
