@@ -71,16 +71,28 @@ function formatErrorResponse(error: unknown): {
   };
 }
 
+// Session-based authentication middleware
+function requireSession(req: any, res: any, next: any) {
+  const userId = req.session?.userId;
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  req.sessionUserId = userId;
+  next();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth routes
-  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+  // Auth routes - Session-based authentication
+  app.get("/api/auth/user", requireSession, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.sessionUserId;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.json(user);
+      // Don't send password hash
+      const { passwordHash, ...safeUser } = user;
+      res.json(safeUser);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
