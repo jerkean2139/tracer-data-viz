@@ -1,12 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp, Users } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Landing() {
-  const handleLogin = () => {
-    window.location.href = "/api/login";
-  };
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
@@ -33,7 +30,7 @@ export default function Landing() {
               </div>
               <h3 className="font-semibold">Track Revenue</h3>
               <p className="text-sm text-muted-foreground">
-                Monitor revenue trends across 7 payment processors
+                Monitor revenue trends across 8 payment processors
               </p>
             </div>
             <div className="text-center space-y-2">
@@ -55,17 +52,20 @@ export default function Landing() {
               </p>
             </div>
           </div>
-          <div className="flex justify-center pt-4">
-            <Button 
-              size="lg" 
-              onClick={handleLogin}
-              data-testid="button-login"
-            >
-              Sign In to Access Dashboard
-            </Button>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <Link href="/login">
+              <Button size="lg" data-testid="button-login">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="lg" variant="outline" data-testid="button-signup">
+                Create Account
+              </Button>
+            </Link>
           </div>
           <p className="text-xs text-center text-muted-foreground">
-            Secure authentication powered by Replit
+            Secure session-based authentication
           </p>
         </CardContent>
       </Card>

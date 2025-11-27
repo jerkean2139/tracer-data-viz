@@ -177,6 +177,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public Signup
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { username, password, firstName, lastName } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ message: "Username already exists" });
+      }
+
+      // Check if this is the first user (make them admin)
+      const allUsers = await storage.getAllUsers();
+      const role = allUsers.length === 0 ? "admin" : "partner";
+
+      // Hash password
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const newUser = await storage.createLocalUser({
+        username,
+        passwordHash,
+        firstName: firstName || username,
+        lastName: lastName || "",
+        role,
+      });
+
+      // Auto-login after signup
+      (req.session as any).userId = newUser.id;
+
+      res.json({
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          role: newUser.role,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+        },
+        message: role === "admin" ? "Admin account created successfully" : "Account created successfully",
+      });
+    } catch (error) {
+      console.error("Error during signup:", error);
+      res.status(500).json({ message: "Failed to create account" });
+    }
+  });
+
   // User Management (admin only)
   app.get("/api/users", isAuthenticated, async (req: any, res) => {
     try {
