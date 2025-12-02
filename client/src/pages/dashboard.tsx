@@ -16,9 +16,9 @@ import { DashboardContent } from '@/components/dashboard-content';
 import { ProcessorComparison } from '@/components/processor-comparison';
 import { EmptyState } from '@/components/empty-state';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { UserProfile } from '@/components/user-profile';
 import { DataValidationPanel } from '@/components/data-validation-panel';
 import { UploadTracking } from '@/components/upload-tracking';
-import { UserProfile } from '@/components/user-profile';
 import { useAuth } from '@/hooks/useAuth';
 import Reports from '@/pages/reports';
 import c2Logo from '@assets/C2 Rectangle_1761700102507.jpg';
@@ -164,6 +164,7 @@ export default function Dashboard() {
   const micampMetrics = calculateMetricsWithAnchor('Micamp');
   const paybrightMetrics = calculateMetricsWithAnchor('PayBright');
   const trxMetrics = calculateMetricsWithAnchor('TRX');
+  const paymentAdvisorsMetrics = calculateMetricsWithAnchor('Payment Advisors');
 
   // Top merchants for latest month in the filtered range
   const allTopMerchants = currentMonth ? getTopMerchants(filteredRecords, currentMonth) : [];
@@ -174,6 +175,7 @@ export default function Dashboard() {
   const micampTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Micamp'), currentMonth) : [];
   const paybrightTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'PayBright'), currentMonth) : [];
   const trxTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'TRX'), currentMonth) : [];
+  const paymentAdvisorsTopMerchants = currentMonth ? getTopMerchants(filteredRecords.filter(r => r.processor === 'Payment Advisors'), currentMonth) : [];
 
   if (isLoading) {
     return (
@@ -201,8 +203,8 @@ export default function Dashboard() {
                 >
                   View Dashboard
                 </Button>
-                <UserProfile />
                 <ThemeToggle />
+                <UserProfile />
               </div>
             </div>
           </div>
@@ -262,6 +264,7 @@ export default function Dashboard() {
                             <SelectItem value="micamp">Micamp</SelectItem>
                             <SelectItem value="paybright">PayBright</SelectItem>
                             <SelectItem value="trx">TRX</SelectItem>
+                            <SelectItem value="payment-advisors">Payment Advisors</SelectItem>
                             <SelectItem value="compare">Compare</SelectItem>
                             <SelectItem value="reports">Reports</SelectItem>
                             <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
@@ -368,6 +371,7 @@ export default function Dashboard() {
                       <SelectItem value="micamp">Micamp</SelectItem>
                       <SelectItem value="paybright">PayBright</SelectItem>
                       <SelectItem value="trx">TRX</SelectItem>
+                      <SelectItem value="payment-advisors">Payment Advisors</SelectItem>
                       <SelectItem value="compare">Compare</SelectItem>
                       <SelectItem value="reports">Reports</SelectItem>
                       <SelectItem value="upload-tracking">Upload Tracking</SelectItem>
@@ -474,8 +478,8 @@ export default function Dashboard() {
                   <CSVUpload onUploadComplete={handleUploadComplete} />
                 </DialogContent>
               </Dialog>
-              <UserProfile />
               <ThemeToggle />
+              <UserProfile />
             </div>
           </div>
         </div>
@@ -571,6 +575,17 @@ export default function Dashboard() {
             />
           </TabsContent>
 
+          <TabsContent value="payment-advisors">
+            <DashboardContent
+              metrics={paymentAdvisorsMetrics}
+              topMerchants={paymentAdvisorsTopMerchants}
+              processor="Payment Advisors"
+              currentMonth={currentMonth}
+              filteredRecords={filteredRecords}
+              hideRevenue={!isAdmin}
+            />
+          </TabsContent>
+
           <TabsContent value="compare">
             <ProcessorComparison
               clearentMetrics={clearentMetrics}
@@ -580,6 +595,7 @@ export default function Dashboard() {
               micampMetrics={micampMetrics}
               paybrightMetrics={paybrightMetrics}
               trxMetrics={trxMetrics}
+              paymentAdvisorsMetrics={paymentAdvisorsMetrics}
             />
           </TabsContent>
 

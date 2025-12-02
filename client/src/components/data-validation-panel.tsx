@@ -16,9 +16,10 @@ const PROCESSOR_START_DATES: Record<Processor, string> = {
   'ML': '2024-01',
   'Shift4': '2024-01',
   'TSYS': '2024-01',
-  'Micamp': '2024-03',    // Started March 2024
-  'PayBright': '2024-06',
-  'TRX': '2024-05',        // Started May 2024
+  'Micamp': '2024-03',          // Started March 2024
+  'PayBright': '2025-06',       // Started June 2025
+  'TRX': '2024-05',             // Started May 2024
+  'Payment Advisors': '2025-01', // Started January 2025
   'All': '2024-01',
 };
 

@@ -39,8 +39,35 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Signup schema for user registration (includes plain password before hashing)
+// This is the ONLY schema that should be used for user-facing signup endpoints
+// Role and authType are set by backend, never from user input
+export const signupSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters").max(100, "Username too long"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+});
+
+// Admin user update schema - explicitly whitelists allowed fields and rejects credentials
+// passwordHash field is explicitly forbidden to prevent bypass
+export const adminUserUpdateSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  role: z.enum(["admin", "partner", "agent"]).optional(),
+  password: z.string().min(8, "Password must be at least 8 characters").optional(),
+}).strict(); // strict() rejects any additional fields including passwordHash
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// Replit Auth specific type - excludes credential fields to prevent password bypass
+export type ReplitUpsertUser = Omit<typeof users.$inferInsert, 'passwordHash' | 'authType'> & {
+  role?: string;
+  updatedAt?: Date;
+};
+
+export type SignupData = z.infer<typeof signupSchema>;
 export const merchantRecords = pgTable("merchant_records", {
   id: serial("id").primaryKey(),
   merchantId: varchar("merchant_id", { length: 255 }).notNull(),
@@ -142,7 +169,7 @@ export const merchantRecordSchema = z.object({
   merchantId: z.string(),
   merchantName: z.string(),
   month: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'All']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Payment Advisors', 'All']),
   branchId: z.string().optional(),
   
   // Common fields
@@ -180,7 +207,7 @@ export const insertMerchantRecordSchema = merchantRecordSchema;
 export const uploadedFileSchema = z.object({
   id: z.string(),
   fileName: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Leads']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Payment Advisors', 'Leads']),
   month: z.string(),
   recordCount: z.number(),
   uploadedAt: z.string(),
@@ -208,7 +235,7 @@ export const validationWarningSchema = z.object({
 
 export const monthlyMetricsSchema = z.object({
   month: z.string(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'All']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Payment Advisors', 'All']),
   totalRevenue: z.number(),
   totalAccounts: z.number(),
   retainedAccounts: z.number(),
@@ -229,7 +256,7 @@ export const topMerchantSchema = z.object({
   merchantName: z.string(),
   revenue: z.number(),
   percentOfTotal: z.number(),
-  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX']),
+  processor: z.enum(['Clearent', 'ML', 'Shift4', 'TSYS', 'Micamp', 'PayBright', 'TRX', 'Payment Advisors']),
   trend: z.enum(['up', 'down', 'stable']).optional(),
 });
 
@@ -280,4 +307,4 @@ export type MerchantChanges = z.infer<typeof merchantChangesSchema>;
 export type MerchantMetadata = z.infer<typeof merchantMetadataSchema>;
 export type ValidationWarning = z.infer<typeof validationWarningSchema>;
 export type PartnerLogo = z.infer<typeof partnerLogoSchema>;
-export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'All';
+export type Processor = 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'Payment Advisors' | 'All';

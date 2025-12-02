@@ -43,12 +43,28 @@ The dashboard is built on a modern web stack designed for performance and a rich
 
 ### Core Features
 -   **Authentication & Role-Based Access Control**:
-    -   **Replit Auth Integration**: Session-based authentication with PostgreSQL session storage.
+    -   **Username/Password Authentication**: Session-based authentication with PostgreSQL session storage and bcrypt password hashing.
+    -   **Initial Setup**: First-time visitors see a setup form to create the initial admin user.
     -   **Role-Based Security**: Three roles (admin, partner, agent) with differential access to revenue data.
     -   **Revenue Hiding**: Total revenue metrics are hidden from non-admin users in both dashboard and PDF reports.
-    -   **First User Bootstrap**: First user to log in automatically receives admin role.
-    -   **Security Features**: Admin-only role management, prevention of privilege escalation and self-demotion, secure session cookies.
-    -   **Testing Non-Admin Views**: Create a second Replit account to test partner/agent views (second and subsequent users default to partner role).
+    -   **Protected Routes**: All data endpoints require authentication; unauthenticated requests return 401.
+    -   **Centralized Password Security Architecture**:
+        -   **Auth Utilities** (`server/auth-utils.ts`): All password hashing and verification centralized in dedicated functions
+        -   **Storage Layer Hashing**: Passwords hashed exclusively in storage layer (`createLocalUser`, `updateUserPassword`)
+        -   **Type Safety**: Storage methods type-restricted to prevent credential field bypass (`updateUser` only accepts firstName/lastName/role)
+        -   **Runtime Validation**: Zod schemas with `.strict()` mode reject any requests containing `passwordHash` field
+        -   **Defense in Depth**: Multiple layers of protection (type system + runtime validation + server-side guards)
+        -   **Replit Auth Separation**: `upsertUser` method restricted to `ReplitUpsertUser` type, strips credentials with server guards
+        -   Bcrypt hashing with 10 rounds, all hashes verified to be in database (never plaintext)
+    -   **Security Features**: 
+        -   All data routes protected with `requireAuth` middleware
+        -   Hardened password presence checks (filters null/empty/whitespace hashes)
+        -   Admin-only role management with Zod schema validation
+        -   Prevention of privilege escalation and self-demotion
+        -   Public signup restricted to 'agent' role (lowest privilege)
+        -   Secure session cookies with HttpOnly, Secure flags
+    -   **Legacy Compatibility**: Old Replit Auth users (without passwords) are preserved but don't block admin seeding.
+    -   **Known Limitations**: Rate limiting and CSRF protection planned for production deployment.
 -   **Data Processing & Storage**:
     -   Multi-file drag-and-drop upload for `.csv` and `.xlsx` files.
     -   Automatic conversion of Excel files to CSV and multi-sheet processing.
@@ -71,19 +87,46 @@ The dashboard is built on a modern web stack designed for performance and a rich
 
 Each processor has a different start date, which serves as the "anchor month" for retention calculations:
 
--   **Clearent**: January 2024 (2024-01) - 19 months of data
--   **ML**: January 2024 (2024-01) - 19 months of data
--   **Shift4**: January 2024 (2024-01) - 19 months of data
--   **TSYS**: January 2024 (2024-01) - 19 months of data (complete coverage)
--   **Micamp**: March 2024 (2024-03) - 17 months of data
--   **PayBright**: June 2025 (2025-06) - 2 months of data
--   **TRX**: May 2024 (2024-05) - 11 months of data
+-   **Clearent**: January 2024 (2024-01) - 21 months of data through September 2025
+-   **ML**: January 2024 (2024-01) - 19 months of data through July 2025
+-   **Shift4**: January 2024 (2024-01) - 21 months of data through September 2025
+-   **TSYS**: January 2024 (2024-01) - 21 months of data through September 2025 (complete coverage)
+-   **Micamp**: March 2024 (2024-03) - 19 months of data through September 2025
+-   **PayBright**: June 2025 (2025-06) - 4 months of data through September 2025
+-   **TRX**: May 2024 (2024-05) - 17 months of data through September 2025
+-   **Payment Advisors**: January 2025 (2025-01) - 7 months of data through July 2025
 
 These start dates are critical for accurate retention calculations and prevent false "missing data" warnings for months before a processor began operations with TRACER C2.
 
+**Latest Import Updates (November 14, 2025)**: 
+- September 2024 corrected for all 6 active processors (189 records, $5.05M) - ✅ RESOLVED
+- TRX April-July 2025 (190 records, $2.7M) - ✅ RESOLVED
+- ML April-July 2025 (70 records, $903K) - ✅ RESOLVED
+- Micamp May-July 2025 (64 records, $705K) - ✅ RESOLVED
+- August and September 2025 data imported for all processors (361 records)
+- Payment Advisors Jan-July 2025 (23 records, $803K)
+
+**Current Database Status**:
+- Total Records: 3,731 across 8 processors
+- Total Sales: $90.6M (Jan 2024 - Sep 2025)
+- Complete Coverage: TSYS, Clearent, Shift4, PayBright, Payment Advisors (100%)
+- Nearly Complete: ML (missing Aug-Sep 2025), TRX (100% since May 2024 start)
+- Known Gap: ⚠️ Micamp April 2025 missing
+
+**Data Quality Notes**:
+- September 2024 CSV parsing failure - ✅ RESOLVED (all 6 processors restored, $5.05M)
+- TRX April-July 2025 $0 sales issue - ✅ RESOLVED ($2.7M restored)
+- ML April-July 2025 incomplete data - ✅ RESOLVED (increased from 2 to 16-19 records/month)
+- Micamp May-July 2025 incomplete data - ✅ RESOLVED (increased from 6-7 to 20-22 records/month)
+- Upload Tracking dashboard shows actual data coverage with 4-tier status system:
+  - Green checkmark: Complete data with valid sales amounts
+  - Yellow warning: Records exist but $0 sales (data quality issue)
+  - Red X: No records uploaded
+  - Gray dash: Before processor start date
+
 ## External Dependencies
 
--   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX (data sourced from these platforms via file uploads).
+-   **Payment Processors**: Clearent, ML, Shift4, TSYS (Global Payments), Micamp, PayBright, TRX, Payment Advisors (data sourced from these platforms via file uploads).
 -   **Frontend Libraries**: React, TypeScript, Tailwind CSS, shadcn/ui, Recharts, PapaParse, date-fns, xlsx, @tanstack/react-query.
 -   **Backend Libraries**: Express.js, Drizzle ORM, @neondatabase/serverless, zod.
 -   **Database**: PostgreSQL (Neon-backed).

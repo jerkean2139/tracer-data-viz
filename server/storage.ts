@@ -1,18 +1,22 @@
-import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, users, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, type User, type UpsertUser, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
+import { merchantRecords, merchantMetadata, uploadedFiles, partnerLogos, users, type DbMerchantRecord, type InsertMerchantRecord, type DbMerchantMetadata, type InsertMerchantMetadata, type DbUploadedFile, type InsertUploadedFile, type DbPartnerLogo, type InsertPartnerLogo, type User, type UpsertUser, type ReplitUpsertUser, MerchantRecord, ValidationWarning, UploadedFile, MerchantMetadata, PartnerLogo } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql } from "drizzle-orm";
+import { hashPassword } from "./auth-utils";
 
 export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
-  upsertUser(user: UpsertUser): Promise<User>;
+  // upsertUser restricted to Replit Auth only - excludes credential fields
+  upsertUser(user: ReplitUpsertUser): Promise<User>;
   updateUserRole(id: string, role: string): Promise<void>;
   
   // User operations (username/password auth)
   getUserByUsername(username: string): Promise<User | undefined>;
-  createLocalUser(data: { username: string; passwordHash: string; firstName: string; lastName: string; role: string }): Promise<User>;
-  updateUser(id: string, data: Partial<User>): Promise<void>;
+  createLocalUser(data: { username: string; password: string; firstName: string; lastName: string; role: string }): Promise<User>;
+  // updateUser only accepts non-credential fields to prevent bypassing password hashing
+  updateUser(id: string, data: { firstName?: string; lastName?: string; role?: string }): Promise<void>;
+  updateUserPassword(userId: string, newPassword: string): Promise<void>;
   deleteUser(id: string): Promise<void>;
   
   // Merchant Records
@@ -53,14 +57,22 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(users);
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async upsertUser(userData: ReplitUpsertUser): Promise<User> {
+    // Security guard: Ensure Replit Auth users never have password fields
+    // Strip any passwordHash/authType if somehow provided (defense in depth)
+    const safeData = {
+      ...userData,
+      authType: 'replit' as const,  // Always 'replit' for this path
+      passwordHash: undefined,       // Never allow password bypass
+    };
+
     const [user] = await db
       .insert(users)
-      .values(userData)
+      .values(safeData)
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          ...userData,
+          ...safeData,
           updatedAt: new Date(),
         },
       })
@@ -80,12 +92,15 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createLocalUser(data: { username: string; passwordHash: string; firstName: string; lastName: string; role: string }): Promise<User> {
+  async createLocalUser(data: { username: string; password: string; firstName: string; lastName: string; role: string }): Promise<User> {
+    // Hash password internally - this is the ONLY place passwords are hashed
+    const passwordHash = await hashPassword(data.password);
+    
     const [user] = await db
       .insert(users)
       .values({
         username: data.username,
-        passwordHash: data.passwordHash,
+        passwordHash,
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role,
@@ -95,11 +110,25 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUser(id: string, data: Partial<User>): Promise<void> {
+  async updateUser(id: string, data: { firstName?: string; lastName?: string; role?: string }): Promise<void> {
+    // Only accepts non-credential fields - prevents bypassing password hashing
     await db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(users.id, id));
+  }
+
+  async updateUserPassword(userId: string, newPassword: string): Promise<void> {
+    // Hash password internally - centralized password hashing
+    const passwordHash = await hashPassword(newPassword);
+    
+    await db
+      .update(users)
+      .set({ 
+        passwordHash,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
   }
 
   async deleteUser(id: string): Promise<void> {
@@ -114,15 +143,21 @@ export class DatabaseStorage implements IStorage {
   async addRecords(records: InsertMerchantRecord[]): Promise<void> {
     if (records.length === 0) return;
 
-    // Helper to get revenue from a record
+    // Helper to get revenue from a record (TRACER C2 commission only, NOT merchant sales)
     const getRevenue = (rec: any): number => {
+      // Clearent & ML: use 'net' (TRACER's revenue)
       if (rec.processor === 'Clearent' || rec.processor === 'ML') {
-        return rec.net ?? rec.salesAmount ?? 0;
+        return rec.net ?? 0;
       }
-      if (rec.processor === 'Shift4') {
-        return rec.payoutAmount ?? rec.salesAmount ?? 0;
+      
+      // Shift4 & TRX: use 'payoutAmount' (TRACER's revenue)
+      if (rec.processor === 'Shift4' || rec.processor === 'TRX') {
+        return rec.payoutAmount ?? 0;
       }
-      return rec.net ?? rec.salesAmount ?? 0;
+      
+      // TSYS, Micamp, PayBright, Payment Advisors: use 'net' (TRACER's revenue)
+      // DO NOT fall back to salesAmount - that's merchant sales volume, not TRACER revenue
+      return rec.net ?? 0;
     };
 
     // Use ON CONFLICT upsert for better performance
@@ -139,11 +174,11 @@ export class DatabaseStorage implements IStorage {
           where: sql`
             CASE 
               WHEN ${merchantRecords.processor} IN ('Clearent', 'ML') THEN
-                COALESCE(${merchantRecords.net}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
-              WHEN ${merchantRecords.processor} = 'Shift4' THEN
-                COALESCE(${merchantRecords.payoutAmount}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
+                COALESCE(${merchantRecords.net}, 0) < ${newRevenue}
+              WHEN ${merchantRecords.processor} IN ('Shift4', 'TRX') THEN
+                COALESCE(${merchantRecords.payoutAmount}, 0) < ${newRevenue}
               ELSE
-                COALESCE(${merchantRecords.net}, ${merchantRecords.salesAmount}, 0) < ${newRevenue}
+                COALESCE(${merchantRecords.net}, 0) < ${newRevenue}
             END
           `
         });

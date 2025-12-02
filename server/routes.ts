@@ -1,16 +1,17 @@
-import type { Express } from "express";
+import type { Express, RequestHandler } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { isAuthenticated } from "./replitAuth";
 import {
   insertMerchantRecordSchema,
   insertUploadedFileSchema,
   insertMerchantMetadataSchema,
   insertPartnerLogoSchema,
+  signupSchema,
+  adminUserUpdateSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
-import bcrypt from "bcryptjs";
+import { verifyPassword } from "./auth-utils";
 
 // Helper function to format error responses
 function formatErrorResponse(error: unknown): {
@@ -72,27 +73,26 @@ function formatErrorResponse(error: unknown): {
 }
 
 // Session-based authentication middleware
-function requireSession(req: any, res: any, next: any) {
-  const userId = req.session?.userId;
-  if (!userId) {
+const requireAuth: RequestHandler = async (req, res, next) => {
+  const session = req.session as any;
+  if (!session.userId) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  req.sessionUserId = userId;
   next();
-}
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth routes - Session-based authentication
-  app.get("/api/auth/user", requireSession, async (req: any, res) => {
+  // Auth routes
+  app.get("/api/auth/user", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.sessionUserId;
+      const userId = req.session.userId;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      // Don't send password hash
-      const { passwordHash, ...safeUser } = user;
-      res.json(safeUser);
+      // Don't send password hash to frontend
+      const { passwordHash, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -100,9 +100,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update user role (admin only)
-  app.put("/api/auth/role", isAuthenticated, async (req: any, res) => {
+  app.put("/api/auth/role", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const currentUser = await storage.getUser(userId);
 
       // Check if current user is admin
@@ -152,7 +152,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
-      const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+      // Use centralized password verification
+      const isValidPassword = await verifyPassword(password, user.passwordHash);
 
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid username or password" });
@@ -189,63 +190,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Public Signup
-  app.post("/api/auth/signup", async (req, res) => {
+  // Check if any users exist (for initial setup)
+  app.get("/api/auth/has-users", async (_req, res) => {
     try {
+      const users = await storage.getAllUsers();
+      // Check if there are any users with passwords (not just legacy OIDC users)
+      // Filter out null, undefined, and empty/whitespace strings
+      const usersWithPasswords = users.filter(u => u.passwordHash && u.passwordHash.trim().length > 0);
+      res.json({ hasUsers: usersWithPasswords.length > 0 });
+    } catch (error) {
+      console.error("Error checking users:", error);
+      res.status(500).json({ message: "Failed to check users" });
+    }
+  });
+
+  // Seed initial admin user (only works if no password-based users exist)
+  app.post("/api/auth/seed-admin", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      // Filter out null, undefined, and empty/whitespace strings
+      const usersWithPasswords = users.filter(u => u.passwordHash && u.passwordHash.trim().length > 0);
+      if (usersWithPasswords.length > 0) {
+        return res.status(400).json({ message: "Password-based users already exist. Cannot seed admin." });
+      }
+
       const { username, password, firstName, lastName } = req.body;
 
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      if (password.length < 6) {
-        return res.status(400).json({ message: "Password must be at least 6 characters" });
-      }
+      // Password will be hashed in storage layer
+      const user = await storage.createLocalUser({
+        username,
+        password,  // Plain password - hashed in storage
+        role: "admin",
+        firstName: firstName || "Admin",
+        lastName: lastName || "User",
+      });
+
+      res.json({ success: true, userId: user.id });
+    } catch (error) {
+      console.error("Error seeding admin user:", error);
+      res.status(500).json({ message: "Failed to seed admin user" });
+    }
+  });
+
+  // Public signup endpoint
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      // Validate request body against schema
+      const validatedData = signupSchema.parse(req.body);
 
       // Check if username already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(validatedData.username);
       if (existingUser) {
         return res.status(409).json({ message: "Username already exists" });
       }
 
-      // Check if this is the first user (make them admin)
-      const allUsers = await storage.getAllUsers();
-      const role = allUsers.length === 0 ? "admin" : "partner";
-
-      // Hash password
-      const passwordHash = await bcrypt.hash(password, 10);
-
-      const newUser = await storage.createLocalUser({
-        username,
-        passwordHash,
-        firstName: firstName || username,
-        lastName: lastName || "",
-        role,
+      // Create user with 'agent' role by default (lowest privilege)
+      // Password will be hashed in storage layer
+      const user = await storage.createLocalUser({
+        username: validatedData.username,
+        password: validatedData.password,  // Plain password - hashed in storage
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        role: "agent",      // Always 'agent' for public signups
       });
 
-      // Auto-login after signup
-      (req.session as any).userId = newUser.id;
-
-      res.json({
-        user: {
-          id: newUser.id,
-          username: newUser.username,
-          role: newUser.role,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-        },
-        message: role === "admin" ? "Admin account created successfully" : "Account created successfully",
+      res.json({ 
+        success: true, 
+        userId: user.id,
+        message: "Account created successfully"
       });
     } catch (error) {
-      console.error("Error during signup:", error);
-      res.status(500).json({ message: "Failed to create account" });
+      console.error("Error creating user account:", error);
+      const { statusCode, ...errorResponse } = formatErrorResponse(error);
+      res.status(statusCode).json(errorResponse);
     }
   });
 
   // User Management (admin only)
-  app.get("/api/users", isAuthenticated, async (req: any, res) => {
+  app.get("/api/users", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
@@ -271,9 +299,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/users", isAuthenticated, async (req: any, res) => {
+  app.post("/api/users", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
@@ -296,12 +324,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(409).json({ message: "Username already exists" });
       }
 
-      // Hash password
-      const passwordHash = await bcrypt.hash(password, 10);
-
+      // Password will be hashed in storage layer
       const newUser = await storage.createLocalUser({
         username,
-        passwordHash,
+        password,  // Plain password - hashed in storage
         firstName: firstName || username,
         lastName: lastName || '',
         role,
@@ -320,9 +346,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/users/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/users/:id", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
@@ -330,21 +356,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { id } = req.params;
-      const { firstName, lastName, role, password } = req.body;
+      
+      // Validate request body - rejects passwordHash and any other invalid fields
+      const validatedData = adminUserUpdateSchema.parse(req.body);
+      const { firstName, lastName, role, password } = validatedData;
 
-      if (role && !["admin", "partner", "agent"].includes(role)) {
-        return res.status(400).json({ message: "Invalid role" });
-      }
-
+      // Update profile fields (non-credential)
       const updateData: any = {};
       if (firstName) updateData.firstName = firstName;
       if (lastName) updateData.lastName = lastName;
       if (role) updateData.role = role;
-      if (password) {
-        updateData.passwordHash = await bcrypt.hash(password, 10);
+
+      if (Object.keys(updateData).length > 0) {
+        await storage.updateUser(id, updateData);
       }
 
-      await storage.updateUser(id, updateData);
+      // Update password separately using dedicated method (centralizes hashing)
+      if (password) {
+        await storage.updateUserPassword(id, password);
+      }
+
       const updatedUser = await storage.getUser(id);
 
       res.json({
@@ -356,13 +387,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error updating user:", error);
-      res.status(500).json({ message: "Failed to update user" });
+      // Use formatErrorResponse for consistent error handling (including Zod validation)
+      const { statusCode, ...errorResponse } = formatErrorResponse(error);
+      res.status(statusCode).json(errorResponse);
     }
   });
 
-  app.delete("/api/users/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/users/:id", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const currentUser = await storage.getUser(userId);
 
       if (!currentUser || currentUser.role !== "admin") {
@@ -385,7 +418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Merchant Records Routes
-  app.get("/api/records", async (req, res) => {
+  app.get("/api/records", requireAuth, async (req, res) => {
     try {
       const records = await storage.getAllRecords();
       res.json(records);
@@ -395,7 +428,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/records", async (req, res) => {
+  app.post("/api/records", requireAuth, async (req, res) => {
     try {
       const recordsSchema = z.array(insertMerchantRecordSchema);
       const validatedRecords = recordsSchema.parse(req.body);
@@ -408,7 +441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/records/:month/:processor?", async (req, res) => {
+  app.delete("/api/records/:month/:processor?", requireAuth, async (req, res) => {
     try {
       const { month, processor } = req.params;
       await storage.deleteRecordsByMonth(month, processor);
@@ -419,7 +452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/records", async (req, res) => {
+  app.delete("/api/records", requireAuth, async (req, res) => {
     try {
       await storage.clearAllRecords();
       res.json({ success: true });
@@ -430,7 +463,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Uploaded Files Routes
-  app.get("/api/files", async (req, res) => {
+  app.get("/api/files", requireAuth, async (req, res) => {
     try {
       const files = await storage.getUploadedFiles();
       res.json(files);
@@ -440,7 +473,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/files", async (req, res) => {
+  app.post("/api/files", requireAuth, async (req, res) => {
     try {
       const validatedFile = insertUploadedFileSchema.parse(req.body);
       await storage.addUploadedFile(validatedFile);
@@ -452,7 +485,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/files/:id", async (req, res) => {
+  app.delete("/api/files/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       await storage.deleteUploadedFile(id);
@@ -464,7 +497,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Merchant Metadata Routes
-  app.get("/api/metadata", async (req, res) => {
+  app.get("/api/metadata", requireAuth, async (req, res) => {
     try {
       const metadata = await storage.getAllMetadata();
       res.json(metadata);
@@ -474,7 +507,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/metadata", async (req, res) => {
+  app.post("/api/metadata", requireAuth, async (req, res) => {
     try {
       const metadataSchema = z.array(insertMerchantMetadataSchema);
       const validatedMetadata = metadataSchema.parse(req.body);
@@ -487,7 +520,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/metadata/:merchantId", async (req, res) => {
+  app.get("/api/metadata/:merchantId", requireAuth, async (req, res) => {
     try {
       const { merchantId } = req.params;
       const metadata = await storage.getMetadataByMID(merchantId);
@@ -498,7 +531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/metadata", async (req, res) => {
+  app.delete("/api/metadata", requireAuth, async (req, res) => {
     try {
       await storage.clearAllMetadata();
       res.json({ success: true });
@@ -509,7 +542,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Partner Logos Routes
-  app.get("/api/partner-logos", async (req, res) => {
+  app.get("/api/partner-logos", requireAuth, async (req, res) => {
     try {
       const logos = await storage.getAllPartnerLogos();
       res.json(logos);
@@ -519,7 +552,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/partner-logos", async (req, res) => {
+  app.post("/api/partner-logos", requireAuth, async (req, res) => {
     try {
       const validatedLogo = insertPartnerLogoSchema.parse(req.body);
       const newLogo = await storage.addPartnerLogo(validatedLogo);
@@ -531,7 +564,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/partner-logos/:id", async (req, res) => {
+  app.put("/api/partner-logos/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       const { logoUrl } = req.body;
@@ -543,7 +576,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/partner-logos/:id", async (req, res) => {
+  app.delete("/api/partner-logos/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       await storage.deletePartnerLogo(parseInt(id));
@@ -555,7 +588,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Validation Warnings Route
-  app.get("/api/validation-warnings", async (req, res) => {
+  app.get("/api/validation-warnings", requireAuth, async (req, res) => {
     try {
       const warnings = await storage.getValidationWarnings();
       res.json(warnings);

@@ -288,6 +288,7 @@ export default function Reports() {
                     <SelectItem value="Micamp">Micamp</SelectItem>
                     <SelectItem value="PayBright">PayBright</SelectItem>
                     <SelectItem value="TRX">TRX</SelectItem>
+                    <SelectItem value="Payment Advisors">Payment Advisors</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

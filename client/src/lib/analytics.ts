@@ -3,16 +3,19 @@ import { format, parse, compareAsc } from 'date-fns';
 
 // Helper function to get revenue for a record based on processor
 export function getRevenue(record: MerchantRecord): number {
-  // Clearent & ML: use 'net' (Tracer's revenue) - DO NOT fall back to salesAmount
-  // If net is missing, it should have been flagged as an error during upload
+  // Clearent & ML: use 'net' (TRACER's revenue)
   if (record.processor === 'Clearent' || record.processor === 'ML') {
     return record.net ?? 0;
   }
-  if (record.processor === 'Shift4') {
-    return record.payoutAmount ?? record.salesAmount ?? 0;
+  
+  // Shift4 & TRX: use 'payoutAmount' (TRACER's revenue)
+  if (record.processor === 'Shift4' || record.processor === 'TRX') {
+    return record.payoutAmount ?? 0;
   }
-  // For TSYS, Micamp, PayBright, TRX - use salesAmount or net if available
-  return record.net ?? record.salesAmount ?? 0;
+  
+  // TSYS, Micamp, PayBright, Payment Advisors: use 'net' (TRACER's revenue)
+  // DO NOT fall back to salesAmount - that's merchant sales volume, not TRACER revenue
+  return record.net ?? 0;
 }
 
 export function calculateMonthlyMetrics(
@@ -47,10 +50,10 @@ export function calculateMonthlyMetrics(
     const totalRevenue = monthRecords.reduce((sum, r) => sum + getRevenue(r), 0);
     const totalAccounts = currentMerchantIds.size;
     
-    // Calculate partner net revenue (commission)
+    // Calculate partner net revenue (commission) for all processors
     const totalPartnerNet = monthRecords.reduce((sum, r) => {
-      // Partner net is only applicable to Clearent records
-      if (r.processor === 'Clearent' && r.partnerNet !== undefined) {
+      // Include partner net from any processor that has it (Clearent, ML, etc.)
+      if (r.partnerNet !== undefined) {
         return sum + r.partnerNet;
       }
       return sum;

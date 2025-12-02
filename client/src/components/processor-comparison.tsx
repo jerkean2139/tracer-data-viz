@@ -19,6 +19,7 @@ interface ProcessorComparisonProps {
   micampMetrics: MonthlyMetrics[];
   paybrightMetrics: MonthlyMetrics[];
   trxMetrics: MonthlyMetrics[];
+  paymentAdvisorsMetrics: MonthlyMetrics[];
 }
 
 const PROCESSOR_COLORS = {
@@ -29,6 +30,7 @@ const PROCESSOR_COLORS = {
   Micamp: 'hsl(var(--chart-5))',
   PayBright: 'hsl(210 70% 50%)',
   TRX: 'hsl(280 65% 60%)',
+  'Payment Advisors': 'hsl(160 60% 45%)',
 };
 
 export function ProcessorComparison({ 
@@ -38,7 +40,8 @@ export function ProcessorComparison({
   tsysMetrics, 
   micampMetrics, 
   paybrightMetrics, 
-  trxMetrics 
+  trxMetrics,
+  paymentAdvisorsMetrics
 }: ProcessorComparisonProps) {
   const getLatestMetrics = (metrics: MonthlyMetrics[]) => {
     return metrics.length > 0 ? metrics[metrics.length - 1] : null;
@@ -51,6 +54,7 @@ export function ProcessorComparison({
   const micamp = getLatestMetrics(micampMetrics);
   const paybright = getLatestMetrics(paybrightMetrics);
   const trx = getLatestMetrics(trxMetrics);
+  const paymentAdvisors = getLatestMetrics(paymentAdvisorsMetrics);
 
   const revenueData = [
     { name: 'Clearent', value: clearent?.totalRevenue || 0 },
@@ -60,6 +64,7 @@ export function ProcessorComparison({
     { name: 'Micamp', value: micamp?.totalRevenue || 0 },
     { name: 'PayBright', value: paybright?.totalRevenue || 0 },
     { name: 'TRX', value: trx?.totalRevenue || 0 },
+    { name: 'Payment Advisors', value: paymentAdvisors?.totalRevenue || 0 },
   ].filter(d => d.value > 0);
 
   const accountData = [
@@ -70,6 +75,7 @@ export function ProcessorComparison({
     { name: 'Micamp', value: micamp?.totalAccounts || 0 },
     { name: 'PayBright', value: paybright?.totalAccounts || 0 },
     { name: 'TRX', value: trx?.totalAccounts || 0 },
+    { name: 'Payment Advisors', value: paymentAdvisors?.totalAccounts || 0 },
   ].filter(d => d.value > 0);
 
   const renderProcessorColumn = (
@@ -119,6 +125,7 @@ export function ProcessorComparison({
     { name: 'Micamp', metrics: micamp, token: 'chart-5' },
     { name: 'PayBright', metrics: paybright, token: 'primary' },
     { name: 'TRX', metrics: trx, token: 'secondary' },
+    { name: 'Payment Advisors', metrics: paymentAdvisors, token: 'accent' },
   ].filter(p => p.metrics);
 
   return (

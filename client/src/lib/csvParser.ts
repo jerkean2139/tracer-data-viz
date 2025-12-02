@@ -142,7 +142,7 @@ function extractMonthFromFilename(filename: string): string | null {
   return null;
 }
 
-export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | null {
+export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'Payment Advisors' | null {
   const lower = filename.toLowerCase();
   if (lower.includes('clearent')) return 'Clearent';
   if (lower.includes('ml') && !lower.includes('micamp')) return 'ML';
@@ -151,6 +151,7 @@ export function detectProcessor(filename: string): 'Clearent' | 'ML' | 'Shift4' 
   if (lower.includes('micamp')) return 'Micamp';
   if (lower.includes('paybright') || lower.includes('pb_') || lower.includes('_pb_')) return 'PayBright';
   if (lower.includes('trx')) return 'TRX';
+  if (lower.includes('payment') && lower.includes('advisor')) return 'Payment Advisors';
   return null;
 }
 
@@ -199,7 +200,7 @@ async function convertXLSXToCSV(file: File): Promise<{csvString: string, sheetNa
 
 export async function parseCSVFile(
   file: File,
-  processor?: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX'
+  processor?: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'Payment Advisors'
 ): Promise<CSVParseResult> {
   const isXLSX = file.name.toLowerCase().endsWith('.xlsx');
   

@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { redirectToLogout } from "@/lib/authUtils";
+import { logout } from "@/lib/authUtils";
 import { LogOut, User, Shield } from "lucide-react";
 
 export function UserProfile() {
@@ -89,7 +89,7 @@ export function UserProfile() {
           </p>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={redirectToLogout} data-testid="button-logout">
+        <DropdownMenuItem onClick={logout} data-testid="button-logout">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log Out</span>
         </DropdownMenuItem>

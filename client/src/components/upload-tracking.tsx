@@ -15,9 +15,10 @@ const PROCESSOR_START_DATES: Record<Processor, string> = {
   'ML': '2024-01',
   'Shift4': '2024-01',
   'TSYS': '2024-01',
-  'Micamp': '2024-03',    // Started March 2024
-  'PayBright': '2024-06',
-  'TRX': '2024-05',        // Started May 2024
+  'Micamp': '2024-03',          // Started March 2024
+  'PayBright': '2025-06',       // Started June 2025
+  'TRX': '2024-05',             // Started May 2024
+  'Payment Advisors': '2025-01', // Started January 2025
   'All': '2024-01',
 };
 
@@ -47,57 +48,95 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
       return 'before-start';
     }
     
-    const file = uploadedFiles.find(f => f.processor === processor && f.month === month);
-    const recordsExist = records.some(r => r.processor === processor && r.month === month);
+    // Get records for this processor-month combination
+    const monthRecords = records.filter(r => r.processor === processor && r.month === month);
     
-    // If there's an uploaded file, consider it uploaded (even without records yet)
-    if (file) return 'uploaded';
-    // If there are records but no upload tracking, it's partial
-    if (recordsExist && !file) return 'partial';
-    // If neither exists, it's missing
-    return 'missing';
+    if (monthRecords.length === 0) {
+      return 'missing';
+    }
+    
+    // Check if records have valid sales data
+    const hasSalesData = monthRecords.some(r => {
+      const sales = r.salesAmount ?? 0;
+      return sales > 0;
+    });
+    
+    // If we have records with sales data, it's uploaded
+    if (hasSalesData) return 'uploaded';
+    
+    // If we have records but no sales data (data quality issue), it's partial
+    return 'partial';
   };
 
-  // Calculate expected uploads from actual processor-month pairs in the data
-  // (not cartesian product which includes non-existent combinations)
-  const actualPairs = new Set<string>();
+  // Calculate statistics based on actual data in recent months
+  let expectedCount = 0;
+  let uploadedCount = 0;
+  let partialCount = 0;
+  let missingCount = 0;
+  
   recentMonths.forEach(month => {
     PROCESSORS.forEach(processor => {
-      const hasFile = uploadedFiles.some(f => f.processor === processor && f.month === month);
-      const hasRecords = records.some(r => r.processor === processor && r.month === month);
-      if (hasFile || hasRecords) {
-        actualPairs.add(`${processor}-${month}`);
+      const status = hasData(processor, month);
+      if (status !== 'before-start') {
+        expectedCount++;
+        if (status === 'uploaded') uploadedCount++;
+        else if (status === 'partial') partialCount++;
+        else if (status === 'missing') missingCount++;
       }
     });
   });
 
   const stats = {
-    totalUploads: uploadedFiles.length,
-    expectedUploads: actualPairs.size,
-    completionRate: 0,
+    totalUploads: uploadedCount,
+    expectedUploads: expectedCount,
+    partialUploads: partialCount,
+    missingUploads: missingCount,
+    completionRate: expectedCount > 0 
+      ? Math.round((uploadedCount / expectedCount) * 100) 
+      : 0,
   };
-  
-  const uploaded = recentMonths.reduce((count, month) => {
-    return count + PROCESSORS.filter(p => hasData(p, month) === 'uploaded').length;
-  }, 0);
-  
-  stats.completionRate = stats.expectedUploads > 0 
-    ? Math.round((uploaded / stats.expectedUploads) * 100) 
-    : 0;
 
   return (
     <div className="space-y-6">
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Files Uploaded</CardTitle>
+            <CardTitle className="text-sm font-medium">Complete Data</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" data-testid="stat-total-uploads">{stats.totalUploads}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              Across all processors
+              Valid sales data
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Data Quality Issues</CardTitle>
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="stat-partial-uploads">{stats.partialUploads}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Records with $0 sales
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Missing Data</CardTitle>
+            <XCircle className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold" data-testid="stat-missing-uploads">
+              {stats.missingUploads}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              No data uploaded
             </p>
           </CardContent>
         </Card>
@@ -105,27 +144,12 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
-            <AlertCircle className="h-4 w-4 text-primary" />
+            <CheckCircle2 className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" data-testid="stat-completion-rate">{stats.completionRate}%</div>
             <p className="text-xs text-muted-foreground mt-1">
               Last 12 months
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Missing Uploads</CardTitle>
-            <XCircle className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="stat-missing-uploads">
-              {stats.expectedUploads - uploaded}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Expected uploads
             </p>
           </CardContent>
         </Card>
@@ -210,19 +234,19 @@ export function UploadTracking({ records, uploadedFiles }: UploadTrackingProps) 
           <div className="flex flex-wrap items-center gap-6 mt-6 pt-4 border-t text-sm">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span className="text-muted-foreground">Data Uploaded</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-red-600" />
-              <span className="text-muted-foreground">No Data</span>
+              <span className="text-muted-foreground">Complete (Has Sales Data)</span>
             </div>
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-yellow-600" />
-              <span className="text-muted-foreground">Partial Data</span>
+              <span className="text-muted-foreground">Quality Issue (Records but $0 Sales)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <XCircle className="h-4 w-4 text-red-600" />
+              <span className="text-muted-foreground">Missing (No Records)</span>
             </div>
             <div className="flex items-center gap-2">
               <Minus className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Not Started Yet</span>
+              <span className="text-muted-foreground">Before Start Date</span>
             </div>
           </div>
         </CardContent>

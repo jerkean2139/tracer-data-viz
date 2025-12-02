@@ -3,9 +3,17 @@ export function isUnauthorizedError(error: Error): boolean {
 }
 
 export function redirectToLogin() {
-  window.location.href = "/api/login";
+  window.location.href = "/login";
 }
 
-export function redirectToLogout() {
-  window.location.href = "/api/logout";
+export async function logout() {
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+  window.location.href = "/login";
 }

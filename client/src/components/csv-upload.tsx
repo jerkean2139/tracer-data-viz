@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface FileUpload {
   file: File;
-  processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | null;
+  processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'Payment Advisors' | null;
   status: 'pending' | 'processing' | 'success' | 'error';
   recordCount?: number;
   errors?: string[];
@@ -96,7 +96,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
     e.target.value = '';
   }, []);
 
-  const updateProcessor = useCallback((index: number, processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX') => {
+  const updateProcessor = useCallback((index: number, processor: 'Clearent' | 'ML' | 'Shift4' | 'TSYS' | 'Micamp' | 'PayBright' | 'TRX' | 'Payment Advisors') => {
     setUploads(prev => prev.map((upload, i) =>
       i === index ? { ...upload, processor } : upload
     ));
@@ -301,6 +301,7 @@ export function CSVUpload({ onUploadComplete }: CSVUploadProps) {
                           <SelectItem value="Micamp">Micamp</SelectItem>
                           <SelectItem value="PayBright">PayBright</SelectItem>
                           <SelectItem value="TRX">TRX</SelectItem>
+                          <SelectItem value="Payment Advisors">Payment Advisors</SelectItem>
                         </SelectContent>
                       </Select>
 

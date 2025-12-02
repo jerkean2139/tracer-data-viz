@@ -1,0 +1,10 @@
+id,file_name,processor,month,record_count,uploaded_at,is_valid,errors,tenant_id
+leads-1763131064777-c4c1ri9yi,MyLeads_2025-10-22_15-37 (1).xlsx,Leads,2025-11,1013,2025-11-14T14:37:44.778Z,t,"[""Row 167: Missing DBA, skipping"", ""Row 199: Missing DBA, skipping"", ""Row 482: Missing DBA, skipping"", ""Row 483: Missing DBA, skipping"", ""Row 484: Missing DBA, skipping"", ""Auto-generated temporary IDs for 483 leads without Existing MID""]",1
+1763131264353-0,ML (1).xlsx,ML,2024-01,335,2025-11-14T14:41:04.353Z,t,"[""No valid records found in CSV""]",1
+1763131379162-0,MiCamp.xlsx,Micamp,2024-03,299,2025-11-14T14:42:59.162Z,t,"[""No valid records found in CSV""]",1
+1763131439955-1,Clearent.xlsx,Clearent,2025-01,1217,2025-11-14T14:43:59.955Z,t,"[""No valid records found in CSV""]",1
+1763131454303-2,Global.xlsx,TSYS,2024-01,263,2025-11-14T14:44:14.303Z,t,[],1
+1763131472519-3,ML.xlsx,ML,2024-01,335,2025-11-14T14:44:32.519Z,t,"[""No valid records found in CSV""]",1
+1763131484910-4,TRX.xlsx,TRX,2024-05,233,2025-11-14T14:44:44.910Z,t,"[""No valid records found in CSV"", ""Missing required columns: merchantName"", ""Found headers: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID"", ""Looking for: Merchant ID/Name"", ""Missing required columns: merchantName"", ""Found headers: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID"", ""Looking for: Merchant ID/Name"", ""Missing required columns: merchantName"", ""Found headers: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID"", ""Looking for: Merchant ID/Name"", ""Missing required columns: merchantName"", ""Found headers: Merchant Id, Merchant DBA, Payout Amount, Volume, Sales, Refunds, Reject Amount, Bank Split, Bank Payout, Branch ID"", ""Looking for: Merchant ID/Name""]",1
+1763131511939-5,shift4.xlsx,Shift4,2024-01,525,2025-11-14T14:45:11.939Z,t,"[""No valid records found in CSV""]",1
+1763131513373-6,PayBright.xlsx,PayBright,2025-06,11,2025-11-14T14:45:13.373Z,t,[],1
